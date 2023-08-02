@@ -1,9 +1,9 @@
 import Image from "next/image";
 import Link from "next/link";
 import HeroAnim from "@/components/hero-anim";
+import DisplayUrl from "@/components/displayURL";
 
 export default function Home() {
-
   return (
     <main className="h-screen">
       <div className="w-full  h-[75px]  text-gray-700 flex items-center px-10 justify-between">
@@ -33,15 +33,8 @@ export default function Home() {
         <div className="text-purple-800 font-semibold pt-6 pb-2 text-md">
           Give it a try!
         </div>
-        <div className="flex w-full justify-center">
-          <input
-            type="text"
-            className="rounded-l-lg h-[40px] w-1/2 px-4"
-            placeholder="Enter a link here"
-          ></input>
-          <button className="py-2 px-4 bg-purple-400 text-white font-semibold rounded-r-lg">Shorten It!</button>
-        </div>
-        <div>Your shortened URL: </div>
+        
+        <DisplayUrl />
       </div>
       <div className="w-full bg-purple-600 h-[300px]">
         <div>Premium Features</div>
