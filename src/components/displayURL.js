@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import { shorten } from "@/lib/shorten";
 
 export default function DisplayUrl({}) {
   const [url, setURL] = useState("");
@@ -10,6 +11,7 @@ export default function DisplayUrl({}) {
       /^(http[s]?:\/\/){0,1}([www\.]{0,1})[a-zA-Z0-9\.\-\_]+\.[a-zA-Z]{2,5}[\.]{0,1}/;
     const isValidURL = urlRegex.test(url);
     if (isValidURL) {
+      setShortURL(shorten(url));
       const urlInfo = {
         originalURL: url,
         shortURL: shortURL,
