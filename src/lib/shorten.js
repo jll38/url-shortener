@@ -6,7 +6,7 @@ const baseX = require('base-x')(BASE62);
 export function shorten(url) {
     const hash = hashStr(url);
     const base62URL = baseX.encode(Buffer.from(url)); //Convert Hashed String to base62 encoding
-    const shortenedURL = "http://localhost:3000/" + base62URL.slice(0,7)
+    const shortenedURL = base62URL.slice(0,7)
     return shortenedURL;
 }
 

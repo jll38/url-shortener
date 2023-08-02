@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
+
 export async function POST(request) {
   const prisma = new PrismaClient();
   const body = await request.json(); // parse the request body
@@ -13,3 +14,5 @@ export async function POST(request) {
   
   return NextResponse.json({body});
 }
+
+
