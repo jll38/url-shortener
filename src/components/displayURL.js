@@ -3,13 +3,31 @@ import { useState } from "react";
 
 export default function DisplayUrl({}) {
   const [url, setURL] = useState("");
-  const [shortURL, setShortURL] = useState("");
+  const [shortURL, setShortURL] = useState("http://localhost:3000/bruh");
 
-  function handleURLSubmit() {
-    const urlRegex = /^(http[s]?:\/\/){0,1}([www\.]{0,1})[a-zA-Z0-9\.\-\_]+\.[a-zA-Z]{2,5}[\.]{0,1}/;
+  function handleURLSubmit(e) {
+    const urlRegex =
+      /^(http[s]?:\/\/){0,1}([www\.]{0,1})[a-zA-Z0-9\.\-\_]+\.[a-zA-Z]{2,5}[\.]{0,1}/;
     const isValidURL = urlRegex.test(url);
     if (isValidURL) {
-      alert("valid url :)");
+      const urlInfo = {
+        originalURL: url,
+        shortURL: shortURL,
+      };
+      console.log("Sending request with body:", urlInfo);
+      fetch("/api/create-url", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(urlInfo),
+      })
+        .then((response) => {
+          console.log("Received response:", response);
+          return response.json();
+        })
+        .then((data) => console.log("Response data:", data))
+        .catch((err) => console.log("Error:", err));
     } else {
       alert("Enter a valid URL");
     }
