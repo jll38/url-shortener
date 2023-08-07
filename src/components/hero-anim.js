@@ -21,10 +21,10 @@ function HeroAnim() {
   
     return (
       <div 
-        className="text-[2.5em] overflow-y-hidden font-bold text-purple-600" 
+        className="text-[8em] overflow-y-hidden font-bold text-payne-gray" 
         id="hero-text"
       >
-        URL Shortener
+        TinyClicks
       </div>
     );
   }
