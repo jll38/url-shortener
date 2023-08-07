@@ -4,18 +4,21 @@ import { shorten } from "@/lib/shorten";
 
 export default function DisplayUrl({}) {
   const [url, setURL] = useState("");
-  const [shortURL, setShortURL] = useState("http://localhost:3000/bruh");
+  const [shortURL, setShortURL] = useState(null);
 
-  function handleURLSubmit(e) {
+  async function handleURLSubmit(e) {
     const urlRegex =
       /^(http[s]?:\/\/){0,1}([www\.]{0,1})[a-zA-Z0-9\.\-\_]+\.[a-zA-Z]{2,5}[\.]{0,1}/;
     const isValidURL = urlRegex.test(url);
     if (isValidURL) {
-      setShortURL(shorten(url));
+      const result = "http://localhost:3000/" + await shorten(url);
+      setShortURL(result);
+  
       const urlInfo = {
         originalURL: url,
-        shortURL: shortURL,
+        shortURL: result,
       };
+  
       console.log("Sending request with body:", urlInfo);
       fetch("/api/create-url", {
         method: "POST",

@@ -1,15 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
-import { PrismaClient } from "@prisma/client";
+import { Prisma } from "../prisma";
 import qs from "qs";
 
 export async function GET(request) {
   let originalURL;
-  const prisma = new PrismaClient();
   const url = new URL(request.url);
   const searchParams = new URLSearchParams(url.search);
   const slug = searchParams.get("slug");
   
-  const urlRecord = await prisma.liteUrl.findFirst({
+  const urlRecord = await Prisma.liteUrl.findFirst({
     where: {
       shortURL: "http://localhost:3000/" + slug,
     },

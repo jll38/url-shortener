@@ -1,18 +1,15 @@
 import { NextResponse } from "next/server";
-import { PrismaClient } from "@prisma/client";
+import { Prisma } from "../prisma";
 
 export async function POST(request) {
-  const prisma = new PrismaClient();
   const body = await request.json(); // parse the request body
-
-  const urlRecord = await prisma.liteUrl.create({
+  const urlRecord = await Prisma.liteUrl.create({
     data: {
       originalURL: body.originalURL,
       shortURL: body.shortURL,
     }
   })
   
-  return NextResponse.json({body});
+  return NextResponse.json(urlRecord); // Return the urlRecord which should be a valid JSON
 }
-
 

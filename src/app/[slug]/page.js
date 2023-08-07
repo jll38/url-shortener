@@ -1,22 +1,25 @@
 "use client";
 import { useEffect, useState } from "react";
-
+import redirect from 'next/navigation'
 export default function Redirect({ params }) {
   const [data, setData] = useState(null);
-  
+
   useEffect(() => {
     const slug = params.slug;
 
     fetch(`/api/match-url?slug=${slug}`)
-      .then(res => {
+      .then((res) => {
         if (!res.ok) {
           throw new Error(res.statusText);
         }
         return res.json();
       })
-      .then(data => {setData(data);
-      console.log(data)})
-      .catch(error => {
+      .then((data) => {
+        setData(data);
+        console.log(data);
+        window.location.assign(data.url)
+      })
+      .catch((error) => {
         console.error("Error:", error);
       });
   }, [params.slug]);
@@ -24,7 +27,7 @@ export default function Redirect({ params }) {
   return (
     <div className="h-screen">
       <div>Slug: {params.slug}</div>
-      <div>Redirecting to: {data?.url || 'Loading...'} </div>
+      <div>Redirecting to: {data?.url || "Loading..."} </div>
     </div>
   );
 }
