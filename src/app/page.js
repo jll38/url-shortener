@@ -30,7 +30,7 @@ export default function Home() {
           <div className="sm:flex justify-around text-white/80 sm:w-[600px] lg:w-[1000px]">
             <PremiumFeatureHome icon="chart-simple" text="Enhanced Analytics" />
             <PremiumFeatureHome icon="table-columns" text="Robust Dashboard" />
-            <PremiumFeatureHome icon="link" text="Bulk Link Shortening" />
+            <PremiumFeatureHome icon="boxes-stacked" text="Bulk Link Shortening" />
           </div>
           <div className="sm:flex justify-around text-white/80 sm:w-[600px] lg:w-[1000px] mt-12">
             <PremiumFeatureHome icon="globe" text="Geotagging & Heat Map" />
