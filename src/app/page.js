@@ -4,12 +4,15 @@ import Link from "next/link";
 import HeroAnim from "@/components/hero-anim";
 import DisplayUrl from "@/components/displayURL";
 import { Navbar } from "@/components/Navbar";
+import MouseAnim from "@/components/MouseAnim";
+
 export default function Home() {
   return (
     <main className="h-screen">
       <Navbar color="peach"></Navbar>
       <section name="lite-shortener" className="h-[550px] bg-peach">
-        <div className="w-full h-[500px] flex items-center flex-col justify-center text-moonstone font-medium">
+        <MouseAnim/>
+        <div className="w-full h-[500px] flex items-center flex-col justify-center text-moonstone font-medium relative z-20">
           <HeroAnim />
           <div className="-mt-4 mb-4 text-[1.4em]">Links Made Easy</div>
 
@@ -30,7 +33,10 @@ export default function Home() {
           <div className="sm:flex justify-around text-white/80 sm:w-[600px] lg:w-[1000px]">
             <PremiumFeatureHome icon="chart-simple" text="Enhanced Analytics" />
             <PremiumFeatureHome icon="table-columns" text="Robust Dashboard" />
-            <PremiumFeatureHome icon="boxes-stacked" text="Bulk Link Shortening" />
+            <PremiumFeatureHome
+              icon="boxes-stacked"
+              text="Bulk Link Shortening"
+            />
           </div>
           <div className="sm:flex justify-around text-white/80 sm:w-[600px] lg:w-[1000px] mt-12">
             <PremiumFeatureHome icon="globe" text="Geotagging & Heat Map" />

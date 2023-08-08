@@ -18,14 +18,19 @@ export function Navbar({ color = "peach" }) {
         >
           Features
         </Link>
-        <button
-          className="bg-payne-gray hover:bg-delft-blue text-white font-semibold py-2 px-4 rounded-full transition-all duration-200"
-          onClick={() => {
-            window.location.assign("/subscribe");
-          }}
-        >
-          Get Premium
-        </button>
+        <div class="group relative flex justify-center">
+          <button
+            className="bg-payne-gray hover:bg-delft-blue text-white font-semibold py-2 px-4 rounded-full transition-all duration-200"
+            onClick={() => {
+              window.location.assign("/subscribe");
+            }}
+          >
+            Get Premium
+          </button>
+          <span class="absolute top-10 scale-0 rounded bg-delft-blue p-2 text-xs text-white group-hover:scale-100 transition-all duration-100">
+            ✨ Coming Soon!
+          </span>
+        </div>
       </div>
     </nav>
   );
