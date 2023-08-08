@@ -6,13 +6,14 @@ import ShortURL from "./shortURL";
 export default function DisplayUrl({}) {
   const [url, setURL] = useState("");
   const [shortURL, setShortURL] = useState(null);
-
+  const domain = (process.env.NEXT_PUBLIC_ENVIRONMENT === "dev" ? "http://localhost:3000/" : "tinyclicks.co");
+  console.log(domain);
   async function handleURLSubmit(e) {
     const urlRegex =
       /^(http[s]?:\/\/){0,1}([www\.]{0,1})[a-zA-Z0-9\.\-\_]+\.[a-zA-Z]{2,5}[\.]{0,1}/;
     const isValidURL = urlRegex.test(url);
     if (isValidURL) {
-      const result = "http://localhost:3000/" + (await shorten(url));
+      const result = domain + (await shorten(url));
       setShortURL(result);
 
       const urlInfo = {
@@ -48,6 +49,7 @@ export default function DisplayUrl({}) {
           className="rounded-l-lg h-[40px] w-1/2 px-4 bg-[#ffddb8] focus:outline-payne-gray focus:outline"
           placeholder="Enter a link here"
           onChange={(e) => setURL(e.target.value)}
+          autoComplete={"off"}
         ></input>
         <button
           className="py-2 px-4 bg-payne-gray hover:bg-delft-blue focus:outline-payne-gray focus:outline transition-all duration-200 text-white font-semibold rounded-r-lg"

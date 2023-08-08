@@ -2,7 +2,7 @@ import { PrismaClient } from '@prisma/client'
 
 const prisma = new PrismaClient()
 
-export async function CreateLiteURL(url, sURL="http://localhost:3000/bruh") {
+export async function CreateLiteURL(url, sURL) {
   const urlRecord = await prisma.liteUrl.create({
     data: {
       originalUrl: url,

@@ -7,10 +7,11 @@ export async function GET(request) {
   const url = new URL(request.url);
   const searchParams = new URLSearchParams(url.search);
   const slug = searchParams.get("slug");
+  const domain = (process.env.NEXT_PUBLIC_ENVIRONMENT === "dev" ? "http://localhost:3000/" : "tinyclicks.co");
   
   const urlRecord = await Prisma.liteUrl.findFirst({
     where: {
-      shortURL: "http://localhost:3000/" + slug,
+      shortURL: domain + slug,
     },
   });
   if (urlRecord){

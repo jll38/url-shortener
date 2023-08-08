@@ -21,13 +21,13 @@ export default function Redirect({ params }) {
       })
       .catch((error) => {
         console.error("Error:", error);
+        window.location.assign("/")
       });
   }, [params.slug]);
 
   return (
     <div className="h-screen">
-      <div>Slug: {params.slug}</div>
-      <div>Redirecting to: {data?.url || "Loading..."} </div>
+
     </div>
   );
 }

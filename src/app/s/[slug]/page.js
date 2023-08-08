@@ -5,7 +5,7 @@ import { useState, useEffect } from "react";
 
 export default function ShortURLSettings({ params }) {
   const [data, setData] = useState(null);
-
+  const domain = (process.env.NEXT_PUBLIC_ENVIRONMENT === "dev" ? "http://localhost:3000/" : "tinyclicks.co");
   useEffect(() => {
     const slug = params.slug;
 
@@ -32,7 +32,7 @@ export default function ShortURLSettings({ params }) {
         <div className="w-[1280px] h-[640px] bg-payne-gray rounded-xl text-white font-bold text-4xl">
           {data ? (
             <>
-              <a href={`http://localhost:3000/${params.slug}`}>
+              <a href={`${domain}${params.slug}`}>
                 
                 
                 http://tinyclicks.co/{params.slug}
