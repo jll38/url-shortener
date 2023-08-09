@@ -1,3 +1,4 @@
+import { Footer } from "./../components/footer";
 import { PremiumFeatureHome } from "./../components/PremiumFeatureHome";
 import Image from "next/image";
 import Link from "next/link";
@@ -11,7 +12,7 @@ export default function Home() {
     <main className="h-screen">
       <Navbar color="peach"></Navbar>
       <section name="lite-shortener" className="h-[550px] bg-peach">
-        <MouseAnim/>
+        <MouseAnim />
         <div className="w-full h-[500px] flex items-center flex-col justify-center text-moonstone font-medium relative z-20">
           <HeroAnim />
           <div className="-mt-4 mb-4 text-[1.4em]">Links Made Easy</div>
@@ -46,6 +47,7 @@ export default function Home() {
           <div className="text-center text-white/50">& more!</div>
         </div>
       </section>
+      <Footer />
     </main>
   );
 }

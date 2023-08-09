@@ -2,10 +2,14 @@
 import { Navbar } from "@/components/Navbar";
 import redirect from "next/navigation";
 import { useState, useEffect } from "react";
+import { Footer } from "@/components/footer";
 
 export default function ShortURLSettings({ params }) {
   const [data, setData] = useState(null);
-  const domain = (process.env.NEXT_PUBLIC_ENVIRONMENT === "dev" ? "http://localhost:3000/" : "tinyclicks.co");
+  const domain =
+    process.env.NEXT_PUBLIC_ENVIRONMENT === "dev"
+      ? "http://localhost:3000/"
+      : "tinyclicks.co";
   useEffect(() => {
     const slug = params.slug;
 
@@ -29,21 +33,39 @@ export default function ShortURLSettings({ params }) {
     <main className="h-screen">
       <Navbar />
       <div className="h-[90vh] bg-peach flex justify-center items-center">
-        <div className="w-[1280px] h-[640px] bg-payne-gray rounded-xl text-white font-bold text-4xl">
-          {data ? (
-            <>
-              <a href={`${domain}${params.slug}`}>
-                
-                
-                http://tinyclicks.co/{params.slug}
-              </a> <br/>
-              <a href={data.url} target="_blank">{data?.url || "Loading..."} </a>
-            </>
-          ) : (
-            <></>
-          )}
+        <div className="w-[1280px] h-[640px] bg-payne-gray rounded-xl text-white font-bold text-4xl flex justify-center items-center">
+          <div>
+            {data ? (
+              <>
+                <div className=" ">
+                  <a
+                    className="bg-white/25 p-2 rounded-lg"
+                    href={`${domain}${params.slug}`}
+                  >
+                    {domain}
+                    {params.slug}
+                  </a>
+                </div>
+                <br />
+                <div className="text-center">is</div>
+                <br />
+                <div className="flex justify-center items-center">
+                  <a
+                    className="bg-white/25 p-2 rounded-lg"
+                    href={data.url}
+                    target="_blank"
+                  >
+                    {data?.url || "Loading..."}{" "}
+                  </a>
+                </div>
+              </>
+            ) : (
+              <></>
+            )}
+          </div>
         </div>
       </div>
+      <Footer/>
     </main>
   );
 }
