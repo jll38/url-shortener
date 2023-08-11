@@ -3,13 +3,9 @@ import { Navbar } from "@/components/Navbar";
 import redirect from "next/navigation";
 import { useState, useEffect } from "react";
 import { Footer } from "@/components/footer";
-
+import { domain } from "@/lib/domain";
 export default function ShortURLSettings({ params }) {
   const [data, setData] = useState(null);
-  const domain =
-    process.env.NEXT_PUBLIC_ENVIRONMENT === "dev"
-      ? "http://localhost:3000/"
-      : "tinyclicks.co";
   useEffect(() => {
     const slug = params.slug;
 
@@ -65,7 +61,7 @@ export default function ShortURLSettings({ params }) {
           </div>
         </div>
       </div>
-      <Footer/>
+      <Footer />
     </main>
   );
 }

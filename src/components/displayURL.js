@@ -2,12 +2,11 @@
 import { useState } from "react";
 import { shorten } from "@/lib/shorten";
 import ShortURL from "./shortURL";
+import { domain } from "@/lib/domain";
 
 export default function DisplayUrl({}) {
   const [url, setURL] = useState("");
   const [shortURL, setShortURL] = useState(null);
-  const domain = (process.env.NEXT_PUBLIC_ENVIRONMENT === "dev" ? "http://localhost:3000/" : "tinyclicks.co");
-  console.log(domain);
   async function handleURLSubmit(e) {
     const urlRegex =
       /^(http[s]?:\/\/){0,1}([www\.]{0,1})[a-zA-Z0-9\.\-\_]+\.[a-zA-Z]{2,5}[\.]{0,1}/;
@@ -21,7 +20,6 @@ export default function DisplayUrl({}) {
         shortURL: result,
       };
 
-      console.log("Sending request with body:", urlInfo);
       fetch("/api/create-url", {
         method: "POST",
         headers: {
@@ -30,7 +28,6 @@ export default function DisplayUrl({}) {
         body: JSON.stringify(urlInfo),
       })
         .then((response) => {
-          console.log("Received response:", response);
           return response.json();
         })
         .then((data) => console.log("Response data:", data))
