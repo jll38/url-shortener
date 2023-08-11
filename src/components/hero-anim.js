@@ -21,7 +21,7 @@ function HeroAnim() {
   
     return (
       <div 
-        className="text-[8em] overflow-y-hidden font-bold text-payne-gray" 
+        className="text-[4em] md:text-[8em] overflow-y-hidden font-bold text-payne-gray" 
         id="hero-text"
       >
         TinyClicks

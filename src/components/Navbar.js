@@ -4,14 +4,14 @@ import Link from "next/link";
 export function Navbar({ color = "peach" }) {
   return (
     <nav
-      className={`w-full  h-[75px] text-payne-gray  flex items-center px-10 justify-between bg-${color}`}
+      className={`w-full  h-[75px] text-payne-gray  flex items-center px-5 md:px-10 justify-between bg-${color}`}
     >
       <div name="nav-left">
-        <Link name="nav-logo" className="font-semibold text-[1.2em]" href="/">
+        <Link name="nav-logo" className="font-semibold text-[.8em] md:text-[1.2em]" href="/">
           <i className="fa-solid fa-link"></i> TinyClicks
         </Link>
       </div>
-      <div name="nav-right" className=" flex items-center gap-10">
+      <div name="nav-right" className="flex items-center gap-4 md:gap-10 text-[.8em] md:text-[1.2em]">
         <Link
           className="hover:text-gray-600 transition-all duration-200"
           href="/features"
@@ -20,7 +20,7 @@ export function Navbar({ color = "peach" }) {
         </Link>
         <div class="group relative flex justify-center">
           <button
-            className="bg-payne-gray hover:bg-delft-blue text-white font-semibold py-2 px-4 rounded-full transition-all duration-200"
+            className="bg-payne-gray hover:bg-delft-blue text-white font-semibold py-1 px-2 md:py-2 md:px-4 rounded-full transition-all duration-200"
             onClick={() => {
               window.location.assign("/subscribe");
             }}
