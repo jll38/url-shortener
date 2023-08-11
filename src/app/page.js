@@ -6,6 +6,7 @@ import HeroAnim from "@/components/hero-anim";
 import DisplayUrl from "@/components/displayURL";
 import { Navbar } from "@/components/Navbar";
 import MouseAnim from "@/components/MouseAnim";
+import AdBanner from "@/components/AdBanner";
 
 export default function Home() {
   return (
@@ -18,6 +19,7 @@ export default function Home() {
           <div className="-mt-4 mb-4 text-[1.4em]">Links Made Easy</div>
 
           <DisplayUrl />
+          <AdBanner/>
         </div>
       </section>
       <section
