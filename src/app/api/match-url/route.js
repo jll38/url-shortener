@@ -1,14 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import { Prisma } from "../prisma";
+import { domain } from "@/lib/domain";
 import qs from "qs";
 
 export async function GET(request) {
   let originalURL;
   const url = new URL(request.url);
   const searchParams = new URLSearchParams(url.search);
-  const slug = searchParams.get("slug");
-  const domain = (process.env.NEXT_PUBLIC_ENVIRONMENT === "dev" ? "http://localhost:3000/" : "tinyclicks.co");
-  
+  const slug = searchParams.get("slug");  
   const urlRecord = await Prisma.liteUrl.findFirst({
     where: {
       shortURL: domain + slug,

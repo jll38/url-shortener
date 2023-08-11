@@ -16,7 +16,6 @@ export default function Redirect({ params }) {
       })
       .then((data) => {
         setData(data);
-        console.log(data);
         window.location.assign(data.url)
       })
       .catch((error) => {
