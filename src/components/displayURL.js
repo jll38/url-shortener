@@ -3,6 +3,7 @@ import { useState } from "react";
 import { shorten } from "@/lib/shorten";
 import ShortURL from "./shortURL";
 import { domain } from "@/lib/domain";
+import { motion } from "framer-motion";
 
 export default function DisplayUrl({}) {
   const [url, setURL] = useState("");

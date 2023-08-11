@@ -17,14 +17,17 @@ export default function MouseAnim() {
         <img
           src="/images/mouse.webp"
           className="w-[25px] translate-x-[-100px] mouse-anim"
+          alt=" "
         />
         <img
           src="/images/mouse.webp"
           className="w-[25px] translate-x-[-100px] translate-y-[200px] mouse-anim"
+          alt=" "
         />
         <img
           src="/images/mouse.webp"
           className="w-[25px] translate-x-[-100px] translate-y-[100px] mouse-anim"
+          alt=" "
         />
       </div>
     </div>
