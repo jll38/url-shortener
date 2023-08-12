@@ -4,6 +4,7 @@ import { Navbar } from "@/components/Navbar";
  
 export default function RegisterPage() {
   const underConstruction = false;
+  
   if (underConstruction) {
     return (
       <>
@@ -25,8 +26,9 @@ export default function RegisterPage() {
           </div>
           <section
             name="register-box"
-            className="h-full w-1/2 flex justify-center items-center"
+            className="h-full w-1/2 flex flex-col justify-center items-center"
           >
+            <h1 className="w-full text-left text-[3em] font-bold text-payne-gray mb-2">Register</h1>
             <Register/>
           </section>
         </div>
