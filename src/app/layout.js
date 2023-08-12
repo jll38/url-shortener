@@ -32,7 +32,8 @@ export default function RootLayout({ children }) {
         strategy="beforeInteractive"
       ></script>
 
-      <body className={poppins.className}>{children}</body>
+      <body className={poppins.className}>
+        {children}</body>
     </html>
   );
 }

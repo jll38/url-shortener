@@ -27,7 +27,6 @@ export default function ShortURLSettings({ params }) {
 
   return (
     <main className="h-screen">
-      <Navbar />
       <div className="h-[90vh] bg-peach flex justify-center items-center">
         <div className="w-[1280px] h-[640px] bg-payne-gray rounded-xl text-white font-bold text-4xl flex justify-center items-center">
           <div>
