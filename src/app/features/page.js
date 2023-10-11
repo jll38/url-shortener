@@ -1,5 +1,6 @@
 import { Navbar } from "@/components/Navbar";
 import Link from "next/link";
+import { Footer } from "@/components/footer";
 export default function Features() {
   return (
     <>
@@ -166,6 +167,7 @@ export default function Features() {
           </section>
         </div>
       </main>
+      <Footer/>
     </>
   );
 }
