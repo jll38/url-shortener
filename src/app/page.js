@@ -11,8 +11,8 @@ import AdBanner from "@/components/AdBanner";
 export default function Home() {
   return (
     <main className="h-screen overflow-x-hidden">
-      <Navbar color="peach"></Navbar>
-      <section name="lite-shortener" className="h-[550px] bg-peach">
+      <Navbar/>
+      <section name="lite-shortener" className="h-[625px] bg-peach">
         <MouseAnim />
         <div className="w-full h-[500px] flex items-center flex-col justify-center text-moonstone font-medium relative z-20">
           <HeroAnim />
