@@ -11,7 +11,7 @@ export default function ShortURL({ children }) {
           <div className="font-semibold text-[1.5em]">
             Your TinyClicks URL is:
           </div>
-          <div>{children}</div>
+          <a href={children} target="_blank">{children}</a>
         </div>
       </div>
     </motion.div>
