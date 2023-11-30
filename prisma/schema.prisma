@@ -17,20 +17,34 @@ model liteUrl {
 }
 
 model premiumUrl {
-  id          String @id @default(auto()) @map("_id") @db.ObjectId
+  id          String    @id @default(auto()) @map("_id") @db.ObjectId
   authorId    String
-  author      User   @relation(fields: [authorId], references: [id])
-  originalURL String @unique
-  shortURL    String @unique
+  author      User      @relation(fields: [authorId], references: [id])
+  originalURL String    @unique
+  shortURL    String    @unique
+  traffics    Traffic[]
 }
 
 model User {
-  id      String       @id @default(auto()) @map("_id") @db.ObjectId
-  email   String       @unique
-  name    String?
-  URLs    premiumUrl[]
-  premium Boolean      @default(false)
-  role    Role         @default(USER)
+  id            String       @id @default(auto()) @map("_id") @db.ObjectId
+  email         String       @unique
+  emailVerified Boolean      @default(false)
+  name          String?
+  URLs          premiumUrl[]
+  premium       Boolean      @default(false)
+  role          Role         @default(USER)
+  password      String
+  salt          String
+}
+
+model Traffic {
+  id          String     @id @default(auto()) @map("_id") @db.ObjectId
+  source      String
+  destination String
+  shortId     String
+  short       premiumUrl @relation(fields: [shortId], references: [id])
+  authority   String
+  location    Json
 }
 
 enum Role {
