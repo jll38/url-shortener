@@ -24,6 +24,22 @@ export default function Dashboard() {
         window.location.assign("/");
       });
   }, []);
+
+  function getTime(zTime) {
+    const date = new Date(zTime);
+
+    return `${date.toLocaleTimeString("en-US", {
+      hour12: true,
+      hour: "numeric",
+      minute: "numeric",
+    })}`;
+  }
+
+  function getDate(zTime) {
+    const date = new Date(zTime);
+    return `${date.getMonth()}/${date.getDate()}/${date.getFullYear()}`;
+  }
+
   return (
     <main className="h-screen overflow-x-hidden">
       <Navbar />
@@ -39,6 +55,7 @@ export default function Dashboard() {
                     <th>Destination</th>
                     <th>Location</th>
                     <th>Time</th>
+                    <th>Date</th>
                     <th>IP</th>
                   </tr>
                 </thead>
@@ -51,7 +68,8 @@ export default function Dashboard() {
                         <td>
                           {record.location.city}, {record.location.region_name}
                         </td>
-                        <td>{record.createdAt}</td>
+                        <td>{getTime(record.createdAt)}</td>
+                        <td>{getDate(record.createdAt)}</td>
                         <td>{record.location.ip}</td>
                       </tr>
                     );
