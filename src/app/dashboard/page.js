@@ -86,7 +86,6 @@ export default function Dashboard() {
                     <th>Location</th>
                     <th>Time</th>
                     <th>Date</th>
-                    <th>IP</th>
                   </tr>
                 </thead>
                 <tbody>
