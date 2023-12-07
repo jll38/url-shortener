@@ -22,8 +22,9 @@ export default function Redirect({ params }) {
     const fetchData = async () => {
       const ip = await getClientIp();
       const slug = params.slug;
-
-      fetch(`/api/match-url?slug=${slug}&ip=${ip}`)
+      const referrer = document.referrer;
+      console.log("Source: " + typeof referrer)
+      fetch(`/api/match-url?slug=${slug}&ip=${ip}&source=${referrer}`)
         .then((res) => {
           if (!res.ok) {
             throw new Error(res.statusText);
