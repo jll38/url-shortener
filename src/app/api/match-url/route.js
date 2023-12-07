@@ -25,6 +25,7 @@ export async function GET(request) {
   }
   const ip = searchParams.get("ip");
   const userInfo = await logUserInfo(ip);
+  console.log(userInfo);
   await Prisma.Traffic.create({
     data: {
       source: "",
