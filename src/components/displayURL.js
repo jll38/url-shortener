@@ -40,12 +40,12 @@ export default function DisplayUrl({}) {
 
   return (
     <>
-      <div className="flex w-full justify-center">
+      <div className="flex w-full justify-left items-center drop-shadow-lg">
         <input
           type="text"
           id="urlInput"
-          className="rounded-l-lg h-[40px] w-1/2 px-4 bg-[#ffddb8] focus:outline-payne-gray focus:outline"
-          placeholder="Enter a link here"
+          className="h-[40px] w-[60%] px-4 bg-gray-100 focus:outline-payne-gray focus:outline "
+          placeholder="Enter a long URL here..."
           onChange={(e) => setURL(e.target.value)}
           autoComplete={"off"}
         ></input>

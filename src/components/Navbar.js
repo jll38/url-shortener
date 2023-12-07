@@ -1,22 +1,23 @@
 "use client";
 import React from "react";
 import Link from "next/link";
-export function Navbar({ color = "peach" }) {
+import { Typography } from "@mui/joy";
+export function Navbar() {
   return (
     <nav
-      className={`w-full  h-[75px] text-payne-gray  flex items-center px-5 md:px-10 justify-between bg-${color}`}
+      className={`w-full  h-[75px] flex items-center px-5 md:px-10 justify-between`}
     >
-      <div name="nav-left">
-        <Link name="nav-logo" className="font-semibold text-[.8em] md:text-[1.2em]" href="/">
-          <i className="fa-solid fa-link"></i> TinyClicks
+      <Link name="nav-logo" className="font-semibold text-[.8em] md:text-[1.2em]" href="/">
+
+          <Typography><i className="fa-solid fa-link"></i> TinyClicks</Typography>
         </Link>
-      </div>
+    
       <div name="nav-right" className="flex items-center gap-4 md:gap-10 text-[.8em] md:text-[1.2em]">
         <Link
           className="hover:text-gray-600 transition-all duration-200"
           href="/features"
         >
-          Features
+          <Typography fontWeight={500}>Features</Typography>
         </Link>
         <div class="group relative flex justify-center">
           <button
@@ -25,7 +26,7 @@ export function Navbar({ color = "peach" }) {
               window.location.assign("/subscribe");
             }}
           >
-            Get Premium
+            <Typography color="white">Premium</Typography>
           </button>
           <span class="absolute top-10 scale-0 rounded bg-delft-blue p-2 text-xs text-white group-hover:scale-100 transition-all duration-100">
             ✨ Coming Soon!
