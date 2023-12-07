@@ -21,6 +21,7 @@ model premiumUrl {
   author      String
   originalURL String @unique
   shortURL    String @unique
+  protected   Boolean @default(false)
 }
 
 model User {
