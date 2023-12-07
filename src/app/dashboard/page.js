@@ -100,7 +100,6 @@ export default function Dashboard() {
                         </td>
                         <td>{getTime(record.createdAt)}</td>
                         <td>{getDate(record.createdAt)}</td>
-                        <td>{record.location.ip}</td>
                       </tr>
                     );
                   })}
