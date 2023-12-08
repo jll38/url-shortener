@@ -12,7 +12,7 @@ export default function Home() {
   return (
     <main className="h-screen overflow-x-hidden overflow-y-hidden">
       <Navbar />
-      <div className="flex flex-col md:flex-row justify-center h-[80%]">
+      <div className="flex flex-col-reverse md:flex-row justify-center h-[80%]">
         <section
           name="lite-shortener"
           className="h-[100%] md:w-1/2 w-full flex justify-center"
@@ -27,8 +27,8 @@ export default function Home() {
             <AdBanner />
           </div>
         </section>
-        <section className="md:w-1/2 w-full h-[100%] flex justify-start flex-col mt-[10%]">
-          <h1 className="text-[1.25em]">Welcome to <br/><span className="text-[3em] text-payne-gray font-semibold">TinyClicks.co</span></h1>
+        <section className="px-10 md:w-1/2 w-full md:h-[100%] flex justify-start flex-col mt-[10%]">
+          <h1 className="text-[1.25em]">Welcome to <br/><span className="text-[2.5em] sm:text-[3em] text-payne-gray font-semibold">TinyClicks.co</span></h1>
           <div className="text-[1.25em]">Streamline your digital presence in just a click.</div>
         </section>
       </div>
