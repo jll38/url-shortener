@@ -8,12 +8,14 @@ import { motion } from "framer-motion";
 export default function DisplayUrl({}) {
   const [url, setURL] = useState("");
   const [shortURL, setShortURL] = useState(null);
+
   async function handleURLSubmit(e) {
+    const httpURL = ensureHttp(url)
     const urlRegex =
       /^(http[s]?:\/\/){0,1}([www\.]{0,1})[a-zA-Z0-9\.\-\_]+\.[a-zA-Z]{2,5}[\.]{0,1}/;
-    const isValidURL = urlRegex.test(url);
+    const isValidURL = urlRegex.test(httpURL);
     if (isValidURL) {
-      const result = domain + (await shorten(url));
+      const result = domain + (await shorten(httpURL));
       setShortURL(result);
 
       const urlInfo = {
@@ -36,6 +38,16 @@ export default function DisplayUrl({}) {
     } else {
       alert("Enter a valid URL");
     }
+  }
+
+  function ensureHttp(url) {
+    if (!url) return url; // Return the url as is if it's empty or null
+
+    if (!url.startsWith("http://") && !url.startsWith("https://")) {
+      return "http://" + url; // Add 'http://' if neither 'http://' nor 'https://' is present
+    }
+
+    return url; // Return the original url if it already has 'http://' or 'https://'
   }
 
   return (
