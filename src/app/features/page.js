@@ -6,7 +6,7 @@ export default function Features() {
     <>
       <Navbar />
       <main className="h-[100vh] ">
-        <div className="sm:flex justify-around">
+        <div className="flex flex-col md:flex-row md:justify-around justify-center">
           <section
             name="cta-features"
             className=" w-[300px] sm:w-[575px] h-[600px]"
@@ -24,7 +24,7 @@ export default function Features() {
           </section>
           <section
             name="features"
-            className=" w-[300px] sm:w-[600px] h-[566px] flex rounded-lg"
+            className=" w-[300px] sm:w-[600px] h-[566px] flex rounded-lg justify-center"
           >
             <table className="w-full">
               <thead>

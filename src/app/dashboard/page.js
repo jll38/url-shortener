@@ -4,6 +4,7 @@ import { Navbar } from "@/components/Navbar";
 import { Table, Sheet } from "@mui/joy";
 import { useState, useEffect } from "react";
 import mapboxgl from "mapbox-gl";
+import { CircularProgress } from "@mui/joy";
 
 import { DASHBOARD_FETCH_INTERVAL, MAPBOX_API_KEY } from "@/lib/constants";
 
@@ -67,31 +68,50 @@ export default function Dashboard() {
   return (
     <main className="h-screen overflow-x-hidden ">
       <Navbar />
-      <section className="">
-        <div className="flex items-center flex-col justify-center text-moonstone font-medium relative z-20 text-[3em]">
-          Dashboard
-          <Sheet
-            sx={{
-              borderRadius: "1rem",
-              borderWidth: "2px",
-              borderColor: "gray",
-            }}
-          >
-            {data && (
-              <Table sx={{ display: "table-header-group" }}>
-                <thead>
-                  <tr>
-                    <th>Source</th>
-                    <th>ShortURL</th>
-                    <th>Destination</th>
-                    <th>Location</th>
-                    <th>Time</th>
-                    <th>Date</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {data.data.map((record, i) => {
-                    return (
+      {!data && (
+        <div className="h-screen w-full flex justify-center items-center">
+          <CircularProgress size="lg"/>
+        </div>
+      )}
+      {data && (
+        <>
+          <section className="">
+            <div className="flex items-center flex-col justify-center text-moonstone font-medium relative z-20 text-[3em] px-4">
+              Dashboard
+              <Sheet
+                sx={{
+                  borderRadius: "1rem",
+                  borderWidth: "2px",
+                  borderColor: "gray",
+                  overflowX: "scroll",
+                  maxWidth: "100%",
+
+                  "@media (max-width: 600px)": {
+                    ".MuiTable-root": {
+                      display: "block",
+                      overflowX: "auto",
+                    },
+                    "th, td": {
+                      padding: "8px",
+                    },
+                  },
+                }}
+              >
+                <Table
+                  sx={{ display: "table-header-group", overflow: "scroll" }}
+                >
+                  <thead>
+                    <tr>
+                      <th>Source</th>
+                      <th>ShortURL</th>
+                      <th>Destination</th>
+                      <th>Location</th>
+                      <th>Time</th>
+                      <th>Date</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {data.data.map((record, i) => (
                       <tr key={"row-" + i}>
                         <td>{record.source}</td>
                         <td>{record.short}</td>
@@ -102,29 +122,28 @@ export default function Dashboard() {
                         <td>{getTime(record.createdAt)}</td>
                         <td>{getDate(record.createdAt)}</td>
                       </tr>
-                    );
-                  })}
-                </tbody>
-                {moreRecords && (
-                  <tfoot className="w-full text-center flex justify-center items-center py-2 text-payne-gray">
-                    <button
-                      onClick={() => {
-                        setRecordLimit(recordLimit + 10);
-                      }}
-                    >
-                      Load More
-                    </button>
-                  </tfoot>
-                )}
-              </Table>
-            )}
-          </Sheet>
-        </div>
-        <h2 className="text-center">Traffic Heatmap</h2>
-        {data && <Map records={data.data}></Map>}
-      </section>
-
-      <Footer />
+                    ))}
+                  </tbody>
+                  {moreRecords && (
+                    <tfoot className="w-full text-center flex justify-center items-center py-2 text-payne-gray">
+                      <button
+                        onClick={() => {
+                          setRecordLimit(recordLimit + 10);
+                        }}
+                      >
+                        Load More
+                      </button>
+                    </tfoot>
+                  )}
+                </Table>
+              </Sheet>
+            </div>
+            <h2 className="text-center">Traffic Heatmap</h2>
+            <Map records={data.data}></Map>
+          </section>
+          <Footer />
+        </>
+      )}
     </main>
   );
 }
@@ -132,8 +151,11 @@ export default function Dashboard() {
 const Map = ({ records }) => {
   const coordinates = [];
   records.map((record) => {
-    coordinates.push({lng:record.location.longitude, lat: record.location.latitude});
-    console.log(coordinates)
+    coordinates.push({
+      lng: record.location.longitude,
+      lat: record.location.latitude,
+    });
+    console.log(coordinates);
   });
   useEffect(() => {
     const map = new mapboxgl.Map({
@@ -167,9 +189,12 @@ const Map = ({ records }) => {
         source: "points",
         maxzoom: 15,
         paint: {
-          'heatmap-radius': {
-            stops: [[0, 2], [5, 20]]
-          }
+          "heatmap-radius": {
+            stops: [
+              [0, 2],
+              [5, 20],
+            ],
+          },
         },
       });
     });
@@ -178,7 +203,11 @@ const Map = ({ records }) => {
 
   return (
     <div style={{ height: "500px" }} className="flex justify-center ">
-      <div id="map" style={{ height: "100%", width: "50%" }} className="rounded-[2rem] overflow-hidden"/>
+      <div
+        id="map"
+        style={{ height: "100%" }}
+        className="rounded-[2rem] overflow-hidden w-[90%] sm:w-[75%]"
+      />
     </div>
   );
 };
