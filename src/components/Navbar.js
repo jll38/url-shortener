@@ -13,6 +13,12 @@ export function Navbar() {
         </Link>
     
       <div name="nav-right" className="flex items-center gap-4 md:gap-10 text-[.8em] md:text-[1.2em]">
+      <Link
+          className="hover:text-gray-600 transition-all duration-200"
+          href="/dashboard"
+        >
+          <Typography fontWeight={500}>Dashboard</Typography>
+        </Link>
         <Link
           className="hover:text-gray-600 transition-all duration-200"
           href="/features"
