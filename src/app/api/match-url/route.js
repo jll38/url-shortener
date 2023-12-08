@@ -8,6 +8,7 @@ export async function GET(request) {
   const url = new URL(request.url);
   const searchParams = new URLSearchParams(url.search);
   const slug = searchParams.get("slug");
+
   const urlRecord = await Prisma.liteUrl.findFirst({
     where: {
       shortURL: domain + slug,
@@ -26,13 +27,17 @@ export async function GET(request) {
   const ip = searchParams.get("ip");
   const userInfo = await logUserInfo(ip);
   console.log(userInfo);
+
+  const source = searchParams.get("source");
+  console.log("Source " + source);
+
   await Prisma.Traffic.create({
     data: {
-      source: "",
+      source: source || "N/A",
       destination: originalURL,
       location: userInfo,
       authority: "system",
-      short: urlRecord.shortURL
+      short: urlRecord.shortURL,
     },
   });
   return new NextResponse(

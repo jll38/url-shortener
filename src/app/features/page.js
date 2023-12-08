@@ -5,16 +5,16 @@ export default function Features() {
   return (
     <>
       <Navbar />
-      <main className="h-[100vh] bg-peach">
+      <main className="h-[100vh] ">
         <div className="sm:flex justify-around">
           <section
             name="cta-features"
             className=" w-[300px] sm:w-[575px] h-[600px]"
           >
-            <div className="w-full h-full flex flex-col items-center justify-center uppercase font-black text-[2.8em] text-center ">
+            <div className="w-full h-full flex flex-col items-center justify-center uppercase font-bold text-[2.8em] text-center ">
               <div className="text-delft-blue">The Tools You Need</div>
               <div className="text-payne-gray">All in One Place.</div>
-              <div className="text-[.325em] normal-case text-moonstone">
+              <div className="text-[.325em] normal-case font-normal ">
                 Interested in our Latest Features?{" "}
                 <Link href="/subscribe" className="hover:underline">
                   Try Premium Today (Coming Soon)

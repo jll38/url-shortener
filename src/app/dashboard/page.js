@@ -65,9 +65,9 @@ export default function Dashboard() {
   }
 
   return (
-    <main className="h-screen overflow-x-hidden">
+    <main className="h-screen overflow-x-hidden ">
       <Navbar />
-      <section className=" bg-peach">
+      <section className="">
         <div className="flex items-center flex-col justify-center text-moonstone font-medium relative z-20 text-[3em]">
           Dashboard
           <Sheet
@@ -81,6 +81,7 @@ export default function Dashboard() {
               <Table sx={{ display: "table-header-group" }}>
                 <thead>
                   <tr>
+                    <th>Source</th>
                     <th>ShortURL</th>
                     <th>Destination</th>
                     <th>Location</th>
@@ -92,6 +93,7 @@ export default function Dashboard() {
                   {data.data.map((record, i) => {
                     return (
                       <tr key={"row-" + i}>
+                        <td>{record.source}</td>
                         <td>{record.short}</td>
                         <td>{record.destination}</td>
                         <td>
