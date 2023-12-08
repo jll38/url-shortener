@@ -1,5 +1,6 @@
 import "./globals.css";
 import { Inter, Poppins } from "next/font/google";
+import CookiesModal from "@/components/CookiesModal";
 
 const inter = Inter({ subsets: ["latin"] });
 const poppins = Poppins({
@@ -33,7 +34,9 @@ export default function RootLayout({ children }) {
       ></script>
 
       <body className={poppins.className}>
-        {children}</body>
+        <CookiesModal />
+        {children}
+      </body>
     </html>
   );
 }
