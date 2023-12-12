@@ -1,11 +1,11 @@
 # Next.JS 13 URL-Shortener
 
-A simple URL shortener built using Next.JS 13, backed by Prisma and SQLite.
+A simple URL shortener built using Next.JS 13, backed by Prisma and MongodB.
 
 ## Features
 
 - Quick URL shortening
-- SQLite database with Prisma for data management
+- MongoDB database with Prisma for data management
 
 ## Upcoming Features
 
