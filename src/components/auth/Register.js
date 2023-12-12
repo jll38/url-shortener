@@ -1,10 +1,30 @@
 import { PasswordStrengthBar } from "./PasswordStrengthBar";
 import { useState } from "react";
 import { passwordStrength as passStrength } from "check-password-strength";
+
+import { hashPassword } from "@/lib/authHandlers";
 export default function Register() {
+  const [name, setName] = useState(null);
+  const [email, setEmail] = useState(null);
   const [password, setPassword] = useState(null);
   const [passwordStrength, setPasswordStrength] = useState({});
   const [confirmPassword, setConfirmPassword] = useState(null);
+
+  const registerUser = async (e) => {
+    e.preventDefault();
+    fetch("/api/auth/register", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        name,
+        email,
+        password,
+      }),
+    }).then(res =>{
+      if (res.ok) redirect('/login');
+    });
+  };
+
   function passwordCheck(event) {
     setPassword(event.target.value);
     const strengthID = passStrength(password).id;
@@ -33,12 +53,12 @@ export default function Register() {
       message: message,
       color: color,
     });
-    console.log(strengthID)
+    console.log(strengthID);
   }
 
-  function confirmPasswordHandler(event){
+  function confirmPasswordHandler(event) {
     const confirm = event.target.value;
-    setConfirmPassword(confirm === password)
+    setConfirmPassword(confirm === password);
   }
   return (
     <form
@@ -47,12 +67,16 @@ export default function Register() {
       className="w-full authForm text-payne-gray"
     >
       <label htmlFor="usernameInput" className="block">
-        Username
+        Name
       </label>
       <input
         id="usernameInput"
         type="text"
+        placeholder="Enter name"
         className="block bg-white/50 rounded-lg"
+        onChange={(e) => {
+          setName(e.target.value);
+        }}
       ></input>
       <label htmlFor="emailInput" className="block">
         Email
@@ -60,7 +84,11 @@ export default function Register() {
       <input
         id="emailInput"
         type="email"
+        placeholder="Enter email (e.g john@doe.com)"
         className="block bg-white/50 rounded-lg"
+        onChange={(e) => {
+          setEmail(e.target.value);
+        }}
       ></input>
       <label htmlFor="passwordInput" className="block">
         Password
@@ -69,6 +97,7 @@ export default function Register() {
         id="passwordInput"
         type="password"
         className="block bg-white/50 rounded-lg"
+        placeholder="Enter password"
         onChange={passwordCheck}
       ></input>
       <div name="password-strength" className="text-sm -mt-4 mb-4">
@@ -90,7 +119,7 @@ export default function Register() {
           ></div>
           <div
             className={`h-[5px] w-[40px] ${
-              passwordStrength.id >=2 && password !== null
+              passwordStrength.id >= 2 && password !== null
                 ? passwordStrength.color
                 : "bg-payne-gray"
             }`}
@@ -111,14 +140,21 @@ export default function Register() {
       <input
         id="confirmPasswordInput"
         type="password"
+        placeholder="Re-enter your password"
         className="block bg-white/50 rounded-lg"
         onChange={confirmPasswordHandler}
       ></input>
-      {confirmPassword && <span>{confirmPassword ? ("Matching!") : ("Password does not match")}</span> //Work on this
+      {
+        confirmPassword && (
+          <span>
+            {confirmPassword ? "Matching!" : "Password does not match"}
+          </span>
+        ) //Work on this
       }
       <button
         type="submit"
         className="bg-payne-gray text-white p-4 rounded-lg hover:bg-delft-blue transition-all duration-100"
+        onClick={registerUser}
       >
         Register
       </button>
