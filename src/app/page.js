@@ -12,13 +12,13 @@ export default function Home() {
   return (
     <main className="h-screen overflow-x-hidden overflow-y-hidden">
       <Navbar />
-      <div className="flex flex-col-reverse md:flex-row justify-center h-[80%]">
+      <div className="flex flex-col-reverse md:flex-row justify-center gap-2 h-[80%]">
         <section
           name="lite-shortener"
           className="h-[100%] md:w-1/2 w-full flex justify-center"
         >
           <div className="w-full flex items-left flex-col justify-center text-payne-gray font-medium relative z-20 px-12">
-            <div className="-mt-4 mb-4 text-[2em] ml-4">
+            <div className="-mt-4 mb-4 text-[1.75em] ml-4">
               A simple, <br />
               yet powerful tool <br />
               for <span className="font-bold underline">YOU</span>

@@ -5,11 +5,11 @@ export default function Features() {
   return (
     <>
       <Navbar />
-      <main className="h-[100vh] ">
-        <div className="flex flex-col md:flex-row md:justify-around justify-center">
+      <main className="h-[100vh] flex justify-center items-center">
+        <div className="flex flex-col md:flex-row md:justify-around">
           <section
             name="cta-features"
-            className=" w-[300px] sm:w-[575px] h-[600px]"
+            className=" w-full sm:w-[575px] h-[300px] sm:h-[600px] "
           >
             <div className="w-full h-full flex flex-col items-center justify-center uppercase font-bold text-[2.8em] text-center ">
               <div className="text-delft-blue">The Tools You Need</div>
@@ -24,7 +24,7 @@ export default function Features() {
           </section>
           <section
             name="features"
-            className=" w-[300px] sm:w-[600px] h-[566px] flex rounded-lg justify-center"
+            className="w-full sm:w-[600px] h-[566px] flex rounded-lg justify-center items-center px-4"
           >
             <table className="w-full">
               <thead>
