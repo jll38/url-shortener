@@ -1,6 +1,4 @@
 "use client";
-import { Footer } from "@/components/footer";
-import { Navbar } from "@/components/Navbar";
 import { Table, Sheet } from "@mui/joy";
 import mapboxgl from "mapbox-gl";
 import { CircularProgress } from "@mui/joy";
@@ -77,8 +75,7 @@ export default function Dashboard() {
   }
 
   return (
-    <main className="h-screen overflow-x-hidden ">
-      <Navbar />
+    <main className="h-screen overflow-x-hidden w-full">
       {!data && (
         <div className="h-screen w-full flex justify-center items-center">
           <CircularProgress size="lg" />
@@ -152,7 +149,6 @@ export default function Dashboard() {
             <h2 className="text-center">Traffic Heatmap</h2>
             <Map records={data.data}></Map>
           </section>
-          <Footer />
         </>
       )}
     </main>
