@@ -10,18 +10,16 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model liteUrl {
-  id          String @id @default(auto()) @map("_id") @db.ObjectId
-  originalURL String @unique
-  shortURL    String @unique
-}
 
-model premiumUrl {
-  id          String @id @default(auto()) @map("_id") @db.ObjectId
-  author      String
-  originalURL String @unique
-  shortURL    String @unique
-  protected   Boolean @default(false)
+model Link {
+  id          String    @id @default(auto()) @map("_id") @db.ObjectId
+  originalURL String    @unique
+  shortURL    String    @unique
+  protected   Boolean   @default(false)
+  clicks      Int       @default(0)
+  user        User      @relation(fields: [userId], references: [id])
+  userId      String    // Foreign key to User model
+  traffic     Traffic[] // One-to-Many relation with Traffic
 }
 
 model User {
@@ -29,7 +27,7 @@ model User {
   email         String   @unique
   emailVerified Boolean  @default(false)
   name          String?
-  URLs          String[]
+  links         Link[]   // One-to-Many relation with Link
   premium       Boolean  @default(false)
   role          Role     @default(USER)
   password      String
@@ -38,13 +36,12 @@ model User {
 
 model Traffic {
   id          String   @id @default(auto()) @map("_id") @db.ObjectId
-  source      String
-  destination String
-  short       String
-  authority   String
+  link        Link     @relation(fields: [linkId], references: [id])
+  linkId      String   // Foreign key to Link model
   location    Json
   createdAt   DateTime @default(now())
 }
+
 
 enum Role {
   USER

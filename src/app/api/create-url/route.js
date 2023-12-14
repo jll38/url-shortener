@@ -4,10 +4,11 @@ import { Prisma } from "../prisma";
 export async function POST(request) {
   const body = await request.json(); // parse the request body
   console.log(body);
-  const urlRecord = await Prisma.liteUrl.create({
+  const urlRecord = await Prisma.Link.create({
     data: {
       originalURL: body.originalURL,
       shortURL: body.shortURL,
+      userId: body.userId,
     }
   })
   
