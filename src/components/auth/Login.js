@@ -21,6 +21,7 @@ export default function Login() {
       .then((res) => res.json())
       .then((data) => {
         localStorage.setItem("JWT_X_AUTH", data.accessToken);
+        window.location.reload();
       });
   };
 

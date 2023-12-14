@@ -2,18 +2,20 @@
 import { Footer } from "@/components/footer";
 import { Navbar } from "@/components/Navbar";
 import { Table, Sheet } from "@mui/joy";
-import { useState, useEffect } from "react";
 import mapboxgl from "mapbox-gl";
 import { CircularProgress } from "@mui/joy";
 
-import { user } from "@/lib/authHandlers";
-
+import { getUser } from "@/lib/authHandlers";
+import { useState, useEffect } from "react";
 import { DASHBOARD_FETCH_INTERVAL, MAPBOX_API_KEY } from "@/lib/constants";
 
 export default function Dashboard() {
   const [data, setData] = useState(null);
   const [recordLimit, setRecordLimit] = useState(10);
   const [moreRecords, setMoreRecords] = useState(true);
+  const [user, setUser] = useState(null);
+  const [userLoading, setUserLoading] = useState(true);
+
 
   mapboxgl.accessToken = MAPBOX_API_KEY;
 
@@ -43,7 +45,10 @@ export default function Dashboard() {
   };
 
   useEffect(() => {
-    if (user) {
+    const loggedInUser = getUser();
+
+    if (loggedInUser) {
+      setUser(loggedInUser);
       fetchData();
 
       // Call the API every X seconds
@@ -51,7 +56,7 @@ export default function Dashboard() {
 
       // Clean up the interval on component unmount
       return () => clearInterval(interval);
-    } else{
+    } else {
       window.location.assign("/login");
     }
   }, [recordLimit]);

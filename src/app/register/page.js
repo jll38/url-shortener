@@ -1,10 +1,17 @@
 "use client";
 import Register from "@/components/auth/Register";
 import { Navbar } from "@/components/Navbar";
-
-import { user } from "@/lib/authHandlers";
+import { useState, useEffect } from "react";
+import { getUser } from "@/lib/authHandlers";
 
 export default function RegisterPage() {
+  const [user, setUser] = useState(null);
+  
+  //Get User Information
+  useEffect(() => {
+    setUser(getUser());
+  }, []);
+
   if (!user)
     return (
       <>
@@ -25,6 +32,5 @@ export default function RegisterPage() {
       </>
     );
 
-    return <>{window.location.assign('/dashboard')}</>;
-
+  return <>{window.location.assign("/dashboard")}</>;
 }
