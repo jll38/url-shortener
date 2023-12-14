@@ -6,6 +6,8 @@ import { useState, useEffect } from "react";
 import mapboxgl from "mapbox-gl";
 import { CircularProgress } from "@mui/joy";
 
+import { user } from "@/lib/authHandlers";
+
 import { DASHBOARD_FETCH_INTERVAL, MAPBOX_API_KEY } from "@/lib/constants";
 
 export default function Dashboard() {
@@ -41,13 +43,17 @@ export default function Dashboard() {
   };
 
   useEffect(() => {
-    fetchData();
+    if (user) {
+      fetchData();
 
-    // Call the API every X seconds
-    const interval = setInterval(fetchData, DASHBOARD_FETCH_INTERVAL * 1000); // replace X with your interval in seconds
+      // Call the API every X seconds
+      const interval = setInterval(fetchData, DASHBOARD_FETCH_INTERVAL * 1000); // replace X with your interval in seconds
 
-    // Clean up the interval on component unmount
-    return () => clearInterval(interval);
+      // Clean up the interval on component unmount
+      return () => clearInterval(interval);
+    } else{
+      window.location.assign("/login");
+    }
   }, [recordLimit]);
 
   function getTime(zTime) {
@@ -70,7 +76,7 @@ export default function Dashboard() {
       <Navbar />
       {!data && (
         <div className="h-screen w-full flex justify-center items-center">
-          <CircularProgress size="lg"/>
+          <CircularProgress size="lg" />
         </div>
       )}
       {data && (

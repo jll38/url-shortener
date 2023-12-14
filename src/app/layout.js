@@ -16,6 +16,7 @@ export const metadata = {
     "URL shortener,Link management,Short link,Custom URL,Digital marketing tool,TinyClicks,Link tracking,Free URL shortener,Shareable links,Online marketing",
 };
 
+
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
