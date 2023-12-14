@@ -1,8 +1,8 @@
 "use client";
 import React from "react";
 import { usePathname } from "next/navigation";
-
-import { Sheet, Button, Typography } from "@mui/joy";
+import { useState, useEffect } from "react";
+import { Sheet, Button, Typography, Skeleton } from "@mui/joy";
 import {
   Dashboard,
   BarChart,
@@ -11,7 +11,10 @@ import {
   ExitToApp,
 } from "@mui/icons-material";
 import Groups3Icon from "@mui/icons-material/Groups3";
+
+import { getUser } from "@/lib/authHandlers";
 export default function DashNav() {
+  const [user, setUser] = useState(null);
   const pathname = usePathname();
 
   const dashPages = [
@@ -25,17 +28,21 @@ export default function DashNav() {
     },
     { name: "My Links", route: "/dashboard/links", icon: <Link /> },
   ];
+
+  useEffect(() => {
+    setUser(getUser());
+  }, []);
   return (
-    <nav className="h-screen lg:w-[15rem] md:w-[10rem] border-r-2  ">
+    <nav className="h-screen lg:w-[15rem] md:w-[10rem] border-r-2  sm:flex hidden">
       <Sheet
         sx={{ width: "100%", height: "100%" }}
         className={"flex flex-col justify-between"}
       >
         <Sheet sx={{ width: "100%" }}>
-          <Typography className="w-full h-[80px] flex flex-col items-center justify-center">
+          <div className="w-full h-[80px] flex flex-col items-center justify-center">
             <i className="fa-solid fa-link"></i> TinyClicks
             <Typography className={"text-[70%]"}>Dashboard</Typography>
-          </Typography>
+          </div>
           {dashPages.map((panel, i) => {
             return (
               <button
