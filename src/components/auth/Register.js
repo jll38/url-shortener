@@ -1,7 +1,7 @@
 import { PasswordStrengthBar } from "./PasswordStrengthBar";
 import { useState } from "react";
 import { passwordStrength as passStrength } from "check-password-strength";
-
+import Link from "next/link";
 import { hashPassword } from "@/lib/authHandlers";
 export default function Register() {
   const [name, setName] = useState(null);
@@ -20,8 +20,8 @@ export default function Register() {
         email,
         password,
       }),
-    }).then(res =>{
-      if (res.ok) redirect('/login');
+    }).then((res) => {
+      if (res.ok) redirect("/login");
     });
   };
 
@@ -151,6 +151,10 @@ export default function Register() {
           </span>
         ) //Work on this
       }
+      <Link href="/login" className="-mt-4 hover:underline">
+        Have an account?
+      </Link>
+      <br/>
       <button
         type="submit"
         className="bg-payne-gray text-white p-4 rounded-lg hover:bg-delft-blue transition-all duration-100"

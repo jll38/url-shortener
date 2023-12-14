@@ -1,8 +1,9 @@
 import { PasswordStrengthBar } from "./PasswordStrengthBar";
 import { useState } from "react";
 import { passwordStrength as passStrength } from "check-password-strength";
-
+import Link from "next/link";
 import { hashPassword } from "@/lib/authHandlers";
+
 export default function Login() {
   const [email, setEmail] = useState(null);
   const [password, setPassword] = useState(null);
@@ -16,11 +17,11 @@ export default function Login() {
         email,
         password,
       }),
-    }).then(res => {
-      if(!res.ok){
-        throw res
-      }
-    });
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        localStorage.setItem("JWT_X_AUTH", data.accessToken);
+      });
   };
 
   return (
@@ -49,8 +50,12 @@ export default function Login() {
         type="password"
         className="block bg-white/50 rounded-lg"
         placeholder="Enter password"
-        onChange={(e) => {setPassword(e.target.value)}}
+        onChange={(e) => {
+          setPassword(e.target.value);
+        }}
       ></input>
+      <Link href="/register" className="-mt-4 hover:underline">Don&apos;t have an account?</Link>
+      <br/>
       <button
         type="submit"
         className="bg-payne-gray text-white p-4 rounded-lg hover:bg-delft-blue transition-all duration-100"
