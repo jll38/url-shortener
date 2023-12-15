@@ -6,6 +6,7 @@ import Link from "next/link";
 import { CircularProgress } from "@mui/joy";
 
 import { getUser } from "@/lib/authHandlers";
+import { ENVIRONMENT } from "@/lib/constants";
 import { useState, useEffect } from "react";
 import { DASHBOARD_FETCH_INTERVAL, MAPBOX_API_KEY } from "@/lib/constants";
 
@@ -34,8 +35,6 @@ export default function Dashboard() {
   useEffect(() => {
     async function fetchData() {
       const assignedUser = await assignUser();
-      console.log(assignedUser);
-      console.log("test");
       if (assignedUser) {
         console.log("test");
         console.log(assignedUser);
@@ -135,11 +134,11 @@ export default function Dashboard() {
                   </thead>
                   {data && (
                     <tbody>
-                      {data.data.map((performer, i) => {
+                      {data.data.map((performer, i) => { 
                         return (
                           <tr key={"row-" + i}>
                             <td>{i + 1}</td>
-                            <td>{performer.shortURL}</td>
+                            <td>{performer.name || (ENVIRONMENT === "dev" ? performer.shortURL.slice(22) : performer.shortURL.slice(21))}</td>
                             <td>{performer.originalURL}</td>
                             <td>{performer.clicks}</td>
                             <td>
@@ -148,50 +147,7 @@ export default function Dashboard() {
                           </tr>
                         );
                       })}
-                      <tr>
-                        <td>2</td>
-                        <td>
-                          <Link href={`/dashboard/links/`}>Test</Link>
-                        </td>
-                        <td>Test</td>
-                        <td>20</td>
-                        <td>
-                          <ArrowDropDownIcon style={{ fill: "red" }} />
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>3</td>
-                        <td>
-                          <Link href={`/dashboard/links/`}>Test</Link>
-                        </td>
-                        <td>Test</td>
-                        <td>20</td>
-                        <td>
-                          <ArrowDropUpIcon style={{ fill: "green" }} />
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>4</td>
-                        <td>
-                          <Link href={`/dashboard/links/`}>Test</Link>
-                        </td>
-                        <td>Test</td>
-                        <td>20</td>
-                        <td>
-                          <ArrowDropUpIcon style={{ fill: "green" }} />
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>5</td>
-                        <td>
-                          <Link href={`/dashboard/links/`}>Test</Link>
-                        </td>
-                        <td>Test</td>
-                        <td>20</td>
-                        <td>
-                          <ArrowDropDownIcon style={{ fill: "red" }} />
-                        </td>
-                      </tr>
+                      
                     </tbody>
                   )}
                 </Table>
