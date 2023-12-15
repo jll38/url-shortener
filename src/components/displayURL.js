@@ -1,14 +1,19 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { shorten } from "@/lib/shorten";
 import ShortURL from "./shortURL";
 import { domain } from "@/lib/domain";
 import { motion } from "framer-motion";
 
+import { getUser } from "@/lib/authHandlers";
 export default function DisplayUrl({}) {
   const [url, setURL] = useState("");
   const [shortURL, setShortURL] = useState(null);
+  const [user, setUser] = useState(null);
 
+  useEffect(() => {
+    setUser(getUser());
+  }, [])
   async function handleURLSubmit(e) {
     const httpURL = ensureHttp(url)
     const urlRegex =
@@ -21,6 +26,7 @@ export default function DisplayUrl({}) {
       const urlInfo = {
         originalURL: url,
         shortURL: result,
+        userId: user.id,
       };
 
       fetch("/api/create-url", {

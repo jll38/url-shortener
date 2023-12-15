@@ -9,9 +9,13 @@ export async function GET(request) {
   const searchParams = new URLSearchParams(url.search);
   const slug = searchParams.get("slug");
 
-  const urlRecord = await Prisma.liteUrl.findFirst({
+  const urlRecord = await Prisma.Link.findFirst({
     where: {
       shortURL: domain + slug,
+    },
+    select: {
+      originalURL: true,
+      id: true,
     },
   });
   if (urlRecord) {
@@ -33,11 +37,12 @@ export async function GET(request) {
 
   await Prisma.Traffic.create({
     data: {
-      source: source || "N/A",
-      destination: originalURL,
+      link: {
+        connect: {
+          id: urlRecord.id,
+        },
+      },
       location: userInfo,
-      authority: "system",
-      short: urlRecord.shortURL,
     },
   });
   return new NextResponse(

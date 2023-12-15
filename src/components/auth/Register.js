@@ -21,7 +21,7 @@ export default function Register() {
         password,
       }),
     }).then((res) => {
-      if (res.ok) redirect("/login");
+      if (res.ok) window.location.assign('/login');
     });
   };
 
