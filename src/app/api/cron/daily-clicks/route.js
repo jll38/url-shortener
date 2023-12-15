@@ -2,31 +2,32 @@ import { Prisma } from "../../prisma";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(req) {
-  //   // Get the current date and time
-  //   const now = new Date();
+    // Get the current date and time
+    const now = new Date();
 
-  //   // Set the time to midnight to get the start of today
-  //   const startOfToday = new Date(
-  //     now.getFullYear(),
-  //     now.getMonth(),
-  //     now.getDate()
-  //   );
+    // Set the time to midnight to get the start of today
+    const startOfToday = new Date(
+      now.getFullYear(),
+      now.getMonth(),
+      now.getDate()
+    );
 
-  //   // Subtract one day to get the start of the previous day
-  //   const startOfPreviousDay = new Date(startOfToday);
-  //   startOfPreviousDay.setDate(startOfPreviousDay.getDate() - 1);
+    // Subtract one day to get the start of the previous day
+    const startOfPreviousDay = new Date(startOfToday);
+    startOfPreviousDay.setDate(startOfPreviousDay.getDate() - 1);
 
-  //   // The end of the previous day is one millisecond before the start of today
-  //   const endOfPreviousDay = new Date(startOfToday);
-  //   endOfPreviousDay.setMilliseconds(endOfPreviousDay.getMilliseconds() - 1);
+    // The end of the previous day is one millisecond before the start of today
+    const endOfPreviousDay = new Date(startOfToday);
+    endOfPreviousDay.setMilliseconds(endOfPreviousDay.getMilliseconds() - 1);
   if (
     req.headers.get("Authorization") !== `Bearer ${process.env.CRON_SECRET}`
   ) {
     return res.status(401).end("Unauthorized");
   }
   
-  const startOfPreviousDay = new Date("2023-12-14T00:00:00.000Z"); // Start of December 14, 2023
-  const endOfPreviousDay = new Date("2023-12-15T00:00:00.000Z"); // Start of December 15, 2023
+//Testing Purposes Code Below
+//   const startOfPreviousDay = new Date("2023-12-14T00:00:00.000Z"); // Start of December 14, 2023
+//   const endOfPreviousDay = new Date("2023-12-15T00:00:00.000Z"); // Start of December 15, 2023
 
   const UsersTraffic = await Prisma.User.findMany({
     select: {
