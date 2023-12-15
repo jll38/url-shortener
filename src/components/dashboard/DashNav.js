@@ -33,7 +33,7 @@ export default function DashNav() {
     setUser(getUser());
   }, []);
   return (
-    <nav className="h-screen lg:w-[15rem] md:w-[10rem] border-r-2  sm:flex hidden">
+    <nav className="h-screen lg:w-[15rem] md:w-[10rem] border-r-2 z-50 sm:flex hidden">
       <Sheet
         sx={{ width: "100%", height: "100%" }}
         className={"flex flex-col justify-between"}
