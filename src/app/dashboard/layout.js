@@ -1,6 +1,8 @@
-import "./globals.css";
+import "./../globals.css";
 import { Inter, Poppins } from "next/font/google";
 import CookiesModal from "@/components/CookiesModal";
+
+import DashNav from "@/components/dashboard/DashNav";
 
 const inter = Inter({ subsets: ["latin"] });
 const poppins = Poppins({
@@ -9,15 +11,13 @@ const poppins = Poppins({
 });
 
 export const metadata = {
-  title: "TinyClicks - Simplify & Share Your Links",
-  description:
-    "Experience the power of simplicity with TinyClicks! Shorten, customize, and track your URLs for free. Enhance your digital marketing & improve link sharing with our user-friendly platform.",
+  title: "Dashboard - TinyClicks",
+  description: "Manage your links with ease.",
   keywords:
     "URL shortener,Link management,Short link,Custom URL,Digital marketing tool,TinyClicks,Link tracking,Free URL shortener,Shareable links,Online marketing",
 };
 
-
-export default function RootLayout({ children }) {
+export default function DashboardLayout({ children }) {
   return (
     <html lang="en">
       <script
@@ -35,8 +35,10 @@ export default function RootLayout({ children }) {
       ></script>
 
       <body className={poppins.className}>
-        <CookiesModal />
-        {children}
+        <div className="flex">
+          <DashNav />
+          {children}
+        </div>
       </body>
     </html>
   );

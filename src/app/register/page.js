@@ -1,38 +1,36 @@
 "use client";
 import Register from "@/components/auth/Register";
 import { Navbar } from "@/components/Navbar";
- 
+import { useState, useEffect } from "react";
+import { getUser } from "@/lib/authHandlers";
+
 export default function RegisterPage() {
-  const underConstruction = false;
+  const [user, setUser] = useState(null);
   
-  if (underConstruction) {
+  //Get User Information
+  useEffect(() => {
+    setUser(getUser());
+  }, []);
+
+  if (!user)
     return (
       <>
-        <div className="h-screen flex justify-center items-center bg-peach">
-          <div>Page is Under Construction</div>
-        </div>
+        <Navbar />
+        <main className="h-screen w-full flex justify-between items-center px-10">
+          <section name="hero-text" className="w-1/2  hidden md:flex">
+            <h1 className="visible text-[2em] lg:text-[3.5em] uppercase font-bold text-center">
+              Elevate your experience
+            </h1>
+          </section>
+          <section name="register-box" className="w-full md:w-1/2">
+            <h1 className="w-full text-left text-[3em] font-bold text-payne-gray mb-2">
+              Register
+            </h1>
+            <Register />
+          </section>
+        </main>
       </>
     );
-  }
-  return (
-    <>
-      <Navbar />
-      <main className="h-screen flex justify-center items-center bg-peach px-10">
-        <div className="w-full h-full flex">
-          <div className="h-full w-1/2 flex justify-center items-center pl-12">
-            <h1 className="uppercase font-bold text-[4em] text-payne-gray">
-              Elevate Your Experience
-            </h1>
-          </div>
-          <section
-            name="register-box"
-            className="h-full w-1/2 flex flex-col justify-center items-center"
-          >
-            <h1 className="w-full text-left text-[3em] font-bold text-payne-gray mb-2">Register</h1>
-            <Register/>
-          </section>
-        </div>
-      </main>
-    </>
-  );
+
+  return <>{window.location.assign("/dashboard")}</>;
 }

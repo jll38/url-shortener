@@ -10,9 +10,10 @@
 
 .authForm input[type="text"], input[type="password"], input[type="email"]{
   height:40px;
-  width: 50%;
+  width: 80%;
   margin: 5px 0 20px 0;
   padding: 10px;
+  border: gray solid 1px;
 }
 
 .authForm label{
