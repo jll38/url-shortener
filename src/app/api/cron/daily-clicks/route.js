@@ -1,7 +1,7 @@
 import { Prisma } from "../../prisma";
 import { NextRequest, NextResponse } from "next/server";
 
-export async function GET(request) {
+export async function GET(req) {
   //   // Get the current date and time
   //   const now = new Date();
 
@@ -19,7 +19,12 @@ export async function GET(request) {
   //   // The end of the previous day is one millisecond before the start of today
   //   const endOfPreviousDay = new Date(startOfToday);
   //   endOfPreviousDay.setMilliseconds(endOfPreviousDay.getMilliseconds() - 1);
-
+  if (
+    req.headers.get("Authorization") !== `Bearer ${process.env.CRON_SECRET}`
+  ) {
+    return res.status(401).end("Unauthorized");
+  }
+  
   const startOfPreviousDay = new Date("2023-12-14T00:00:00.000Z"); // Start of December 14, 2023
   const endOfPreviousDay = new Date("2023-12-15T00:00:00.000Z"); // Start of December 15, 2023
 
@@ -52,20 +57,18 @@ export async function GET(request) {
     user.links.map((link) => {
       totalClicks += link.traffic.length;
     });
-    console.log(user)
+    console.log(user);
     addRecord(user.id, totalClicks);
   });
 
-  return new NextResponse(JSON.stringify({ message: "Test" }), {
-    status: 200,
-  });
+  return NextResponse.json({ ok: true });
 }
 
-async function addRecord(userId, totalClicks){
-    await Prisma.DailyClicks.create({
-        data: {
-          userId: userId,
-          clicks: totalClicks,
-        },
-      });
+async function addRecord(userId, totalClicks) {
+  await Prisma.DailyClicks.create({
+    data: {
+      userId: userId,
+      clicks: totalClicks,
+    },
+  });
 }

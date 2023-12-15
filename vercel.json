@@ -1,8 +1,8 @@
 {
-    "crons": [
-      {
-        "path": "/api/cron/daily-clicks",
-        "schedule": "0 0 * * *"
-      }
-    ]
-  }
+  "crons": [
+    {
+      "path": "/api/cron/daily-clicks",
+      "schedule": "0 0 * * *"
+    }
+  ]
+}
