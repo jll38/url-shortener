@@ -47,28 +47,40 @@ export default function Links() {
 
   return (
     <main className="w-full h-full">
+      <div className="h-[320px] p-4 flex border w-full"></div>
       <div className="h-[320px] p-4 flex border w-full">
-        <Sheet sx={{ width: "100%" }}>
-          <Table>
-            <thead>
-              <th></th>
-            </thead>
-            <tbody>
-              {data && (
-                <div>
-                  {data.data.map((link, i) => {
-                    return (
-                      <tr key={`test-${i}`}>
-                        <td>{link.shortURL}</td>
-                        <td>{getTime(link.createdAt)}</td>
-                        <td>{getDate(link.createdAt)}</td>
-                      </tr>
-                    );
-                  })}
-                </div>
-              )}
-            </tbody>
-          </Table>
+        <Sheet
+          sx={{
+            width: "700px",
+            height: "100%",
+            boxShadow: 3,
+            padding: "16px",
+          }}
+          className={"rounded-[1.5rem] shadow-lg"}
+        >
+          <h2 className="text-[2em] font-bold">Links</h2>
+          <hr/>
+          {data && (
+            <div className="pt-1">
+              {data.data.map((link, i) => {
+                let name;
+                if (link.name) {
+                  name = link.name;
+                } else {
+                  name = link.originalURL;
+                  name = name.slice(name.indexOf("/") + 2, name.indexOf("."));
+                }
+
+                return (
+                  <div key={`link-${i}`} className="h-[40px] flex  items-center">
+                    <a href="" className="capitalize text-[1.25em] font-medium">
+                      {name}
+                    </a>
+                  </div>
+                );
+              })}
+            </div>
+          )}
         </Sheet>
       </div>
     </main>

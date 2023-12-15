@@ -11,8 +11,9 @@ datasource db {
 }
 
 model Link {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  createdAt DateTime @default(now())
+  id          String    @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt   DateTime  @default(now())
+  name        String?
   originalURL String    @unique
   shortURL    String    @unique
   protected   Boolean   @default(false)
@@ -22,16 +23,25 @@ model Link {
   traffic     Traffic[] // One-to-Many relation with Traffic
 }
 
+model DailyClicks {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String // Foreign key to User model
+  clicks    Int      @default(0)
+}
+
 model User {
-  id            String  @id @default(auto()) @map("_id") @db.ObjectId
-  email         String  @unique
-  emailVerified Boolean @default(false)
+  id            String        @id @default(auto()) @map("_id") @db.ObjectId
+  email         String        @unique
+  emailVerified Boolean       @default(false)
   name          String?
-  links         Link[]  // One-to-Many relation with Link
-  premium       Boolean @default(false)
-  role          Role    @default(USER)
+  links         Link[] // One-to-Many relation with Link
+  premium       Boolean       @default(false)
+  role          Role          @default(USER)
   password      String
   salt          String
+  DailyClicks   DailyClicks[]
 }
 
 model Traffic {
