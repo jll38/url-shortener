@@ -10,6 +10,7 @@ export default function LoginPage() {
 
   useEffect(() => {
     setUser(getUser());
+    
   }, []);
 
   return (
