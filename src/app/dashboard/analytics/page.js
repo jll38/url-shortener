@@ -1,5 +1,5 @@
 "use client";
-import React from 'react'
+import React from "react";
 
 import { Table, Sheet, Typography, Skeleton } from "@mui/joy";
 
@@ -26,143 +26,24 @@ export default function Analytics() {
   useEffect(() => {
     setUser(getUser());
   });
-
-  mapboxgl.accessToken = MAPBOX_API_KEY;
-
-  const fetchData = async () => {
-    console.log("Fetching data...");
-    fetch(`/api/dash?limit=${recordLimit}`)
-      .then((res) => {
-        if (!res.ok) {
-          throw new Error(res.statusText);
-        }
-        return res.json();
-      })
-      .then((data) => {
-        setData(data);
-        if (data.data.length < recordLimit) {
-          setMoreRecords(false);
-        } else {
-          setMoreRecords(true);
-        }
-        console.log(data.data.length);
-        console.log(recordLimit);
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-        window.location.assign("/");
-      });
-  };
-
-  useEffect(() => {
-    const loggedInUser = getUser();
-
-    if (loggedInUser) {
-      setUser(loggedInUser);
-      fetchData();
-
-      // Call the API every X seconds
-      const interval = setInterval(fetchData, DASHBOARD_FETCH_INTERVAL * 1000); // replace X with your interval in seconds
-
-      // Clean up the interval on component unmount
-      return () => clearInterval(interval);
-    } else {
-      window.location.assign("/login");
-    }
-  }, [recordLimit]);
-
-  function getTime(zTime) {
-    const date = new Date(zTime);
-
-    return `${date.toLocaleTimeString("en-US", {
-      hour12: true,
-      hour: "numeric",
-      minute: "numeric",
-    })}`;
-  }
-
-  function getDate(zTime) {
-    const date = new Date(zTime);
-    return `${date.getMonth()}/${date.getDate()}/${date.getFullYear()}`;
-  }
-
   return (
     <main className="h-screen overflow-x-hidden w-full">
-      {!data && (
-        <div className="h-screen w-full flex justify-center items-center">
-          <CircularProgress size="lg" />
-        </div>
-      )}
-      {data && (
-        <>
-          <section className="">
-            <div className="flex items-center flex-col justify-center text-moonstone font-medium relative z-20 text-[3em] px-4">
-              Dashboard
-              <Sheet
-                sx={{
-                  borderRadius: "1rem",
-                  borderWidth: "2px",
-                  borderColor: "gray",
-                  overflowX: "scroll",
-                  maxWidth: "100%",
-
-                  "@media (max-width: 600px)": {
-                    ".MuiTable-root": {
-                      display: "block",
-                      overflowX: "auto",
-                    },
-                    "th, td": {
-                      padding: "8px",
-                    },
-                  },
-                }}
-              >
-                <Table
-                  sx={{ display: "table-header-group", overflow: "scroll" }}
-                >
-                  <thead>
-                    <tr>
-                      <th>Source</th>
-                      <th>ShortURL</th>
-                      <th>Destination</th>
-                      <th>Location</th>
-                      <th>Time</th>
-                      <th>Date</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {data.data.map((record, i) => (
-                      <tr key={"row-" + i}>
-                        <td>{record.source || "N/A"}</td>
-                        <td>{record.link.shortURL}</td>
-                        <td>{record.link.originalURL}</td>
-                        <td>
-                          {record.location.city}, {record.location.region_name}
-                        </td>
-                        <td>{getTime(record.createdAt)}</td>
-                        <td>{getDate(record.createdAt)}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                  {moreRecords && (
-                    <tfoot className="w-full text-center flex justify-center items-center py-2 text-payne-gray">
-                      <button
-                        onClick={() => {
-                          setRecordLimit(recordLimit + 10);
-                        }}
-                      >
-                        Load More
-                      </button>
-                    </tfoot>
-                  )}
-                </Table>
-              </Sheet>
-            </div>
-            <h2 className="text-center">Traffic Heatmap</h2>
-            <Map records={data.data}></Map>
-          </section>
-        </>
-      )}
+      <div>
+        Click-through rates for individual URLs.
+        <br />
+        Average time spent after clicking each URL (if trackable).
+        <br />
+        Graph of click trends over time for selected URLs.
+        <br />
+        Most clicked URLs in the last 24 hours.
+        <br />
+        Comparative bar chart of clicks per URL category or tag.
+        <br />
+        Conversion rates (if there&apos;s a way to track conversions after the
+        click).
+        <br /> Number of unique visitors vs. returning visitors.
+        <br /> Percentage of clicks from organic vs. paid sources.
+      </div>
     </main>
   );
 }
