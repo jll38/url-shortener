@@ -10,14 +10,13 @@ export async function POST(request) {
   console.log("User ID: " + userId);
   console.log("Operation: " + operation);
 
-  switch (operation) {
-    case "top-performers":
-      data = await getTopPerformers(userId);
-      break;
-  }
-  console.log(getTopPerformers(userId));
+  const topPerformers = await getTopPerformers(userId);
+  const dailyClicks = await getDailyClicks(userId);
   return new NextResponse(
-    JSON.stringify({ data: await data, message: "MATCH FOUND" }),
+    JSON.stringify({
+      data: { topPerformers, dailyClicks },
+      message: "MATCH FOUND",
+    }),
     {
       status: 200,
     }
@@ -34,5 +33,19 @@ async function getTopPerformers(userId) {
     },
     take: 5,
   });
-  return topPerformers
+  return topPerformers;
 }
+
+async function getDailyClicks(userId) {
+  const dailyClicks = await Prisma.DailyClicks.findMany({
+    where: {
+      userId: userId,
+    },
+    orderBy: {
+      createdAt: "desc",
+    },
+    take: 5,
+  });
+  return dailyClicks;
+}
+

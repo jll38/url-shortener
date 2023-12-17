@@ -59,7 +59,7 @@ export default function Links() {
           className={"rounded-[1.5rem] shadow-lg"}
         >
           <h2 className="text-[2em] font-bold">Links</h2>
-          <hr/>
+          <hr />
           {data && (
             <div className="pt-1">
               {data.data.map((link, i) => {
@@ -72,11 +72,14 @@ export default function Links() {
                 }
 
                 return (
-                  <div key={`link-${i}`} className="h-[40px] flex  items-center">
-                    <a href="" className="capitalize text-[1.25em] font-medium">
+                  <button
+                    key={`link-${i}`}
+                    className="w-full h-[40px] flex items-center hover:bg-slate-100"
+                  >
+                    <div href="" className="capitalize text-[1.25em] font-medium">
                       {name}
-                    </a>
-                  </div>
+                    </div>
+                  </button>
                 );
               })}
             </div>
