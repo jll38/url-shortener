@@ -34,7 +34,8 @@ export async function GET(request) {
 
   const source = searchParams.get("source");
   console.log("Source " + source);
-
+  const device = searchParams.get("device");
+  const browser = searchParams.get("browser");
   await Prisma.Traffic.create({
     data: {
       link: {
@@ -43,6 +44,8 @@ export async function GET(request) {
         },
       },
       location: userInfo,
+      browser,
+      device
     },
   });
   return new NextResponse(
