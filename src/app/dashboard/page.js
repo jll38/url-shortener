@@ -41,7 +41,9 @@ export default function Dashboard() {
   //Data States
   const [topPerformers, setTopPerformers] = useState(null);
   const [dailyClicks, setDailyClicks] = useState(null);
-
+  const [devices, setDevices] = useState(null);
+  const [browsers, setBrowsers] = useState(null);
+  const [referrers, setReferrers] = useState(null);
   async function assignUser() {
     const userData = getUser(); // Fetch user data
     setUser(userData); // Set user data to state
@@ -72,6 +74,9 @@ export default function Dashboard() {
             console.log(info);
             setTopPerformers(info.data.topPerformers);
             setDailyClicks(info.data.dailyClicks);
+            setDevices(info.data.deviceAndBrowser.map((item) => item.device));
+            setBrowsers(info.data.deviceAndBrowser.map((item) => item.browser));
+            setReferrers(info.data.referrers);
           });
         setLoading(false);
       }
@@ -246,6 +251,13 @@ export default function Dashboard() {
                 <Option value={"ytd"}>YTD</Option>
                 <Option value={"all-time"}>All Time</Option>
               </Select>{" "}
+              {referrers && (
+                <div>
+                  {referrers.map((ref, i) => {
+                    return <div key={`ref-${i}`}>{ref.title}</div>;
+                  })}
+                </div>
+              )}
               <div className="w-full h-full flex justify-center">
                 <XYPlot height={200} width={400}>
                   <VerticalGridLines />
@@ -280,7 +292,7 @@ export default function Dashboard() {
                 sx={{ fontSize: "1.5em" }}
                 className="flex items-center gap-2"
               >
-                <DevicesIcon /> Device Type
+                <DevicesIcon /> Devices
               </Typography>
               <Select
                 defaultValue="daily"
@@ -293,12 +305,19 @@ export default function Dashboard() {
                 <Option value={"ytd"}>YTD</Option>
                 <Option value={"all-time"}>All Time</Option>
               </Select>{" "}
-              <div className="w-full h-full flex justify-center">
-                <RadialChart
-                  data={[{ angle: 1 }, { angle: 5 }, { angle: 2 }]}
-                  width={200}
-                  height={200}
-                />
+              <div className="w-full h-full flex justify-center text-center">
+                <div>
+                  <Typography>Device</Typography>
+                  <RadialChart data={[]} width={200} height={200} />
+                </div>
+                <div>
+                  <Typography>Browser</Typography>
+                  <RadialChart
+                    data={[{ angle: 1 }, { angle: 5 }, { angle: 2 }]}
+                    width={200}
+                    height={200}
+                  />
+                </div>
               </div>
             </Sheet>
           </div>

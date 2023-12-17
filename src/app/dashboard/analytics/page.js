@@ -39,7 +39,7 @@ export default function Analytics() {
         <br />
         Comparative bar chart of clicks per URL category or tag.
         <br />
-        Conversion rates (if there's a way to track conversions after the
+        Conversion rates (if there&apos;s a way to track conversions after the
         click).
         <br /> Number of unique visitors vs. returning visitors.
         <br /> Percentage of clicks from organic vs. paid sources.
