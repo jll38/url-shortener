@@ -50,6 +50,9 @@ model Traffic {
   linkId    String // Foreign key to Link model
   location  Json
   createdAt DateTime @default(now())
+  device    String?
+  browser   String?
+  source    String?
 }
 
 enum Role {

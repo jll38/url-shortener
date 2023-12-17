@@ -1,20 +1,34 @@
 "use client";
-import { Table, Sheet, Typography, Skeleton } from "@mui/joy";
+import { AreaLine } from "./../../components/dashboard/graphing/AreaLine";
 
-import mapboxgl from "mapbox-gl";
-import Link from "next/link";
+import { Table, Sheet, Typography, Skeleton, Select, Option } from "@mui/joy";
+
 import { CircularProgress } from "@mui/joy";
 
 import { getUser } from "@/lib/authHandlers";
+import { getDate } from "@/lib/time";
 import { ENVIRONMENT } from "@/lib/constants";
 import { useState, useEffect } from "react";
-import { DASHBOARD_FETCH_INTERVAL, MAPBOX_API_KEY } from "@/lib/constants";
+import Link from "next/link";
 
+//Visualization Imports
+import {
+  XYPlot,
+  LineMarkSeries,
+  XAxis,
+  VerticalGridLines,
+  VerticalBarSeries,
+  AreaSeries,
+  RadialChart,
+} from "react-vis";
 //Icons
 import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
 import ArrowDropUpIcon from "@mui/icons-material/ArrowDropUp";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
-import { ArrowDropUp } from "@mui/icons-material";
+import { ArrowDropUp, MouseTwoTone } from "@mui/icons-material";
+import CompareArrowsIcon from "@mui/icons-material/CompareArrows";
+import DevicesIcon from "@mui/icons-material/Devices";
+
 import { headers } from "next/dist/client/components/headers";
 
 export default function Dashboard() {
@@ -26,7 +40,10 @@ export default function Dashboard() {
 
   //Data States
   const [topPerformers, setTopPerformers] = useState(null);
-
+  const [dailyClicks, setDailyClicks] = useState(null);
+  const [devices, setDevices] = useState(null);
+  const [browsers, setBrowsers] = useState(null);
+  const [referrers, setReferrers] = useState(null);
   async function assignUser() {
     const userData = getUser(); // Fetch user data
     setUser(userData); // Set user data to state
@@ -53,7 +70,13 @@ export default function Dashboard() {
             return res.json();
           })
           .then((info) => {
-            setData(info); 
+            setData(info);
+            console.log(info);
+            setTopPerformers(info.data.topPerformers);
+            setDailyClicks(info.data.dailyClicks);
+            setDevices(info.data.deviceAndBrowser.map((item) => item.device));
+            setBrowsers(info.data.deviceAndBrowser.map((item) => item.browser));
+            setReferrers(info.data.referrers);
           });
         setLoading(false);
       }
@@ -62,7 +85,7 @@ export default function Dashboard() {
   }, []);
 
   return (
-    <main className="w-full h-full">
+    <main className="w-full h-full flex flex-col gap-8 max-h-screen overflow-y-scroll">
       {loading ? (
         <div className="w-full h-screen flex justify-center items-center border">
           <CircularProgress size="lg" />
@@ -89,15 +112,15 @@ export default function Dashboard() {
               </div>
             )}
           </div>
-          <div className="h-[320px] px-4 flex">
+          <div className="px-4 flex flex-wrap gap-8">
             <Sheet
               sx={{
-                width: "400px",
+                minWidth: "500px",
                 height: "100%",
                 boxShadow: 3,
                 padding: "16px",
               }}
-              className={"rounded-[1.5rem] shadow-lg"}
+              className={"rounded-[1.5rem] shadow-lg flex-1"}
             >
               <Typography
                 sx={{ fontSize: "1.5em" }}
@@ -105,7 +128,7 @@ export default function Dashboard() {
               >
                 <EmojiEventsIcon /> Top Performers
               </Typography>
-              <Sheet className="h-[85%]">
+              <Sheet className="h-[85%] ">
                 <Table
                   sx={{
                     "& thead th:nth-child(1)": { width: "10%" },
@@ -132,14 +155,26 @@ export default function Dashboard() {
                       <th></th>
                     </tr>
                   </thead>
-                  {data && (
+                  {topPerformers && (
                     <tbody>
-                      {data.data.map((performer, i) => { 
+                      {topPerformers.map((performer, i) => {
                         return (
                           <tr key={"row-" + i}>
                             <td>{i + 1}</td>
-                            <td>{performer.name || (ENVIRONMENT === "dev" ? performer.shortURL.slice(22) : performer.shortURL.slice(21))}</td>
-                            <td>{performer.originalURL}</td>
+                            <td>
+                              {performer.name ||
+                                (ENVIRONMENT === "dev"
+                                  ? performer.shortURL.slice(22)
+                                  : performer.shortURL.slice(21))}
+                            </td>
+                            <td>
+                              <Link
+                                href={performer.originalURL}
+                                target="_blank"
+                              >
+                                {performer.originalURL}
+                              </Link>
+                            </td>
                             <td>{performer.clicks}</td>
                             <td>
                               <ArrowDropDownIcon style={{ fill: "red" }} />
@@ -147,11 +182,143 @@ export default function Dashboard() {
                           </tr>
                         );
                       })}
-                      
                     </tbody>
                   )}
                 </Table>
               </Sheet>
+            </Sheet>
+            <Sheet
+              sx={{
+                minWidth: "400px",
+                height: "310px",
+                boxShadow: 3,
+                padding: "16px",
+              }}
+              className={"rounded-[1.5rem] shadow-lg flex-1"}
+            >
+              <Typography
+                sx={{ fontSize: "1.5em" }}
+                className="flex items-center gap-2"
+              >
+                <MouseTwoTone /> Click Metrics
+              </Typography>
+              <Select
+                defaultValue="daily"
+                variant="plain"
+                sx={{ width: "120px" }}
+              >
+                <Option value={"daily"}>Daily</Option>
+                <Option value={"weekly"}>Weekly</Option>
+                <Option value={"monthly"}>Monthly</Option>
+              </Select>{" "}
+              <div className="w-full h-full flex justify-center">
+                <AreaLine />
+              </div>
+            </Sheet>
+            <div>
+              <br /> Most popular referrers.
+              <br />
+              Total clicks by device type (mobile vs. desktop).
+              <br /> Pie chart of click distribution by operating system.
+              <br />
+              Top 5 URLs with the highest growth in clicks.
+            </div>
+          </div>
+          <div className="px-4 flex flex-wrap gap-8">
+            <Sheet
+              sx={{
+                minWidth: "400px",
+                height: "310px",
+                boxShadow: 3,
+                padding: "16px",
+              }}
+              className={"rounded-[1.5rem] shadow-lg flex-1"}
+            >
+              <Typography
+                sx={{ fontSize: "1.5em" }}
+                className="flex items-center gap-2"
+              >
+                <CompareArrowsIcon /> Top Referrers
+              </Typography>
+              <Select
+                defaultValue="daily"
+                variant="plain"
+                sx={{ width: "120px" }}
+              >
+                <Option value={"daily"}>Daily</Option>
+                <Option value={"weekly"}>Weekly</Option>
+                <Option value={"monthly"}>Monthly</Option>
+                <Option value={"ytd"}>YTD</Option>
+                <Option value={"all-time"}>All Time</Option>
+              </Select>{" "}
+              {referrers && (
+                <div>
+                  {referrers.map((ref, i) => {
+                    return <div key={`ref-${i}`}>{ref.title}</div>;
+                  })}
+                </div>
+              )}
+              <div className="w-full h-full flex justify-center">
+                <XYPlot height={200} width={400}>
+                  <VerticalGridLines />
+                  <VerticalBarSeries
+                    data={[
+                      { x: 0, y: 0 },
+                      { x: 1, y: 5 },
+                      { x: 2, y: 4 },
+                      { x: 3, y: 9 },
+                      { x: 4, y: 1 },
+                      { x: 5, y: 7 },
+                      { x: 6, y: 6 },
+                      { x: 7, y: 3 },
+                      { x: 8, y: 2 },
+                      { x: 9, y: 0 },
+                    ]}
+                    style={{ fill: "none" }}
+                  />
+                </XYPlot>
+              </div>
+            </Sheet>
+            <Sheet
+              sx={{
+                minWidth: "500px",
+                height: "310px",
+                boxShadow: 3,
+                padding: "16px",
+              }}
+              className={"rounded-[1.5rem] shadow-lg flex-0"}
+            >
+              <Typography
+                sx={{ fontSize: "1.5em" }}
+                className="flex items-center gap-2"
+              >
+                <DevicesIcon /> Devices
+              </Typography>
+              <Select
+                defaultValue="daily"
+                variant="plain"
+                sx={{ width: "120px" }}
+              >
+                <Option value={"daily"}>Daily</Option>
+                <Option value={"weekly"}>Weekly</Option>
+                <Option value={"monthly"}>Monthly</Option>
+                <Option value={"ytd"}>YTD</Option>
+                <Option value={"all-time"}>All Time</Option>
+              </Select>{" "}
+              <div className="w-full h-full flex justify-center text-center">
+                <div>
+                  <Typography>Device</Typography>
+                  <RadialChart data={[]} width={200} height={200} />
+                </div>
+                <div>
+                  <Typography>Browser</Typography>
+                  <RadialChart
+                    data={[{ angle: 1 }, { angle: 5 }, { angle: 2 }]}
+                    width={200}
+                    height={200}
+                  />
+                </div>
+              </div>
             </Sheet>
           </div>
         </>
@@ -159,67 +326,3 @@ export default function Dashboard() {
     </main>
   );
 }
-
-const Map = ({ records }) => {
-  const coordinates = [];
-  records.map((record) => {
-    coordinates.push({
-      lng: record.location.longitude,
-      lat: record.location.latitude,
-    });
-    console.log(coordinates);
-  });
-  useEffect(() => {
-    const map = new mapboxgl.Map({
-      container: "map", // container ID
-      style: "mapbox://styles/mapbox/dark-v11", // style URL
-      center: [-74.5, 40],
-      zoom: 9,
-      attributionControl: false,
-    });
-
-    // Add your heatmap layer here
-    map.on("load", function () {
-      map.addSource("points", {
-        type: "geojson",
-        data: {
-          type: "FeatureCollection",
-          features: coordinates.map((coord) => ({
-            type: "Feature",
-            properties: {},
-            geometry: {
-              type: "Point",
-              coordinates: [coord.lng, coord.lat],
-            },
-          })),
-        },
-      });
-
-      map.addLayer({
-        id: "heatmap",
-        type: "heatmap",
-        source: "points",
-        maxzoom: 15,
-        paint: {
-          "heatmap-radius": {
-            stops: [
-              [0, 2],
-              [5, 20],
-            ],
-          },
-        },
-      });
-    });
-    return () => map.remove();
-  }, []);
-
-  return (
-    <div style={{ height: "500px" }} className="flex justify-center ">
-      <div
-        id="map"
-        style={{ height: "100%" }}
-        className="rounded-[2rem] overflow-hidden w-[90%] sm:w-[75%]"
-      />
-    </div>
-  );
-};
