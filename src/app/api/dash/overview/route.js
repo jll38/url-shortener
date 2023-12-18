@@ -10,12 +10,18 @@ export async function POST(request) {
   getDeviceAndBrowser();
 
   const topPerformers = await getTopPerformers(userId);
-  const dailyClicks = await getDailyClicks(userId);
+  const { dailyClicks, todaysClicks } = await getDailyClicks(userId);
   const deviceAndBrowser = await getDeviceAndBrowser(userId);
   const referrers = await getReferrers(userId);
   return new NextResponse(
     JSON.stringify({
-      data: { topPerformers, dailyClicks, deviceAndBrowser, referrers },
+      data: {
+        topPerformers,
+        dailyClicks,
+        todaysClicks,
+        deviceAndBrowser,
+        referrers,
+      },
       message: "MATCH FOUND",
     }),
     {
@@ -33,7 +39,7 @@ async function getTopPerformers(userId) {
       clicks: "desc",
     },
     take: 5,
-  }); 
+  });
   return topPerformers;
 }
 
@@ -47,7 +53,39 @@ async function getDailyClicks(userId) {
     },
     take: 5,
   });
-  return dailyClicks;
+  const moment = require("moment-timezone");
+
+  const midnight = moment().tz("UTC").startOf("day").toDate();
+  const UsersTraffic = await Prisma.User.findMany({
+    select: {
+      id: true, // Include other User fields as needed
+      name: true,
+      links: {
+        select: {
+          id: true, // Include other Link fields as needed
+          traffic: {
+            select: {
+              id: true, // Include other Traffic fields as needed
+              createdAt: true,
+            },
+            where: {
+              createdAt: {
+                gte: midnight,
+              },
+            },
+          },
+        },
+      },
+    },
+  });
+  let todaysClicks = 0;
+  UsersTraffic.map((user) => {
+    user.links.map((link) => {
+      console.log(link.traffic);
+      todaysClicks += link.traffic.length;
+    });
+  });
+  return { dailyClicks, todaysClicks };
 }
 
 //Update for to only include traffic from links made by current user

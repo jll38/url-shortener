@@ -5,9 +5,11 @@ import { Motion, spring } from "react-motion";
 export function PieChart({ value }) {
   const [hoveredCell, setHoveredCell] = useState(false);
 
+  const colors = ["#2EC4B6","#FF9F1C", "#FFBF69", "#363457", "#CBF3F0", ];
   return (
     <RadialChart
       animation={{ damping: 10, stiffness: 20 }}
+      colorRange={colors}
       data={value.map((i) => {
         return {
           angle: i.count,
@@ -21,7 +23,7 @@ export function PieChart({ value }) {
       onValueMouseOut={() => setHoveredCell(false)}
     >
       {hoveredCell && (
-        <Hint value={hoveredCell} style={{position: "absolute"}}>
+        <Hint value={hoveredCell} style={{ position: "absolute" }}>
           <div
             style={{
               background: "white",

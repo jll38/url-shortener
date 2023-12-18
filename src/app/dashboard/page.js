@@ -1,4 +1,7 @@
 "use client";
+import { TodaysClicksBox } from "./../../components/dashboard/TodaysClicksBox";
+
+import { TopPerformers } from "./../../components/dashboard/graphing/TopPerformers";
 import { PieChart } from "./../../components/dashboard/graphing/PieChart";
 import { AreaLine } from "./../../components/dashboard/graphing/AreaLine";
 
@@ -11,6 +14,8 @@ import { getDate } from "@/lib/time";
 import { ENVIRONMENT } from "@/lib/constants";
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
+import ArrowDropDown from "@mui/icons-material/ArrowDropDown";
 
 //Visualization Imports
 import {
@@ -25,8 +30,6 @@ import {
 } from "react-vis";
 //Icons
 import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
-import ArrowDropUpIcon from "@mui/icons-material/ArrowDropUp";
-import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import { ArrowDropUp, MouseTwoTone } from "@mui/icons-material";
 import CompareArrowsIcon from "@mui/icons-material/CompareArrows";
 import DevicesIcon from "@mui/icons-material/Devices";
@@ -43,6 +46,7 @@ export default function Dashboard() {
   //Data States
   const [topPerformers, setTopPerformers] = useState(null);
   const [dailyClicks, setDailyClicks] = useState(null);
+  const [todaysClicks, setTodaysClicks] = useState(null);
   const [devices, setDevices] = useState(null);
   const [browsers, setBrowsers] = useState(null);
   const [referrers, setReferrers] = useState(null);
@@ -77,6 +81,9 @@ export default function Dashboard() {
             console.log(info);
             setTopPerformers(info.data.topPerformers);
             setDailyClicks(info.data.dailyClicks);
+            setTodaysClicks(info.data.todaysClicks);
+            console.log(todaysClicks);
+            
             setDevices(
               info.data.deviceAndBrowser.deviceCountArray.map((item) => {
                 return { label: item.device, count: item.count };
@@ -97,25 +104,30 @@ export default function Dashboard() {
 
   return (
     <main className="w-full h-full flex flex-col gap-8 max-h-screen overflow-y-scroll">
-      {loading ? (
+      {loading && !topPerformers ? (
         <div className="w-full h-screen flex justify-center items-center border">
           <CircularProgress size="lg" />
         </div>
       ) : (
         <>
-          <div className="h-[100px] p-4 flex gap-2 items-center">
+          <div className="h-[150px] p-4 flex gap-2 items-center">
             {user ? (
-              <>
+              <div className="flex items-center gap-8">
+                <Image
+                  src={"/images/dash-user-greeting.png"}
+                  width={150}
+                  height={150}
+                  draggable={"false"}
+                ></Image>
                 <div>
                   <Typography sx={{ fontWeight: 700 }} className={"text-[2em]"}>
-                    Welcome, {user.name}!
+                    Hello, {user.name}!
                   </Typography>
                   <Typography className={"text-[.8em]"}>
-                    Let&apos;s see how your links are doing.
+                    Welcome to your dashboard.
                   </Typography>
                 </div>
-                <div className="text-[2em]">👋🏻</div>
-              </>
+              </div>
             ) : (
               <div className="mb-10">
                 <Skeleton width={230} height={24} />
@@ -124,80 +136,28 @@ export default function Dashboard() {
             )}
           </div>
           <div className="px-4 flex flex-wrap gap-8">
-            <Sheet
-              sx={{
-                minWidth: "500px",
-                height: "100%",
-                boxShadow: 3,
-                padding: "16px",
-              }}
-              className={"rounded-[1.5rem] shadow-lg flex-1"}
-            >
-              <Typography
-                sx={{ fontSize: "1.5em" }}
-                className="flex items-center gap-2"
+            {dailyClicks && <TodaysClicksBox todaysClicks={todaysClicks} dailyClicks={dailyClicks} />}
+          </div>
+          <div className="px-4 flex flex-wrap gap-8">
+            {topPerformers && (
+              <Sheet
+                sx={{
+                  minWidth: "500px",
+                  height: "100%",
+                  boxShadow: 3,
+                  padding: "16px",
+                }}
+                className={"rounded-[1.5rem] shadow-lg flex-1"}
               >
-                <EmojiEventsIcon /> Top Performers
-              </Typography>
-              <Sheet className="h-[85%] ">
-                <Table
-                  sx={{
-                    "& thead th:nth-child(1)": { width: "10%" },
-                    "& thead th:nth-child(2)": { width: "30%" },
-                    "& thead th:nth-child(3)": { width: "35%" },
-                    "& thead th:nth-child(5)": { width: "10%" },
-                    "& tbody th": { borderRight: "2px solid gray" },
-                    "& tbody tr:nth-child(2)": {
-                      bgcolor: "var(--joy-palette-neutral-100, #F0F4F8)",
-                    },
-                    "& tbody tr:nth-child(4)": {
-                      bgcolor: "var(--joy-palette-neutral-100, #F0F4F8)",
-                    },
-                    "& thead th:nth-child(2)": { width: "30%" },
-                    "& tr ": { height: "20px", fontSize: ".9em" },
-                  }}
+                <Typography
+                  sx={{ fontSize: "1.5em" }}
+                  className="flex items-center gap-2"
                 >
-                  <thead>
-                    <tr>
-                      <th>#</th>
-                      <th>Name</th>
-                      <th>Destination</th>
-                      <th>Clicks</th>
-                      <th></th>
-                    </tr>
-                  </thead>
-                  {topPerformers && (
-                    <tbody>
-                      {topPerformers.map((performer, i) => {
-                        return (
-                          <tr key={"row-" + i}>
-                            <td>{i + 1}</td>
-                            <td>
-                              {performer.name ||
-                                (ENVIRONMENT === "dev"
-                                  ? performer.shortURL.slice(22)
-                                  : performer.shortURL.slice(21))}
-                            </td>
-                            <td>
-                              <Link
-                                href={performer.originalURL}
-                                target="_blank"
-                              >
-                                {performer.originalURL}
-                              </Link>
-                            </td>
-                            <td>{performer.clicks}</td>
-                            <td>
-                              <ArrowDropDownIcon style={{ fill: "red" }} />
-                            </td>
-                          </tr>
-                        );
-                      })}
-                    </tbody>
-                  )}
-                </Table>
+                  <EmojiEventsIcon /> Top Performers
+                </Typography>
+                <TopPerformers topPerformers={topPerformers} />
               </Sheet>
-            </Sheet>
+            )}
             <Sheet
               sx={{
                 minWidth: "400px",
@@ -340,5 +300,84 @@ export default function Dashboard() {
         </>
       )}
     </main>
+  );
+}
+
+function undefined({ topPerformers, performer, i, ENVIRONMENT }) {
+  return (
+    <Sheet className="h-[85%]">
+      <Table
+        sx={{
+          "& thead th:nth-child(1)": {
+            width: "10%",
+          },
+          "& thead th:nth-child(2)": {
+            width: "30%",
+          },
+          "& thead th:nth-child(3)": {
+            width: "35%",
+          },
+          "& thead th:nth-child(5)": {
+            width: "10%",
+          },
+          "& tbody th": {
+            borderRight: "2px solid gray",
+          },
+          "& tbody tr:nth-child(2)": {
+            bgcolor: "var(--joy-palette-neutral-100, #F0F4F8)",
+          },
+          "& tbody tr:nth-child(4)": {
+            bgcolor: "var(--joy-palette-neutral-100, #F0F4F8)",
+          },
+          "& thead th:nth-child(2)": {
+            width: "30%",
+          },
+          "& tr ": {
+            height: "20px",
+            fontSize: ".9em",
+          },
+        }}
+      >
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Name</th>
+            <th>Destination</th>
+            <th>Clicks</th>
+            <th></th>
+          </tr>
+        </thead>
+        {topPerformers && (
+          <tbody>
+            {topPerformers.map((performer, i) => {
+              return (
+                <tr key={"row-" + i}>
+                  <td>{i + 1}</td>
+                  <td>
+                    {performer.name ||
+                      (ENVIRONMENT === "dev"
+                        ? performer.shortURL.slice(22)
+                        : performer.shortURL.slice(21))}
+                  </td>
+                  <td>
+                    <Link href={performer.originalURL} target="_blank">
+                      {performer.originalURL}
+                    </Link>
+                  </td>
+                  <td>{performer.clicks}</td>
+                  <td>
+                    <ArrowDropDownIcon
+                      style={{
+                        fill: "red",
+                      }}
+                    />
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        )}
+      </Table>
+    </Sheet>
   );
 }
