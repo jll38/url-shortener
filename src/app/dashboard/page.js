@@ -9,6 +9,7 @@ import { Table, Sheet, Typography, Skeleton, Select, Option } from "@mui/joy";
 
 import { CircularProgress } from "@mui/joy";
 
+import { TIME_ZONE } from "@/lib/constants";
 import { getUser } from "@/lib/authHandlers";
 import { getDate } from "@/lib/time";
 import { ENVIRONMENT } from "@/lib/constants";
@@ -42,7 +43,7 @@ export default function Dashboard() {
   const [moreRecords, setMoreRecords] = useState(true);
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
-
+  console.log(TIME_ZONE);
   //Data States
   const [topPerformers, setTopPerformers] = useState(null);
   const [dailyClicks, setDailyClicks] = useState(null);
@@ -71,6 +72,7 @@ export default function Dashboard() {
           body: JSON.stringify({
             userId: assignedUser.id,
             operation: "top-performers",
+            timeZone: TIME_ZONE
           }),
         })
           .then((res) => {

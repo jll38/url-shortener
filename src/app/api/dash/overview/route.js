@@ -4,13 +4,13 @@ import { domain } from "@/lib/domain";
 import qs from "qs";
 
 export async function POST(request) {
-  const { userId, operation } = await request.json();
+  const { userId, operation, timeZone } = await request.json();
 
   let data;
   getDeviceAndBrowser();
 
   const topPerformers = await getTopPerformers(userId);
-  const { dailyClicks, todaysClicks } = await getDailyClicks(userId);
+  const { dailyClicks, todaysClicks } = await getDailyClicks(userId, timeZone);
   const deviceAndBrowser = await getDeviceAndBrowser(userId);
   const referrers = await getReferrers(userId);
   return new NextResponse(
@@ -43,7 +43,7 @@ async function getTopPerformers(userId) {
   return topPerformers;
 }
 
-async function getDailyClicks(userId) {
+async function getDailyClicks(userId, timeZone) {
   const dailyClicks = await Prisma.DailyClicks.findMany({
     where: {
       userId: userId,
@@ -55,7 +55,9 @@ async function getDailyClicks(userId) {
   });
   const moment = require("moment-timezone");
 
-  const midnight = moment().tz("UTC").startOf("day").toDate();
+  const midnightUserTime = moment().tz(timeZone).startOf('day');
+  const midnightUTC = midnightUserTime.clone().tz('UTC').format();
+  console.log(midnightUTC)
   const UsersTraffic = await Prisma.User.findMany({
     select: {
       id: true, // Include other User fields as needed
@@ -70,7 +72,7 @@ async function getDailyClicks(userId) {
             },
             where: {
               createdAt: {
-                gte: midnight,
+                gte: midnightUTC,
               },
             },
           },

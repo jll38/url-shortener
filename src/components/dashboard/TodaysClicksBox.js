@@ -3,7 +3,7 @@ import { Sheet, Typography } from "@mui/joy";
 import ArrowDropUp from "@mui/icons-material/ArrowDropUp";
 import ArrowDropDown from "@mui/icons-material/ArrowDropDown";
 export function TodaysClicksBox({ todaysClicks, dailyClicks }) {
-  console.log("todays clicks" + todaysClicks);
+  
   const ArrowIcon =
     dailyClicks[0].clicks > todaysClicks ? (
       <ArrowDropDown style={{ fill: "red", fontSize: "2em" }} size="lg" />
