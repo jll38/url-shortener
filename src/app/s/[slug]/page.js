@@ -18,7 +18,6 @@ export default function ShortURLSettings({ params }) {
       })
       .then((data) => {
         setData(data);
-        console.log(data);
       })
       .catch((error) => {
         console.error("Error:", error);

@@ -17,8 +17,6 @@ import { ENVIRONMENT } from "@/lib/constants";
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import ArrowDropDown from "@mui/icons-material/ArrowDropDown";
-
 //Visualization Imports
 import {
   XYPlot,
@@ -35,6 +33,7 @@ import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
 import { ArrowDropUp, MouseTwoTone } from "@mui/icons-material";
 import CompareArrowsIcon from "@mui/icons-material/CompareArrows";
 import DevicesIcon from "@mui/icons-material/Devices";
+import ArrowDropDown from "@mui/icons-material/ArrowDropDown";
 
 import { headers } from "next/dist/client/components/headers";
 
@@ -44,7 +43,6 @@ export default function Dashboard() {
   const [moreRecords, setMoreRecords] = useState(true);
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
-  console.log(TIME_ZONE);
   //Data States
   const [topPerformers, setTopPerformers] = useState(null);
   const [dailyClicks, setDailyClicks] = useState(null);
@@ -62,9 +60,6 @@ export default function Dashboard() {
     async function fetchData() {
       const assignedUser = await assignUser();
       if (assignedUser) {
-        console.log("test");
-        console.log(assignedUser);
-
         fetch("/api/dash/overview", {
           method: "POST",
           headers: {
@@ -81,11 +76,9 @@ export default function Dashboard() {
           })
           .then((info) => {
             setData(info);
-            console.log(info);
             setTopPerformers(info.data.topPerformers);
             setDailyClicks(info.data.dailyClicks);
             setTodaysClicks(info.data.todaysClicks);
-            console.log(todaysClicks);
 
             setDevices(
               info.data.deviceAndBrowser.deviceCountArray.map((item) => {

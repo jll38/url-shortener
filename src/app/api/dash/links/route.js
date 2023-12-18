@@ -15,7 +15,6 @@ export async function POST(request) {
     },
   });
 
-  console.log(URLS);
   return new NextResponse(
     JSON.stringify({ data: await URLS, message: "MATCH FOUND" }),
     {

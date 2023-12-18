@@ -10,12 +10,13 @@ export default function DisplayUrl({}) {
   const [url, setURL] = useState("");
   const [shortURL, setShortURL] = useState(null);
   const [user, setUser] = useState(null);
+  const [resShortURL, setResShortURL] = useState(null);
 
   useEffect(() => {
     setUser(getUser());
-  }, [])
+  }, []);
   async function handleURLSubmit(e) {
-    const httpURL = ensureHttp(url)
+    const httpURL = ensureHttp(url);
     const urlRegex =
       /^(http[s]?:\/\/){0,1}([www\.]{0,1})[a-zA-Z0-9\.\-\_]+\.[a-zA-Z]{2,5}[\.]{0,1}/;
     const isValidURL = urlRegex.test(httpURL);
@@ -39,7 +40,10 @@ export default function DisplayUrl({}) {
         .then((response) => {
           return response.json();
         })
-        .then((data) => console.log("Response data:", data))
+        .then((data) => {
+          console.log("Response data:", data);
+          setResShortURL(data.short);
+        })
         .catch((err) => console.log("Error:", err));
     } else {
       alert("Enter a valid URL");
@@ -74,7 +78,7 @@ export default function DisplayUrl({}) {
           Shorten It!
         </button>
       </div>
-      {!shortURL ? <div></div> : <ShortURL>{shortURL}</ShortURL>}
+      {!resShortURL ? <div></div> : <ShortURL>{resShortURL}</ShortURL>}
     </>
   );
 }

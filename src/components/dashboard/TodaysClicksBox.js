@@ -24,7 +24,7 @@ export function TodaysClicksBox({ todaysClicks, yesterdaysClicks }) {
       <Typography
         sx={{
           fontSize: "1.5em",
-          lineHeight: "1em",
+          lineHeight: ".8em",
         }}
         className="font-bold text-white/80"
       >

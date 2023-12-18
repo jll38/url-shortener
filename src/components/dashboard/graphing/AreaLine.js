@@ -13,9 +13,7 @@ export function AreaLine({ dailyClicks, todaysClicks }) {
     return { x: i, y: record.clicks, date: getDate(record.createdAt) };
   });
   dataPoints.push({ x: count, y: todaysClicks, date: "Today" });
-  useEffect(() => {
-    console.log("points " + typeof points);
-  }, [points]);
+
 
   return (
     <XYPlot

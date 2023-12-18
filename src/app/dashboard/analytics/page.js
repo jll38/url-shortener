@@ -55,7 +55,6 @@ const Map = ({ records }) => {
       lng: record.location.longitude,
       lat: record.location.latitude,
     });
-    console.log(coordinates);
   });
   useEffect(() => {
     const map = new mapboxgl.Map({
