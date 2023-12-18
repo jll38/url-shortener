@@ -61,9 +61,6 @@ export default function DashNav() {
             );
           })}
         </Sheet>
-        <button onClick={() => {
-        fetch('/api/cron/daily-clicks')
-      }}>Test</button>
         <button
           className="lg:text-left text-center flex lg:flex-row flex-col lg:gap-1 items-center justify-center h-[80px] w-full lg:h-[50px] px-[20%] hover:bg-slate-100"
           onClick={() => {
