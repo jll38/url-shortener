@@ -1,4 +1,5 @@
 "use client";
+import { PieChart } from "./../../components/dashboard/graphing/PieChart";
 import { AreaLine } from "./../../components/dashboard/graphing/AreaLine";
 
 import { Table, Sheet, Typography, Skeleton, Select, Option } from "@mui/joy";
@@ -20,6 +21,7 @@ import {
   VerticalBarSeries,
   AreaSeries,
   RadialChart,
+  Hint,
 } from "react-vis";
 //Icons
 import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
@@ -44,6 +46,7 @@ export default function Dashboard() {
   const [devices, setDevices] = useState(null);
   const [browsers, setBrowsers] = useState(null);
   const [referrers, setReferrers] = useState(null);
+
   async function assignUser() {
     const userData = getUser(); // Fetch user data
     setUser(userData); // Set user data to state
@@ -76,13 +79,13 @@ export default function Dashboard() {
             setDailyClicks(info.data.dailyClicks);
             setDevices(
               info.data.deviceAndBrowser.deviceCountArray.map((item) => {
-                return { device: item.device, count: item.count };
+                return { label: item.device, count: item.count };
               })
             );
             setBrowsers(
-              info.data.deviceAndBrowser.browserCountArray.map(
-                (item) => { return { browser: item.browser, count: item.count };}
-              )
+              info.data.deviceAndBrowser.browserCountArray.map((item) => {
+                return { label: item.browser, count: item.count };
+              })
             );
             setReferrers(info.data.referrers);
           });
@@ -323,23 +326,11 @@ export default function Dashboard() {
                   <>
                     <div>
                       <Typography>Device</Typography>
-                      <RadialChart
-                        data={devices.map((device) => {
-                          return { angle: device.count };
-                        })}
-                        width={200}
-                        height={200}
-                      />
+                      <PieChart value={devices} />
                     </div>
                     <div>
                       <Typography>Browser</Typography>
-                      <RadialChart
-                        data={browsers.map((browser) => {
-                          return { angle: browser.count };
-                        })}
-                        width={200}
-                        height={200}
-                      />
+                      <PieChart value={browsers} />
                     </div>
                   </>
                 )}
