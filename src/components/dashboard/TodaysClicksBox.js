@@ -34,6 +34,7 @@ export function TodaysClicksBox({ todaysClicks, dailyClicks }) {
           sx={{
             fontSize: "2em",
             marginLeft: "2rem",
+            lineHeight: "1.25em",
           }}
           className="font-bold text-white/80"
         >
@@ -41,6 +42,7 @@ export function TodaysClicksBox({ todaysClicks, dailyClicks }) {
         </Typography>
         {ArrowIcon}
       </div>
+      <Typography sx={{fontSize: ".8em", lineHeight: ".8em",}} className="font-semibold text-white/80">{dailyClicks[0].clicks} Yesterday</Typography>
     </Sheet>
   );
 }

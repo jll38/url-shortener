@@ -3,9 +3,14 @@ import React, { useState, useEffect } from "react";
 import { XYPlot, VerticalGridLines, AreaSeries } from "react-vis";
 import { Crosshair } from "react-vis";
 import { Sheet } from "@mui/joy";
-export function AreaLine({}) {
+export function AreaLine({dailyClicks, todaysClicks}) {
   const [points, setPoints] = useState([]);
-
+  let count = 0;
+  const dataPoints = dailyClicks.map((record, i) => {
+    count++;
+    return {x: i, y: record.clicks}
+  })
+  dataPoints.push({x: count, y: todaysClicks});
   useEffect(() => {
     console.log("points " + typeof points);
   }, [points]);
@@ -21,50 +26,10 @@ export function AreaLine({}) {
 
       <AreaSeries
         padding={0}
+        
         style={{opacity: .5, fill: '#496a81'}}
         stroke='#2B3A67'
-        data={[
-          {
-            x: 0,
-            y: 0,
-          },
-          {
-            x: 1,
-            y: 5,
-          },
-          {
-            x: 2,
-            y: 4,
-          },
-          {
-            x: 3,
-            y: 9,
-          },
-          {
-            x: 4,
-            y: 1,
-          },
-          {
-            x: 5,
-            y: 7,
-          },
-          {
-            x: 6,
-            y: 6,
-          },
-          {
-            x: 7,
-            y: 3,
-          },
-          {
-            x: 8,
-            y: 2,
-          },
-          {
-            x: 9,
-            y: 0,
-          },
-        ]}
+        data={dataPoints}
         onNearestX={(value) => {
           setPoints([value]);
         }}

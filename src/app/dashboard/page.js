@@ -185,7 +185,7 @@ export default function Dashboard() {
                 <Option value={"monthly"}>Monthly</Option>
               </Select>{" "}
               <div className="w-full h-full flex justify-center">
-                <AreaLine />
+                {dailyClicks && <AreaLine dailyClicks={dailyClicks} todaysClicks={todaysClicks} />}
               </div>
             </Sheet>
             <div>
@@ -368,7 +368,7 @@ function undefined({ topPerformers, performer, i, ENVIRONMENT }) {
                   </td>
                   <td>{performer.clicks}</td>
                   <td>
-                    <ArrowDropDownIcon
+                    <ArrowDropDown
                       style={{
                         fill: "red",
                       }}
