@@ -18,7 +18,7 @@ export function AreaLine({ dailyClicks, todaysClicks }) {
   return (
     <XYPlot
       height={200}
-      width={400}
+      width={350}
       margin={{ bottom: 0, left: 10, top: 0, right: 10 }}
       onMouseLeave={() => setPoints([])}
       className="relative"
