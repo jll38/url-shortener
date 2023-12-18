@@ -3,7 +3,7 @@ import { Sheet, Table } from "@mui/joy";
 import Link from "next/link";
 import ArrowDropUpIcon from "@mui/icons-material/ArrowDropUp";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
-
+import CountUp from "react-countup"
 import { ENVIRONMENT } from "@/lib/constants";
 
 export function TopPerformers({ topPerformers }) {
@@ -67,7 +67,7 @@ export function TopPerformers({ topPerformers }) {
                       {performer.originalURL}
                     </Link>
                   </td>
-                  <td>{performer.clicks}</td>
+                  <td><CountUp start={0} end={performer.clicks} duration={2}></CountUp></td>
                   <td>
                     <ArrowDropDownIcon
                       style={{

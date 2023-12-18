@@ -2,8 +2,9 @@ import React, { useState, useEffect } from "react";
 import { Sheet, Typography } from "@mui/joy";
 import ArrowDropUp from "@mui/icons-material/ArrowDropUp";
 import ArrowDropDown from "@mui/icons-material/ArrowDropDown";
+import CountUp from "react-countup";
+
 export function TodaysClicksBox({ todaysClicks, dailyClicks }) {
-  
   const ArrowIcon =
     dailyClicks[0].clicks > todaysClicks ? (
       <ArrowDropDown style={{ fill: "red", fontSize: "2em" }} size="lg" />
@@ -38,11 +39,17 @@ export function TodaysClicksBox({ todaysClicks, dailyClicks }) {
           }}
           className="font-bold text-white/80"
         >
-          {todaysClicks}
+          <CountUp start={0} end={todaysClicks} duration={1.5}>
+          </CountUp>
         </Typography>
         {ArrowIcon}
       </div>
-      <Typography sx={{fontSize: ".8em", lineHeight: ".8em",}} className="font-semibold text-white/80">{dailyClicks[0].clicks} Yesterday</Typography>
+      <Typography
+        sx={{ fontSize: ".8em", lineHeight: ".8em" }}
+        className="font-semibold text-white/80"
+      >
+        {dailyClicks[0].clicks} Yesterday
+      </Typography>
     </Sheet>
   );
 }
