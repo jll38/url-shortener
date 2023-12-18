@@ -38,6 +38,7 @@
     "moment-timezone": "^0.5.43",
     "next": "13.4.12",
     "react": "18.2.0",
+    "react-countup": "^6.5.0",
     "react-dom": "18.2.0",
     "react-map-gl": "^7.1.6",
     "react-motion": "^0.5.2",
