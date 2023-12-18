@@ -2,15 +2,18 @@
 import React from "react";
 import { useState, useEffect } from "react";
 import { getUser } from "@/lib/authHandlers";
-
+import { Tooltip } from "@mui/joy";
 import { getTime, getDate } from "@/lib/time";
 
 import { Sheet, Table } from "@mui/joy";
+
+import EditIcon from "@mui/icons-material/Edit";
 
 export default function Links() {
   const [data, setData] = useState(null);
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [selectedLink, setSelectedLink] = useState(null);
 
   //Data States
   const [topPerformers, setTopPerformers] = useState(null);
@@ -61,28 +64,55 @@ export default function Links() {
           <h2 className="text-[2em] font-bold">Links</h2>
           <hr />
           {data && (
-            <div className="pt-1">
-              {data.data.map((link, i) => {
-                let name;
-                if (link.name) {
-                  name = link.name;
-                } else {
-                  name = link.originalURL;
-                  name = name.slice(name.indexOf("/") + 2, name.indexOf("."));
-                }
+            <>
+              {selectedLink === null && (
+                <div className="pt-1">
+                  {data.data.map((link, i) => {
+                    let name;
+                    if (link.name) {
+                      name = link.name;
+                    } else {
+                      name = link.originalURL;
+                      name = name.slice(
+                        name.indexOf("/") + 2,
+                        name.indexOf(".")
+                      );
+                    }
 
-                return (
-                  <button
-                    key={`link-${i}`}
-                    className="w-full h-[40px] flex items-center hover:bg-slate-100"
-                  >
-                    <div href="" className="capitalize text-[1.25em] font-medium">
-                      {name}
-                    </div>
-                  </button>
-                );
-              })}
-            </div>
+                    return (
+                      <button
+                        key={`link-${i}`}
+                        className="w-full h-[40px] flex items-center hover:bg-slate-100"
+                        onClick={() => {
+                          setSelectedLink(i);
+                        }}
+                      >
+                        <div
+                          href=""
+                          className="capitalize text-[1.25em] font-medium"
+                        >
+                          {name}
+                        </div>
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
+              {selectedLink !== null && (
+                <>
+                  {" "}
+                  <div className="capitalize  text-[1.5em] "> 
+                    {data.data[selectedLink].name ||
+                      data.data[selectedLink].originalURL.slice(
+                        data.data[selectedLink].originalURL.indexOf("/") + 2,
+                        data.data[selectedLink].originalURL.indexOf(".")
+                      )}{" "}
+                    <EditIcon />
+                  </div>
+                  <button className="flex items-center gap-2 justify-center text-payne-gray hover:text-black transition-all duration-100">{data.data[selectedLink].shortURL} <EditIcon /></button>
+                </>
+              )}
+            </>
           )}
         </Sheet>
       </div>
