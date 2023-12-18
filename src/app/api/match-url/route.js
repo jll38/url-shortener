@@ -28,15 +28,19 @@ export async function GET(request) {
       }
     );
   }
+  await Prisma.Link.update({
+    where: {
+      shortURL: domain + slug,
+    },
+    data: { clicks: { increment: 1 } },
+  });
   const ip = searchParams.get("ip");
   const userInfo = await logUserInfo(ip);
-  console.log(userInfo);
 
   let source = searchParams.get("source");
-  console.log("Source " + typeof source + " " + source.length);
   const device = searchParams.get("device");
   const browser = searchParams.get("browser");
-  if(source.length == 0) source = null;
+  if (source.length == 0) source = null;
   await Prisma.Traffic.create({
     data: {
       link: {
@@ -47,7 +51,7 @@ export async function GET(request) {
       location: userInfo,
       browser,
       device,
-      source
+      source,
     },
   });
   return new NextResponse(

@@ -30,8 +30,7 @@ export function Navbar() {
     setUser(getUser());
     setLoading(false);
   }, []);
-  console.log(user);
-  console.log(loading);
+
   return (
     <nav
       className={`w-full h-[75px] flex items-center px-5 md:px-10 justify-between`}

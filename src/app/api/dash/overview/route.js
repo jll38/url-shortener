@@ -57,7 +57,6 @@ async function getDailyClicks(userId, timeZone) {
 
   const midnightUserTime = moment().tz(timeZone).startOf('day');
   const midnightUTC = midnightUserTime.clone().tz('UTC').format();
-  console.log(midnightUTC)
   const UsersTraffic = await Prisma.User.findMany({
     select: {
       id: true, // Include other User fields as needed
@@ -83,7 +82,6 @@ async function getDailyClicks(userId, timeZone) {
   let todaysClicks = 0;
   UsersTraffic.map((user) => {
     user.links.map((link) => {
-      console.log(link.traffic);
       todaysClicks += link.traffic.length;
     });
   });
@@ -136,7 +134,6 @@ async function getDeviceAndBrowser() {
   const browserCountArray = Object.entries(browserCounts).map(
     ([browser, count]) => ({ browser, count })
   );
-  console.log(deviceCountArray);
   return { deviceCountArray, browserCountArray };
 }
 
