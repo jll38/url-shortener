@@ -16,10 +16,16 @@ export const metadata = {
     "URL shortener,Link management,Short link,Custom URL,Digital marketing tool,TinyClicks,Link tracking,Free URL shortener,Shareable links,Online marketing",
 };
 
-
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
+      <head>
+        {" "}
+        <link
+          rel="stylesheet"
+          href="https://unpkg.com/react-vis/dist/style.css"
+        />
+      </head>
       <script
         async
         src="https://kit.fontawesome.com/a7908c27f8.js"
