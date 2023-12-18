@@ -74,8 +74,16 @@ export default function Dashboard() {
             console.log(info);
             setTopPerformers(info.data.topPerformers);
             setDailyClicks(info.data.dailyClicks);
-            setDevices(info.data.deviceAndBrowser.map((item) => item.device));
-            setBrowsers(info.data.deviceAndBrowser.map((item) => item.browser));
+            setDevices(
+              info.data.deviceAndBrowser.deviceCountArray.map((item) => {
+                return { device: item.device, count: item.count };
+              })
+            );
+            setBrowsers(
+              info.data.deviceAndBrowser.browserCountArray.map(
+                (item) => { return { browser: item.browser, count: item.count };}
+              )
+            );
             setReferrers(info.data.referrers);
           });
         setLoading(false);
@@ -254,7 +262,12 @@ export default function Dashboard() {
               {referrers && (
                 <div>
                   {referrers.map((ref, i) => {
-                    return <div key={`ref-${i}`}>{ref.title}</div>;
+                    return (
+                      <div key={`ref-${i}`} className="flex gap-4">
+                        <div>{ref.selectedData.title}</div>
+                        <div>{ref.count}</div>
+                      </div>
+                    );
                   })}
                 </div>
               )}
@@ -306,18 +319,30 @@ export default function Dashboard() {
                 <Option value={"all-time"}>All Time</Option>
               </Select>{" "}
               <div className="w-full h-full flex justify-center text-center">
-                <div>
-                  <Typography>Device</Typography>
-                  <RadialChart data={[]} width={200} height={200} />
-                </div>
-                <div>
-                  <Typography>Browser</Typography>
-                  <RadialChart
-                    data={[{ angle: 1 }, { angle: 5 }, { angle: 2 }]}
-                    width={200}
-                    height={200}
-                  />
-                </div>
+                {devices && browsers && (
+                  <>
+                    <div>
+                      <Typography>Device</Typography>
+                      <RadialChart
+                        data={devices.map((device) => {
+                          return { angle: device.count };
+                        })}
+                        width={200}
+                        height={200}
+                      />
+                    </div>
+                    <div>
+                      <Typography>Browser</Typography>
+                      <RadialChart
+                        data={browsers.map((browser) => {
+                          return { angle: browser.count };
+                        })}
+                        width={200}
+                        height={200}
+                      />
+                    </div>
+                  </>
+                )}
               </div>
             </Sheet>
           </div>

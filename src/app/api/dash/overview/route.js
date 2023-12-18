@@ -33,7 +33,7 @@ async function getTopPerformers(userId) {
       clicks: "desc",
     },
     take: 5,
-  });
+  }); 
   return topPerformers;
 }
 
@@ -52,6 +52,7 @@ async function getDailyClicks(userId) {
 
 //Update for to only include traffic from links made by current user
 async function getDeviceAndBrowser() {
+  // Fetch the traffic records
   const TrafficRecords = await Prisma.Traffic.findMany({
     select: {
       device: true,
@@ -64,7 +65,39 @@ async function getDeviceAndBrowser() {
       },
     },
   });
-  return TrafficRecords;
+
+  // Initialize objects to hold the counts for devices and browsers
+  const deviceCounts = {};
+  const browserCounts = {};
+
+  // Process each record
+  TrafficRecords.forEach((record) => {
+    // Count for device
+    const device = record.device;
+    if (deviceCounts[device]) {
+      deviceCounts[device] += 1;
+    } else {
+      deviceCounts[device] = 1;
+    }
+
+    // Count for browser
+    const browser = record.browser;
+    if (browserCounts[browser]) {
+      browserCounts[browser] += 1;
+    } else {
+      browserCounts[browser] = 1;
+    }
+  });
+
+  // Convert the counts objects to arrays of objects
+  const deviceCountArray = Object.entries(deviceCounts).map(
+    ([device, count]) => ({ device, count })
+  );
+  const browserCountArray = Object.entries(browserCounts).map(
+    ([browser, count]) => ({ browser, count })
+  );
+  console.log(deviceCountArray);
+  return { deviceCountArray, browserCountArray };
 }
 
 //Update for to only include traffic from links made by current user
@@ -92,7 +125,19 @@ async function getReferrers() {
         description: rawData.description,
         keywords: rawData.keywords,
       };
-      allReferrers.push(selectedData);
+
+      let existingEntry = allReferrers.find(
+        (entry) =>
+          entry.selectedData.title === selectedData.title &&
+          entry.selectedData.description === selectedData.description &&
+          entry.selectedData.keywords === selectedData.keywords
+      );
+
+      if (existingEntry) {
+        existingEntry.count += 1;
+      } else {
+        allReferrers.push({ selectedData, count: 1 });
+      }
     }
   }
   return allReferrers;
