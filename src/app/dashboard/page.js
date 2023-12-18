@@ -144,7 +144,7 @@ export default function Dashboard() {
             {topPerformers && (
               <Sheet
                 sx={{
-                  minWidth: "500px",
+                  minWidth: "350px",
                   height: "100%",
                   boxShadow: 3,
                   padding: "16px",
@@ -162,7 +162,7 @@ export default function Dashboard() {
             )}
             <Sheet
               sx={{
-                minWidth: "400px",
+                minWidth: "350px",
                 height: "310px",
                 boxShadow: 3,
                 padding: "16px",
@@ -195,10 +195,10 @@ export default function Dashboard() {
             </Sheet>
            
           </div>
-          <div className="px-4 flex flex-wrap gap-8">
+          <div className="px-4 flex flex-wrap gap-8 transition-all duration-200">
             <Sheet
               sx={{
-                minWidth: "400px",
+                minWidth: "350px",
                 height: "310px",
                 boxShadow: 3,
                 padding: "16px",
@@ -234,7 +234,7 @@ export default function Dashboard() {
                   })}
                 </div>
               )}
-              <div className="w-full h-full flex justify-center">
+              <div className="w-full h-full flex justify-center ">
                 <XYPlot height={200} width={400}>
                   <VerticalGridLines />
                   <VerticalBarSeries
@@ -257,12 +257,12 @@ export default function Dashboard() {
             </Sheet>
             <Sheet
               sx={{
-                minWidth: "500px",
+                minWidth: "350px",
                 height: "310px",
                 boxShadow: 3,
                 padding: "16px",
               }}
-              className={"rounded-[1.5rem] shadow-lg flex-0"}
+              className={"rounded-[1.5rem] shadow-lg flex-1"}
             >
               <Typography
                 sx={{ fontSize: "1.5em" }}
