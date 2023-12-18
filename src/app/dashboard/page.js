@@ -143,7 +143,7 @@ export default function Dashboard() {
             {dailyClicks && (
               <TodaysClicksBox
                 todaysClicks={todaysClicks}
-                dailyClicks={dailyClicks}
+                yesterdaysClicks={dailyClicks[dailyClicks.length - 1].clicks}
               />
             )}
           </div>

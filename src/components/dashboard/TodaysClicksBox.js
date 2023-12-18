@@ -4,9 +4,9 @@ import ArrowDropUp from "@mui/icons-material/ArrowDropUp";
 import ArrowDropDown from "@mui/icons-material/ArrowDropDown";
 import CountUp from "react-countup";
 
-export function TodaysClicksBox({ todaysClicks, dailyClicks }) {
+export function TodaysClicksBox({ todaysClicks, yesterdaysClicks }) {
   const ArrowIcon =
-    dailyClicks[0].clicks > todaysClicks ? (
+   yesterdaysClicks > todaysClicks ? (
       <ArrowDropDown style={{ fill: "red", fontSize: "2em" }} size="lg" />
     ) : (
       <ArrowDropUp size="lg" style={{ fill: "green", fontSize: "2em" }} />
@@ -48,7 +48,7 @@ export function TodaysClicksBox({ todaysClicks, dailyClicks }) {
         sx={{ fontSize: ".8em", lineHeight: ".8em" }}
         className="font-semibold text-white/80"
       >
-        {dailyClicks[0].clicks} Yesterday
+        {yesterdaysClicks} Yesterday
       </Typography>
     </Sheet>
   );
