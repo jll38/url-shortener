@@ -18,8 +18,9 @@ export function TodaysClicksBox({ todaysClicks, yesterdaysClicks }) {
         height: "100px",
         boxShadow: 3,
         padding: "16px",
+        bgcolor: "rgba(8, 145, 178, 0.5)",
       }}
-      className={"shadow-lg flex flex-col items-center bg-cyan-600/50"}
+      className={"shadow-lg flex flex-col items-center"}
     >
       <Typography
         sx={{
