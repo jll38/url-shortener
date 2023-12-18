@@ -51,7 +51,6 @@ export default function Geography() {
         })
         .then((data) => {
           setData(data);
-          console.log(data);
           if (data.error) {
             setIsEmptyData(true);
           }
@@ -60,8 +59,6 @@ export default function Geography() {
           } else {
             setMoreRecords(true);
           }
-          console.log(data.data.length);
-          console.log(recordLimit);
         })
         .catch((error) => {
           console.error("Error:", error);
@@ -128,7 +125,6 @@ const Map = ({ records }) => {
       lng: record.location.longitude,
       lat: record.location.latitude,
     });
-    console.log(coordinates);
   });
   useEffect(() => {
     const map = new mapboxgl.Map({

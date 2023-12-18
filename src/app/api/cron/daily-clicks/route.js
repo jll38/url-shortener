@@ -52,13 +52,11 @@ export async function GET(req) {
       },
     },
   });
-  console.log(UsersTraffic[0].links[0].traffic);
   UsersTraffic.map((user) => {
     let totalClicks = 0;
     user.links.map((link) => {
       totalClicks += link.traffic.length;
     });
-    console.log(user);
     addRecord(user.id, totalClicks);
   });
 
