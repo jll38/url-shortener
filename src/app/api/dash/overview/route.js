@@ -49,7 +49,7 @@ async function getDailyClicks(userId, timeZone) {
       userId: userId,
     },
     orderBy: {
-      createdAt: "desc",
+      createdAt: "asc",
     },
     take: 5,
   });
