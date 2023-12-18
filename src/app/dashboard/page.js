@@ -6,6 +6,7 @@ import { PieChart } from "./../../components/dashboard/graphing/PieChart";
 import { AreaLine } from "./../../components/dashboard/graphing/AreaLine";
 
 import { Table, Sheet, Typography, Skeleton, Select, Option } from "@mui/joy";
+import CountUp from "react-countup";
 
 import { CircularProgress } from "@mui/joy";
 
@@ -72,7 +73,7 @@ export default function Dashboard() {
           body: JSON.stringify({
             userId: assignedUser.id,
             operation: "top-performers",
-            timeZone: TIME_ZONE
+            timeZone: TIME_ZONE,
           }),
         })
           .then((res) => {
@@ -85,7 +86,7 @@ export default function Dashboard() {
             setDailyClicks(info.data.dailyClicks);
             setTodaysClicks(info.data.todaysClicks);
             console.log(todaysClicks);
-            
+
             setDevices(
               info.data.deviceAndBrowser.deviceCountArray.map((item) => {
                 return { label: item.device, count: item.count };
@@ -97,8 +98,8 @@ export default function Dashboard() {
               })
             );
             setReferrers(info.data.referrers);
-          });
-        setLoading(false);
+          }).finally((done) => {setLoading(false);});
+        
       }
     }
     fetchData();
@@ -106,7 +107,7 @@ export default function Dashboard() {
 
   return (
     <main className="w-full h-full flex flex-col gap-8 max-h-screen overflow-y-scroll">
-      {loading && !topPerformers ? (
+      {loading && !topPerformers && !dailyClicks && !devices && !browsers? (
         <div className="w-full h-screen flex justify-center items-center border">
           <CircularProgress size="lg" />
         </div>
@@ -120,6 +121,7 @@ export default function Dashboard() {
                   width={150}
                   height={150}
                   draggable={"false"}
+                  alt="/"
                 ></Image>
                 <div>
                   <Typography sx={{ fontWeight: 700 }} className={"text-[2em]"}>
@@ -138,7 +140,12 @@ export default function Dashboard() {
             )}
           </div>
           <div className="px-4 flex flex-wrap gap-8">
-            {dailyClicks && <TodaysClicksBox todaysClicks={todaysClicks} dailyClicks={dailyClicks} />}
+            {dailyClicks && (
+              <TodaysClicksBox
+                todaysClicks={todaysClicks}
+                dailyClicks={dailyClicks}
+              />
+            )}
           </div>
           <div className="px-4 flex flex-wrap gap-8">
             {topPerformers && (
@@ -185,17 +192,15 @@ export default function Dashboard() {
                 <Option value={"monthly"}>Monthly</Option>
               </Select>{" "}
               <div className="w-full h-full flex justify-center">
-                {dailyClicks && <AreaLine dailyClicks={dailyClicks} todaysClicks={todaysClicks} />}
+                {dailyClicks && (
+                  <AreaLine
+                    dailyClicks={dailyClicks}
+                    todaysClicks={todaysClicks}
+                  />
+                )}
               </div>
             </Sheet>
-            <div>
-              <br /> Most popular referrers.
-              <br />
-              Total clicks by device type (mobile vs. desktop).
-              <br /> Pie chart of click distribution by operating system.
-              <br />
-              Top 5 URLs with the highest growth in clicks.
-            </div>
+           
           </div>
           <div className="px-4 flex flex-wrap gap-8">
             <Sheet
