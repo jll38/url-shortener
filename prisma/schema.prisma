@@ -21,7 +21,7 @@ model Link {
   user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId      String // Foreign key to User model
   traffic     Traffic[] // One-to-Many relation with Traffic
-  modifiedAt  DateTime?
+  modifiedAt  DateTime? @default(now())
 }
 
 model DailyClicks {
