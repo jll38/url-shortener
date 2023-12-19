@@ -57,10 +57,10 @@ export function TopPerformers({ topPerformers }) {
                 <tr key={"row-" + i}>
                   <td>{i + 1}</td>
                   <td>
-                    {performer.name ||
+                    <a href={performer.shortURL} target="_blank">{performer.name ||
                       (ENVIRONMENT === "dev"
                         ? performer.shortURL.slice(22)
-                        : performer.shortURL.slice(21))}
+                        : performer.shortURL.slice(21))}</a>
                   </td>
                   <td>
                     <Link href={performer.originalURL} target="_blank">

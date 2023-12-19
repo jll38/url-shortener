@@ -51,12 +51,6 @@ export function Navbar() {
       >
         <Link
           className="hover:text-gray-600 transition-all duration-200"
-          href="/dashboard"
-        >
-          <Typography fontWeight={500}>Dashboard</Typography>
-        </Link>
-        <Link
-          className="hover:text-gray-600 transition-all duration-200"
           href="/features"
         >
           <Typography fontWeight={500}>Features</Typography>
@@ -76,16 +70,16 @@ export function Navbar() {
                     <Person />
                     Profile
                   </MenuItem>
-                  <MenuItem>
+                  <MenuItem onClick={() => {window.location.assign('/dashboard')}}>
                     <DashboardIcon />
                     Dashboard
                   </MenuItem>
-                  <MenuItem>
+                  <MenuItem onClick={() => {window.location.assign('/dashboard/links')}}>
                     <LinkIcon />
                     My Links
                   </MenuItem>
 
-                  <MenuItem>
+                  <MenuItem onClick={() => {window.location.assign('/settings')}}>
                     <SettingsIcon />
                     Settings
                   </MenuItem>
