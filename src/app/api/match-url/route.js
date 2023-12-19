@@ -3,6 +3,8 @@ import { Prisma } from "../prisma";
 import { domain } from "@/lib/domain";
 import qs from "qs";
 
+import { REFERRER_API_KEY } from "@/lib/constants";
+
 export async function GET(request) {
   let originalURL;
   const url = new URL(request.url);
@@ -38,9 +40,11 @@ export async function GET(request) {
   const userInfo = await logUserInfo(ip);
 
   let source = searchParams.get("source");
+  const sourceJSON = source ? await getSourceInfo(source) : null;
   const device = searchParams.get("device");
   const browser = searchParams.get("browser");
   if (source.length == 0) source = null;
+
   await Prisma.Traffic.create({
     data: {
       link: {
@@ -51,7 +55,7 @@ export async function GET(request) {
       location: userInfo,
       browser,
       device,
-      source,
+      source: sourceJSON,
     },
   });
   return new NextResponse(
@@ -94,4 +98,26 @@ async function logUserInfo(ip) {
   } catch (error) {
     console.error("Error fetching geolocation data:", error);
   }
+}
+
+async function getSourceInfo(source) {
+  const apiUrl = `https://jsonlink.io/api/extract?url=${source}&api_key=${REFERRER_API_KEY}`;
+
+  // Make a GET request using the Fetch API
+  let rawData = await fetch(apiUrl)
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error(`Error: ${response.status} - ${response.statusText}`);
+      }
+      return response.json();
+    })
+    .then((data) => {
+      return data; // Process the JSON response
+    })
+    .catch((error) => {
+      console.error("An error occurred:", error);
+    });
+    console.log("Raw Data")
+    console.log(rawData);
+  return {title: rawData.title, sitename: rawData.sitename, url: rawData.url, description: rawData.description, images: rawData.images};
 }

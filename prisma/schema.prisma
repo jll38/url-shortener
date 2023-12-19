@@ -52,7 +52,7 @@ model Traffic {
   createdAt DateTime @default(now())
   device    String?
   browser   String?
-  source    String?
+  source    Json?
 }
 
 enum Role {
