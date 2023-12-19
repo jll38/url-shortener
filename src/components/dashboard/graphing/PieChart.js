@@ -7,6 +7,7 @@ export function PieChart({ value }) {
 
   const colors = ["#2EC4B6","#FF9F1C", "#FFBF69", "#363457", "#CBF3F0", ];
   return (
+    <>
     <RadialChart
       animation={{ damping: 10, stiffness: 20 }}
       colorRange={colors}
@@ -17,8 +18,8 @@ export function PieChart({ value }) {
           count: i.count,
         };
       })}
-      width={200}
-      height={200}
+      width={190}
+      height={190}
       onValueMouseOver={(v) => setHoveredCell(v)}
       onValueMouseOut={() => setHoveredCell(false)}
     >
@@ -36,5 +37,7 @@ export function PieChart({ value }) {
         </Hint>
       )}
     </RadialChart>
+    <div>{value.reduce((max, obj) => (obj.count > max.count ? obj : max), value[0]).label}</div>
+    </>
   );
 }

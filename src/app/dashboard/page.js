@@ -35,7 +35,7 @@ import CompareArrowsIcon from "@mui/icons-material/CompareArrows";
 import DevicesIcon from "@mui/icons-material/Devices";
 import ArrowDropDown from "@mui/icons-material/ArrowDropDown";
 
-import { headers } from "next/dist/client/components/headers";
+const colors = ["#2EC4B6", "#FF9F1C", "#FFBF69", "#363457", "#CBF3F0"];
 
 export default function Dashboard() {
   const [data, setData] = useState(null);
@@ -43,6 +43,8 @@ export default function Dashboard() {
   const [moreRecords, setMoreRecords] = useState(true);
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [hoveredCell, setHoveredCell] = useState(null);
+
   //Data States
   const [topPerformers, setTopPerformers] = useState(null);
   const [dailyClicks, setDailyClicks] = useState(null);
@@ -76,23 +78,32 @@ export default function Dashboard() {
           })
           .then((info) => {
             setData(info);
+            console.log(info.data)
             setTopPerformers(info.data.topPerformers);
             setDailyClicks(info.data.dailyClicks);
             setTodaysClicks(info.data.todaysClicks);
 
             setDevices(
-              info.data.deviceAndBrowser.deviceCountArray.map((item) => {
-                return { label: item.device, count: item.count };
-              })
+              info.data.deviceAndBrowser.deviceCountArray
+                .filter((item) => item.device && item.device !== "null") // Filtering out null or "null"
+                .map((item) => {
+                  return { label: item.device, count: item.count };
+                })
             );
+
             setBrowsers(
-              info.data.deviceAndBrowser.browserCountArray.map((item) => {
-                return { label: item.browser, count: item.count };
-              })
+              info.data.deviceAndBrowser.browserCountArray
+                .filter((item) => item.browser && item.browser !== "null") // Filtering out null or "null"
+                .map((item) => {
+                  return { label: item.browser, count: item.count };
+                })
             );
+
             setReferrers(info.data.referrers);
-          }).finally((done) => {setLoading(false);});
-        
+          })
+          .finally((done) => {
+            setLoading(false);
+          });
       }
     }
     fetchData();
@@ -100,7 +111,7 @@ export default function Dashboard() {
 
   return (
     <main className="w-full h-full flex flex-col gap-8 max-h-screen overflow-y-scroll">
-      {loading && !topPerformers && !dailyClicks && !devices && !browsers? (
+      {loading && !topPerformers && !dailyClicks && !devices && !browsers ? (
         <div className="w-full h-screen flex justify-center items-center border">
           <CircularProgress size="lg" />
         </div>
@@ -193,72 +204,86 @@ export default function Dashboard() {
                 )}
               </div>
             </Sheet>
-           
           </div>
           <div className="px-4 flex flex-wrap gap-8 transition-all duration-200">
-            <Sheet
-              sx={{
-                minWidth: "350px",
-                height: "310px",
-                boxShadow: 3,
-                padding: "16px",
-              }}
-              className={"rounded-[1.5rem] shadow-lg flex-1"}
-            >
-              <Typography
-                sx={{ fontSize: "1.5em" }}
-                className="flex items-center gap-2"
+            {referrers && (
+              <Sheet
+                sx={{
+                  minWidth: "350px",
+                  height: "350px",
+                  boxShadow: 3,
+                  padding: "16px",
+                }}
+                className={"rounded-[1.5rem] shadow-lg flex-1"}
               >
-                <CompareArrowsIcon /> Top Referrers
-              </Typography>
-              <Select
-                defaultValue="daily"
-                variant="plain"
-                sx={{ width: "120px" }}
-              >
-                <Option value={"daily"}>Daily</Option>
-                <Option value={"weekly"}>Weekly</Option>
-                <Option value={"monthly"}>Monthly</Option>
-                <Option value={"ytd"}>YTD</Option>
-                <Option value={"all-time"}>All Time</Option>
-              </Select>{" "}
-              {referrers && (
-                <div>
-                  {referrers.map((ref, i) => {
-                    return (
-                      <div key={`ref-${i}`} className="flex gap-4">
-                        <div>{ref.selectedData.title}</div>
-                        <div>{ref.count}</div>
-                      </div>
-                    );
-                  })}
+                <Typography
+                  sx={{ fontSize: "1.5em" }}
+                  className="flex items-center gap-2"
+                >
+                  <CompareArrowsIcon /> Top Referrers
+                </Typography>
+                <Select
+                  defaultValue="daily"
+                  variant="plain"
+                  sx={{ width: "120px" }}
+                >
+                  <Option value={"daily"}>Daily</Option>
+                  <Option value={"weekly"}>Weekly</Option>
+                  <Option value={"monthly"}>Monthly</Option>
+                  <Option value={"ytd"}>YTD</Option>
+                  <Option value={"all-time"}>All Time</Option>
+                </Select>{" "}
+                <div className="w-full h-full flex justify-center">
+                  {referrers.length > 0 ? (
+                    <XYPlot height={200} width={400}>
+                      <VerticalBarSeries
+                        data={referrers.map((ref, i) => {
+                          return {
+                            x: i,
+                            y: ref.count,
+                            title: ref.selectedData.sitename || ref.selectedData.title,
+                          };
+                        })}
+                        fill={colors[4]}
+                        stroke={colors[3]}
+                        onValueMouseOver={(v) => setHoveredCell(v)}
+                        onValueMouseOut={() => setHoveredCell(false)}
+                      />
+                      {hoveredCell && (
+                        <Hint
+                          value={hoveredCell}
+                          style={{ position: "absolute", color: "gray" }}
+                        >
+                          <div
+                            style={{
+                              background: "white",
+                              padding: "10px",
+                              borderRadius: "5px",
+                            }}
+                          >
+                            {hoveredCell.title}: {hoveredCell.y}
+                          </div>
+                        </Hint>
+                      )}
+                    </XYPlot>
+                  ) : (
+                    <div
+                      style={{
+                        display: "grid",
+                        placeItems: "center",
+                        height: "60%",
+                      }}
+                    >
+                      No data to display
+                    </div>
+                  )}
                 </div>
-              )}
-              <div className="w-full h-full flex justify-center ">
-                <XYPlot height={200} width={400}>
-                  <VerticalGridLines />
-                  <VerticalBarSeries
-                    data={[
-                      { x: 0, y: 0 },
-                      { x: 1, y: 5 },
-                      { x: 2, y: 4 },
-                      { x: 3, y: 9 },
-                      { x: 4, y: 1 },
-                      { x: 5, y: 7 },
-                      { x: 6, y: 6 },
-                      { x: 7, y: 3 },
-                      { x: 8, y: 2 },
-                      { x: 9, y: 0 },
-                    ]}
-                    style={{ fill: "none" }}
-                  />
-                </XYPlot>
-              </div>
-            </Sheet>
+              </Sheet>
+            )}
             <Sheet
               sx={{
                 minWidth: "350px",
-                height: "310px",
+                height: "350px",
                 boxShadow: 3,
                 padding: "16px",
               }}
@@ -284,14 +309,30 @@ export default function Dashboard() {
               <div className="w-full h-full flex justify-center text-center">
                 {devices && browsers && (
                   <>
-                    <div>
-                      <Typography>Device</Typography>
-                      <PieChart value={devices} />
-                    </div>
-                    <div>
-                      <Typography>Browser</Typography>
-                      <PieChart value={browsers} />
-                    </div>
+                    {devices.length > 0 && (
+                      <div>
+                        <Typography>Device</Typography>
+                        <PieChart value={devices} />
+                      </div>
+                    )}
+                    {browsers.length > 0 && (
+                      <div>
+                        <Typography>Browser</Typography>
+                        <PieChart value={browsers} />
+                        
+                      </div>
+                    )}
+                    {devices.length === 0 && browsers.length === 0 && (
+                     <div
+                     style={{
+                       display: "grid",
+                       placeItems: "center",
+                       height: "60%",
+                     }}
+                   >
+                     No data to display
+                   </div>
+                    )}
                   </>
                 )}
               </div>
