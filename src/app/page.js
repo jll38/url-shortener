@@ -15,7 +15,7 @@ export default function Home() {
       <div className="flex flex-col-reverse md:flex-row justify-center gap-2 h-[80%]">
         <section
           name="lite-shortener"
-          className="h-[100%] md:w-1/2 w-full flex justify-center"
+          className="h-[100%] md:w-1/2 w-full flex justify-center items-center"
         >
           <div className="w-full flex items-left flex-col justify-center text-payne-gray font-medium relative z-20 px-12">
             <div className="-mt-4 mb-4 text-[1.75em] ml-4">
@@ -24,7 +24,6 @@ export default function Home() {
               for <span className="font-bold underline">YOU</span>
             </div>
             <DisplayUrl />
-            <AdBanner />
           </div>
         </section>
         <section className="px-10 md:w-1/2 w-full md:h-[100%] flex justify-start flex-col mt-[10%]">
@@ -33,8 +32,7 @@ export default function Home() {
           <Link href="/about" className="text-[.75em] opacity-80 hover:underline">Learn how we can help meet your needs</Link>
         </section>
       </div>
-
-      <Footer />
+<Footer/>
     </main>
   );
 }

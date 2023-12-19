@@ -41,6 +41,7 @@ export async function POST(request) {
       where: { name: name },
     });
     if (existingName)
+    
       return NextResponse.json(
         { message: "Name is taken. Please try another." },
         { status: 400 }
@@ -50,6 +51,16 @@ export async function POST(request) {
       where: { shortURL: toChange },
       data: {
         name: name,
+        modifiedAt: new Date(),
+      },
+    });
+  } else if (body.operation === "destination") {
+    let destination = "http://" + body.value;
+
+    await Prisma.Link.update({
+      where: { shortURL: toChange },
+      data: {
+        originalURL: destination,
         modifiedAt: new Date(),
       },
     });
