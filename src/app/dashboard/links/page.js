@@ -6,6 +6,8 @@ import { Tooltip } from "@mui/joy";
 import { getTime, getDate } from "@/lib/time";
 import { ENVIRONMENT } from "@/lib/constants";
 
+import CircularProgress from "@mui/joy";
+
 import {
   Sheet,
   Table,
@@ -14,20 +16,24 @@ import {
   ModalClose,
   Typography,
   Input,
-  Button
+  Button,
 } from "@mui/joy";
-
 
 import EditIcon from "@mui/icons-material/Edit";
 
 export default function Links() {
   const [data, setData] = useState(null);
   const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
   const [selectedLink, setSelectedLink] = useState(null);
   const [isRenameOpen, setIsRenameOpen] = useState(false);
   const [isAliasOpen, setIsAliasOpen] = useState(false);
 
+  const [newName, setNewName] = useState(null);
+  const [newAlias, setNewAlias] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [renameRes, setRenameRes] = useState(null);
+
+  const [error, setError] = useState(null);
   //Data States
   const [topPerformers, setTopPerformers] = useState(null);
 
@@ -60,6 +66,35 @@ export default function Links() {
     }
     fetchData();
   }, []);
+
+  async function handleModify(operation) {
+    const value = operation === "alias" ? newAlias : newName;
+    setLoading(true);
+    fetch("/api/dash/links/modify", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        operation,
+        value,
+        selectedShort: data.data[selectedLink].shortURL,
+      }),
+    })
+      .then((res) => {
+        return res.json();
+      })
+      .then((info) => {
+        setRenameRes(info);
+        if (info.status == 200) {
+          {
+            setIsAliasOpen(false);
+            setIsRenameOpen(false);
+          }
+        }
+      })
+      .finally(window.location.reload());
+  }
 
   return (
     <main className="w-full h-full">
@@ -136,13 +171,40 @@ export default function Links() {
                       />
                       <Typography>Rename Link</Typography>
                       <hr />
-                      <Input type="text" placeholder="Enter an identifying name"></Input>
-                        <Button variant="outlined" sx={{width: "50%"}}>Rename</Button>
+                      <Input
+                        type="text"
+                        placeholder="Enter an identifying name"
+                        onChange={(e) => {
+                          setNewName(e.target.value);
+                        }}
+                      ></Input>
+                      {renameRes && (
+                        <div
+                          className={`${
+                            renameRes.status != 200 ? "bg-red-600" : ""
+                          }`}
+                        >
+                          {renameRes.message}
+                        </div>
+                      )}
+                      <Button
+                        disabled={loading}
+                        variant="outlined"
+                        sx={{ width: "50%" }}
+                        onClick={() => {
+                          handleModify("name");
+                        }}
+                      >
+                        Rename
+                      </Button>
                     </ModalDialog>
                   </Modal>
-                  <button 
-                  onClick={() => {setIsAliasOpen(true)}}
-                  className="flex items-center gap-2 justify-center text-payne-gray hover:text-black transition-all duration-100">
+                  <button
+                    onClick={() => {
+                      setIsAliasOpen(true);
+                    }}
+                    className="flex items-center gap-2 justify-center text-payne-gray hover:text-black transition-all duration-100"
+                  >
                     {data.data[selectedLink].shortURL} <EditIcon />
                   </button>
                   <Modal open={isAliasOpen}>
@@ -154,11 +216,50 @@ export default function Links() {
                       />
                       <Typography>New Link Alias</Typography>
                       <hr />
-                      <Input startDecorator={<Sheet>{ENVIRONMENT === "dev" ? "localhost:3000/": "tinyclicks.co/"}</Sheet>} type="text" placeholder=""></Input>
-                        <Button variant="outlined" sx={{width: "50%"}}>Confirm</Button>
+                      <Input
+                        startDecorator={
+                          <Sheet>
+                            {ENVIRONMENT === "dev"
+                              ? "localhost:3000/"
+                              : "tinyclicks.co/"}
+                          </Sheet>
+                        }
+                        type="text"
+                        placeholder=""
+                        onChange={(e) => {
+                          setNewAlias(e.target.value);
+                        }}
+                      ></Input>
+                      {renameRes && (
+                        <div
+                          className={`${
+                            renameRes.status != 200 ? "bg-red-600" : ""
+                          }`}
+                        >
+                          {renameRes.message}
+                        </div>
+                      )}
+                      <Button
+                        variant="outlined"
+                        sx={{ width: "50%" }}
+                        disabled={loading}
+                        onClick={() => {
+                          handleModify("alias");
+                        }}
+                      >
+                        {loading ? <CircularProgress /> : "Confirm"}
+                      </Button>
                     </ModalDialog>
                   </Modal>
-                  <Typography sx={{opacity: ".75"}}>Created on {getDate(data.data[selectedLink].createdAt)} {getTime(data.data[selectedLink].createdAt)}</Typography>
+                  <Typography sx={{ opacity: ".75" }}>
+                    Created on {getDate(data.data[selectedLink].createdAt)}{" "}
+                    {getTime(data.data[selectedLink].createdAt)}
+                  </Typography>
+                  <Typography sx={{ opacity: ".75" }}>
+                    Last modified at{" "}
+                    {getDate(data.data[selectedLink].modifiedAt)}{" "}
+                    {getTime(data.data[selectedLink].modifiedAt)}
+                  </Typography>
                 </>
               )}
             </>
