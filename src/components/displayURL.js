@@ -34,7 +34,7 @@ export default function DisplayUrl({}) {
         const urlInfo = {
           originalURL: url,
           shortURL: result,
-          userId: user.id,
+          userId: user ? user.id : null,
         };
         fetch("/api/create-url", {
           method: "POST",
