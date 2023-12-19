@@ -2,8 +2,10 @@
 import { useState, useEffect } from "react";
 import { shorten } from "@/lib/shorten";
 import ShortURL from "./shortURL";
+import { Input } from "@mui/joy";
 import { domain } from "@/lib/domain";
 import { motion } from "framer-motion";
+import { ENVIRONMENT } from "@/lib/constants";
 
 import { getUser } from "@/lib/authHandlers";
 export default function DisplayUrl({}) {
@@ -15,7 +17,11 @@ export default function DisplayUrl({}) {
   useEffect(() => {
     setUser(getUser());
   }, []);
+
+  useEffect(() => {console.log(url)}, [url])
   async function handleURLSubmit(e) {
+    setResShortURL(null);
+    console.log(url);
     const httpURL = ensureHttp(url);
     const urlRegex =
       /^(http[s]?:\/\/){0,1}([www\.]{0,1})[a-zA-Z0-9\.\-\_]+\.[a-zA-Z]{2,5}[\.]{0,1}/;
@@ -24,27 +30,28 @@ export default function DisplayUrl({}) {
       const result = domain + (await shorten(httpURL));
       setShortURL(result);
 
-      const urlInfo = {
-        originalURL: url,
-        shortURL: result,
-        userId: user.id,
-      };
-
-      fetch("/api/create-url", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(urlInfo),
-      })
-        .then((response) => {
-          return response.json();
+      setTimeout(() => {
+        const urlInfo = {
+          originalURL: url,
+          shortURL: result,
+          userId: user.id,
+        };
+        fetch("/api/create-url", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(urlInfo),
         })
-        .then((data) => {
-          console.log("Response data:", data);
-          setResShortURL(data.short);
-        })
-        .catch((err) => console.log("Error:", err));
+          .then((response) => {
+            return response.json();
+          })
+          .then((data) => {
+            console.log("Response data:", data);
+            setResShortURL(data.short);
+          })
+          .catch((err) => console.log("Error:", err));
+      }, 1000);
     } else {
       alert("Enter a valid URL");
     }
@@ -63,14 +70,15 @@ export default function DisplayUrl({}) {
   return (
     <>
       <div className="flex w-full justify-left items-center drop-shadow-lg">
-        <input
+        <Input
+          startDecorator="http://"
           type="text"
           id="urlInput"
           className="h-[40px] w-[60%] px-4 bg-gray-100 focus:outline-payne-gray focus:outline "
           placeholder="Enter a long URL here..."
-          onChange={(e) => setURL(e.target.value)}
+          onChange={(e) => setURL("http://" + e.target.value)}
           autoComplete={"off"}
-        ></input>
+        ></Input>
         <button
           className="py-2 px-4 bg-payne-gray hover:bg-delft-blue focus:outline-payne-gray focus:outline transition-all duration-200 text-white font-semibold rounded-r-lg"
           onClick={handleURLSubmit}
