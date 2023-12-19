@@ -5,7 +5,6 @@ import qs from "qs";
 
 export async function POST(request) {
   const { userId, operation, timeZone } = await request.json();
-
   let data;
   getDeviceAndBrowser();
 
@@ -96,12 +95,6 @@ async function getDeviceAndBrowser() {
       device: true,
       browser: true,
     },
-    where: {
-      NOT: {
-        device: null,
-        browser: null,
-      },
-    },
   });
 
   // Initialize objects to hold the counts for devices and browsers
@@ -153,41 +146,19 @@ async function getReferrers() {
     if (!referrer || !referrer.source) {
       continue;
     }
-
-    const apiUrl = `https://jsonlink.io/api/extract?url=${
-      referrer.source
-    }&api_key=${"pk_74284362d462f697905e03a257b93f6e56e32c51"}`;
-
-    
-    // Make a GET request using the Fetch API
-    let rawData = await fetch(apiUrl)
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error(`Error: ${response.status} - ${response.statusText}`);
-        }
-        return response.json();
-      })
-      .then((data) => {
-        return (data); // Process the JSON response
-      })
-      .catch((error) => {
-        console.error("An error occurred:", error);
-      });
-
-      console.log(rawData);
-
-    if (rawData) {
+    console.log(referrer)
+    if (referrer) {
       const selectedData = {
-        title: rawData.title,
-        description: rawData.description,
-        keywords: rawData.keywords,
+        title: referrer.source.title,
+        sitename: referrer.source.sitename,
+        description: referrer.source.description,
+        images: referrer.source.images
       };
 
       let existingEntry = allReferrers.find(
         (entry) =>
-          entry.selectedData.title === selectedData.title &&
-          entry.selectedData.description === selectedData.description &&
-          entry.selectedData.keywords === selectedData.keywords
+          entry.selectedData.sitename === selectedData.sitename &&
+          entry.selectedData.description === selectedData.description
       );
 
       if (existingEntry) {
@@ -198,15 +169,4 @@ async function getReferrers() {
     }
   }
   return allReferrers;
-
-  async function getMetadata(ref) {
-    try {
-      return await urlMetadata(ref.source, {
-        mode: "same-origin",
-        includeResponseBody: true,
-      });
-    } catch (err) {
-      return { "fetch error": err };
-    }
-  }
 }
