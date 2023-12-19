@@ -4,8 +4,19 @@ import { useState, useEffect } from "react";
 import { getUser } from "@/lib/authHandlers";
 import { Tooltip } from "@mui/joy";
 import { getTime, getDate } from "@/lib/time";
+import { ENVIRONMENT } from "@/lib/constants";
 
-import { Sheet, Table } from "@mui/joy";
+import {
+  Sheet,
+  Table,
+  Modal,
+  ModalDialog,
+  ModalClose,
+  Typography,
+  Input,
+  Button
+} from "@mui/joy";
+
 
 import EditIcon from "@mui/icons-material/Edit";
 
@@ -14,6 +25,8 @@ export default function Links() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [selectedLink, setSelectedLink] = useState(null);
+  const [isRenameOpen, setIsRenameOpen] = useState(false);
+  const [isAliasOpen, setIsAliasOpen] = useState(false);
 
   //Data States
   const [topPerformers, setTopPerformers] = useState(null);
@@ -101,7 +114,12 @@ export default function Links() {
               {selectedLink !== null && (
                 <>
                   {" "}
-                  <div className="capitalize  text-[1.5em] "> 
+                  <div
+                    className="capitalize  text-[1.5em] "
+                    onClick={() => {
+                      setIsRenameOpen(true);
+                    }}
+                  >
                     {data.data[selectedLink].name ||
                       data.data[selectedLink].originalURL.slice(
                         data.data[selectedLink].originalURL.indexOf("/") + 2,
@@ -109,7 +127,38 @@ export default function Links() {
                       )}{" "}
                     <EditIcon />
                   </div>
-                  <button className="flex items-center gap-2 justify-center text-payne-gray hover:text-black transition-all duration-100">{data.data[selectedLink].shortURL} <EditIcon /></button>
+                  <Modal open={isRenameOpen}>
+                    <ModalDialog>
+                      <ModalClose
+                        onClick={() => {
+                          setIsRenameOpen(false);
+                        }}
+                      />
+                      <Typography>Rename Link</Typography>
+                      <hr />
+                      <Input type="text" placeholder="Enter an identifying name"></Input>
+                        <Button variant="outlined" sx={{width: "50%"}}>Rename</Button>
+                    </ModalDialog>
+                  </Modal>
+                  <button 
+                  onClick={() => {setIsAliasOpen(true)}}
+                  className="flex items-center gap-2 justify-center text-payne-gray hover:text-black transition-all duration-100">
+                    {data.data[selectedLink].shortURL} <EditIcon />
+                  </button>
+                  <Modal open={isAliasOpen}>
+                    <ModalDialog>
+                      <ModalClose
+                        onClick={() => {
+                          setIsAliasOpen(false);
+                        }}
+                      />
+                      <Typography>New Link Alias</Typography>
+                      <hr />
+                      <Input startDecorator={<Sheet>{ENVIRONMENT === "dev" ? "localhost:3000/": "tinyclicks.co/"}</Sheet>} type="text" placeholder=""></Input>
+                        <Button variant="outlined" sx={{width: "50%"}}>Confirm</Button>
+                    </ModalDialog>
+                  </Modal>
+                  <Typography sx={{opacity: ".75"}}>Created on {getDate(data.data[selectedLink].createdAt)} {getTime(data.data[selectedLink].createdAt)}</Typography>
                 </>
               )}
             </>
