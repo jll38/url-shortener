@@ -11,7 +11,7 @@ export async function POST(request) {
       userId: userId,
     },
     orderBy: {
-      createdAt: "desc",
+      modifiedAt: "desc",
     },
   });
 
