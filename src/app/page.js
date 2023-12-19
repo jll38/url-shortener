@@ -27,12 +27,24 @@ export default function Home() {
           </div>
         </section>
         <section className="px-10 md:w-1/2 w-full md:h-[100%] flex justify-start flex-col mt-[10%]">
-          <h1 className="text-[1.25em]">Welcome to <br/><span className="text-[2.5em] sm:text-[3em] text-payne-gray font-semibold">TinyClicks.co</span></h1>
-          <div className="text-[1.25em]">Streamline your digital presence in just a click.</div>
-          <Link href="/about" className="text-[.75em] opacity-80 hover:underline">Learn how we can help meet your needs</Link>
+          <h1 className="text-[1.25em]">
+            Welcome to <br />
+            <span className="text-[2.5em] sm:text-[3em] text-payne-gray font-semibold">
+              TinyClicks.co
+            </span>
+          </h1>
+          <div className="text-[1.25em]">
+            Streamline your digital presence in just a click.
+          </div>
+          <Link
+            href="/about"
+            className="text-[.75em] opacity-80 hover:underline"
+          >
+            Learn how we can help meet your needs
+          </Link>
         </section>
       </div>
-<Footer/>
+      <Footer />
     </main>
   );
 }

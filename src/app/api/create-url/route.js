@@ -7,6 +7,7 @@ export async function POST(request) {
   const body = await request.json(); // parse the request body
   const devDomain = "http://localhost:3000/"
   const prodDomain = "http://tinyclicks.co/"
+  const s = body.shortURL;
   try {
     const urlRecord = await Prisma.Link.create({
       data: {
@@ -15,8 +16,7 @@ export async function POST(request) {
         userId: body.userId,
       },
     });
-
-    return NextResponse.json({short: body.shortUrl}); // Return the urlRecord which should be a valid JSON
+    return NextResponse.json({short: s}); // Return the urlRecord which should be a valid JSON
   } catch (error) {
     // Check if error is due to unique constraint on shortURL
     if (error.code === "P2002" && error.meta?.target?.includes("shortURL")) {
