@@ -55,8 +55,8 @@ async function getDailyClicks(userId, timeZone) {
   });
   const moment = require("moment-timezone");
 
-  const midnightUserTime = moment().tz(timeZone).startOf('day');
-  const midnightUTC = midnightUserTime.clone().tz('UTC').format();
+  const midnightUserTime = moment().tz(timeZone).startOf("day");
+  const midnightUTC = midnightUserTime.clone().tz("UTC").format();
   const UsersTraffic = await Prisma.User.findMany({
     select: {
       id: true, // Include other User fields as needed
@@ -154,7 +154,27 @@ async function getReferrers() {
       continue;
     }
 
-    const rawData = await getMetadata(referrer);
+    const apiUrl = `https://jsonlink.io/api/extract?url=${
+      referrer.source
+    }&api_key=${"pk_74284362d462f697905e03a257b93f6e56e32c51"}`;
+
+    
+    // Make a GET request using the Fetch API
+    let rawData = await fetch(apiUrl)
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`Error: ${response.status} - ${response.statusText}`);
+        }
+        return response.json();
+      })
+      .then((data) => {
+        return (data); // Process the JSON response
+      })
+      .catch((error) => {
+        console.error("An error occurred:", error);
+      });
+
+      console.log(rawData);
 
     if (rawData) {
       const selectedData = {

@@ -36,6 +36,7 @@ import DevicesIcon from "@mui/icons-material/Devices";
 import ArrowDropDown from "@mui/icons-material/ArrowDropDown";
 
 import { headers } from "next/dist/client/components/headers";
+import { color } from "framer-motion";
 
 export default function Dashboard() {
   const [data, setData] = useState(null);
@@ -43,6 +44,8 @@ export default function Dashboard() {
   const [moreRecords, setMoreRecords] = useState(true);
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [hoveredCell, setHoveredCell] = useState(null);
+
   //Data States
   const [topPerformers, setTopPerformers] = useState(null);
   const [dailyClicks, setDailyClicks] = useState(null);
@@ -91,8 +94,10 @@ export default function Dashboard() {
               })
             );
             setReferrers(info.data.referrers);
-          }).finally((done) => {setLoading(false);});
-        
+          })
+          .finally((done) => {
+            setLoading(false);
+          });
       }
     }
     fetchData();
@@ -100,7 +105,7 @@ export default function Dashboard() {
 
   return (
     <main className="w-full h-full flex flex-col gap-8 max-h-screen overflow-y-scroll">
-      {loading && !topPerformers && !dailyClicks && !devices && !browsers? (
+      {loading && !topPerformers && !dailyClicks && !devices && !browsers ? (
         <div className="w-full h-screen flex justify-center items-center border">
           <CircularProgress size="lg" />
         </div>
@@ -193,7 +198,6 @@ export default function Dashboard() {
                 )}
               </div>
             </Sheet>
-           
           </div>
           <div className="px-4 flex flex-wrap gap-8 transition-all duration-200">
             <Sheet
@@ -238,20 +242,30 @@ export default function Dashboard() {
                 <XYPlot height={200} width={400}>
                   <VerticalGridLines />
                   <VerticalBarSeries
-                    data={[
-                      { x: 0, y: 0 },
-                      { x: 1, y: 5 },
-                      { x: 2, y: 4 },
-                      { x: 3, y: 9 },
-                      { x: 4, y: 1 },
-                      { x: 5, y: 7 },
-                      { x: 6, y: 6 },
-                      { x: 7, y: 3 },
-                      { x: 8, y: 2 },
-                      { x: 9, y: 0 },
-                    ]}
-                    style={{ fill: "none" }}
+                    data={referrers.map((ref, i) => {
+                      return {
+                        x: i,
+                        y: ref.count,
+                        title: ref.selectedData.title,
+                      };
+                    })}
+                    style={{ fill: "blue" }}
+                    onValueMouseOver={(v) => setHoveredCell(v)}
+                    onValueMouseOut={() => setHoveredCell(false)}
                   />
+                  {hoveredCell && (
+        <Hint value={hoveredCell} style={{ position: "absolute", color: "gray" }}>
+          <div
+            style={{
+              background: "white",
+              padding: "10px",
+              borderRadius: "5px",
+            }}
+          >
+            {hoveredCell.title} : {hoveredCell.y}
+          </div>
+        </Hint>
+      )}
                 </XYPlot>
               </div>
             </Sheet>
