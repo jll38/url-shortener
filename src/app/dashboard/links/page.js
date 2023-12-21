@@ -5,6 +5,7 @@ import { getUser } from "@/lib/authHandlers";
 import { Tooltip } from "@mui/joy";
 import { getTime, getDate } from "@/lib/time";
 import { ENVIRONMENT } from "@/lib/constants";
+import { TIME_ZONE } from "@/lib/constants";
 
 import { CircularProgress } from "@mui/joy";
 
@@ -19,8 +20,11 @@ import {
   Button,
 } from "@mui/joy";
 
+import DisplayUrl from "@/components/displayURL";
+
 import EditIcon from "@mui/icons-material/Edit";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import AddIcon from "@mui/icons-material/Add";
 
 export default function Links() {
   const [data, setData] = useState(null);
@@ -29,6 +33,7 @@ export default function Links() {
   const [isRenameOpen, setIsRenameOpen] = useState(false);
   const [isAliasOpen, setIsAliasOpen] = useState(false);
   const [isDestinationOpen, setIsDestinationOpen] = useState(false);
+  const [newUrlOpen, setNewUrlOpen] = useState(false);
 
   const [newName, setNewName] = useState(null);
   const [newAlias, setNewAlias] = useState(null);
@@ -38,6 +43,7 @@ export default function Links() {
   const [renameRes, setRenameRes] = useState(null);
 
   const [error, setError] = useState(null);
+
   //Data States
   const [topPerformers, setTopPerformers] = useState(null);
 
@@ -57,6 +63,7 @@ export default function Links() {
           },
           body: JSON.stringify({
             userId: assignedUser.id,
+            timeZone: TIME_ZONE,
           }),
         })
           .then((res) => {
@@ -87,6 +94,7 @@ export default function Links() {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
+        userId: assignedUser.id,
         operation,
         value,
         selectedShort: data.data[selectedLink].shortURL,
@@ -124,9 +132,31 @@ export default function Links() {
             }}
             className={"rounded-[1.5rem] shadow-lg"}
           >
-            <div className="text-[2em] font-bold">
+            <div className="text-[2em] font-bold flex justify-between">
               {selectedLink === null ? (
-                "Links"
+                <>
+                  <div>Links</div>
+                  <Button
+                    variant="plain"
+                    onClick={() => {
+                      setNewUrlOpen(true);
+                    }}
+                  >
+                    <AddIcon />
+                  </Button>
+                  <Modal open={newUrlOpen} >
+                    <ModalDialog sx={{width: "600px"}} className="flex justify-center">
+                      <ModalClose
+                        onClick={() => {
+                          setIsDestinationOpen(false);
+                        }}
+                      />
+                      <Typography>New Link</Typography>
+                      <hr />
+                      <DisplayUrl variant={"modal"}/>
+                    </ModalDialog>
+                  </Modal>
+                </>
               ) : (
                 <div className="flex gap-2">
                   <button
@@ -354,6 +384,15 @@ export default function Links() {
               </>
             )}
           </Sheet>
+        </div>
+        <div>
+          <div>To Do:</div>
+          <ul>
+            <li>Today&apos;s Top Performer</li>
+            <li>Link Creation Here</li>
+            <li>Bulk Link Creation</li>
+            <li>Password Protection</li>
+          </ul>
         </div>
       </main>
     );

@@ -7,6 +7,7 @@ import { TOP_LEVEL_ROUTES } from "@/lib/constants";
 export async function POST(request) {
   const body = await request.json();
   const toChange = body.selectedShort;
+  const userId = body.userId;
   if (body.operation === "alias") {
     let alias = body.value;
     if (TOP_LEVEL_ROUTES.includes(alias))
@@ -38,12 +39,14 @@ export async function POST(request) {
   } else if (body.operation === "name") {
     let name = body.value;
     const existingName = await Prisma.Link.findFirst({
-      where: { name: name },
+      where: { name: name, userId: userId },
     });
     if (existingName)
-    
       return NextResponse.json(
-        { message: "Name is taken. Please try another." },
+        {
+          message:
+            "You already have a link with this name. Please try another.",
+        },
         { status: 400 }
       );
 
