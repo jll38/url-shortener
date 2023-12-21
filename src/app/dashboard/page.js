@@ -156,7 +156,7 @@ export default function Dashboard() {
               <Sheet
                 sx={{
                   minWidth: "350px",
-                  height: "100%",
+                  height: "310px",
                   boxShadow: 3,
                   padding: "16px",
                 }}

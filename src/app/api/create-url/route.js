@@ -2,21 +2,33 @@ import { NextResponse } from "next/server";
 import { Prisma } from "../prisma";
 import { ENVIRONMENT } from "@/lib/constants";
 
-
 export async function POST(request) {
   const body = await request.json(); // parse the request body
-  const devDomain = "http://localhost:3000/"
-  const prodDomain = "http://tinyclicks.co/"
-  const s = body.shortURL;
+  const devDomain = "http://localhost:3000/";
+  const prodDomain = "http://tinyclicks.co/";
+  let s = body.shortURL;
+  const name = body.name || null;
+  const alias = body.alias || null;
+  if (alias) {
+    const existingAlias = await Prisma.Link.findFirst({
+      where: {
+        shortURL: alias,
+      },
+    });
+    if (existingAlias) return NextResponse({message:"Link with alias already exists"}, {status: 400});
+    s = alias;
+  }
+
   try {
     const urlRecord = await Prisma.Link.create({
       data: {
         originalURL: body.originalURL,
-        shortURL: body.shortURL,
+        shortURL: s,
         userId: body.userId,
+        name: name,
       },
     });
-    return NextResponse.json({short: s}); // Return the urlRecord which should be a valid JSON
+    return NextResponse.json({ short: s }); // Return the urlRecord which should be a valid JSON
   } catch (error) {
     // Check if error is due to unique constraint on shortURL
     if (error.code === "P2002" && error.meta?.target?.includes("shortURL")) {
@@ -32,16 +44,16 @@ export async function POST(request) {
           shortURL: true,
         },
       });
-      let domainLen = ENVIRONMENT === "dev" ? devDomain.length + 7 : prodDomain.length + 7;
+      let domainLen =
+        ENVIRONMENT === "dev" ? devDomain.length + 7 : prodDomain.length + 7;
       let short = existingRecord.shortURL;
       if (short.length > domainLen) {
-        let instance = Number.parseInt(short.slice(domainLen))
+        let instance = Number.parseInt(short.slice(domainLen));
         instance += 1;
         short = short.slice(0, domainLen) + `${instance}`;
-        
-      } else{
-        console.log(short)
-        short = short + `${2}`
+      } else {
+        console.log(short);
+        short = short + `${2}`;
       }
       const urlRecord = await Prisma.Link.create({
         data: {
@@ -50,7 +62,7 @@ export async function POST(request) {
           userId: body.userId,
         },
       });
-      return NextResponse.json({short})
+      return NextResponse.json({ short });
     } else {
       // Handle other types of errors
       throw error;
