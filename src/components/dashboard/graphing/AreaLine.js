@@ -8,7 +8,8 @@ import { getDate } from "@/lib/time";
 export function AreaLine({ dailyClicks, todaysClicks }) {
   const [points, setPoints] = useState([]);
   let count = 0;
-  const dataPoints = dailyClicks.map((record, i) => {
+  const daily = [].concat(dailyClicks).reverse();
+  const dataPoints = daily.map((record, i) => {
     count++;
     return { x: i, y: record.clicks, date: getDate(record.createdAt) };
   });
