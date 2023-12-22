@@ -8,7 +8,7 @@ import { motion } from "framer-motion";
 import { ENVIRONMENT } from "@/lib/constants";
 
 import { getUser } from "@/lib/authHandlers";
-export default function DisplayUrl({ variant = "homepage" }) {
+export default function DisplayUrl({ variant = "home" }) {
   const [url, setURL] = useState("");
   const [shortURL, setShortURL] = useState(null);
   const [user, setUser] = useState(null);

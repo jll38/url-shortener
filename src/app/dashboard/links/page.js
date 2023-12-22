@@ -374,9 +374,9 @@ export default function Links() {
                       {getTime(data.data[selectedLink].createdAt)}
                     </Typography>
                     <Typography sx={{ opacity: ".75" }}>
-                      Last modified at{" "}
-                      {getDate(data.data[selectedLink].modifiedAt)}{" "}
-                      {getTime(data.data[selectedLink].modifiedAt)}
+                      {data.data[selectedLink].createdAt !== data.data[selectedLink].modifiedAt && `Last modified at
+                      ${getDate(data.data[selectedLink].modifiedAt)}
+                      ${getTime(data.data[selectedLink].modifiedAt)}`}
                     </Typography>
                     <Typography>Password Protection: off</Typography>
                   </>
