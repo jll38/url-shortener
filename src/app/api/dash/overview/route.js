@@ -48,9 +48,9 @@ async function getDailyClicks(userId, timeZone) {
       userId: userId,
     },
     orderBy: {
-      createdAt: "asc",
+      createdAt: "desc",
     },
-    take: 5,
+    take: 6,
   });
   const moment = require("moment-timezone");
 
@@ -84,6 +84,7 @@ async function getDailyClicks(userId, timeZone) {
       todaysClicks += link.traffic.length;
     });
   });
+  console.log(dailyClicks)
   return { dailyClicks, todaysClicks };
 }
 
