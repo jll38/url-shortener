@@ -147,7 +147,7 @@ export default function Dashboard() {
             {dailyClicks && (
               <TodaysClicksBox
                 todaysClicks={todaysClicks}
-                yesterdaysClicks={dailyClicks[dailyClicks.length - 1].clicks}
+                yesterdaysClicks={dailyClicks[dailyClicks.length - 1]?.clicks || 0}
               />
             )}
           </div>

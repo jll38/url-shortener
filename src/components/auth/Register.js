@@ -144,13 +144,6 @@ export default function Register() {
         className="block bg-white/50 rounded-lg"
         onChange={confirmPasswordHandler}
       ></input>
-      {
-        confirmPassword && (
-          <span>
-            {confirmPassword ? "Matching!" : "Password does not match"}
-          </span>
-        ) //Work on this
-      }
       <Link href="/login" className="-mt-4 hover:underline">
         Have an account?
       </Link>
