@@ -3,6 +3,7 @@
 A URL shortening service with an analytics dashboard.
 Built using Next.JS 13, backed by Prisma and MongoDB for data management
 
+
 ## Features
 
 ### Homepage & URL Shortener
@@ -42,5 +43,3 @@ To Be Developed
 To Be Developed
 ### Link Tree Hosting
 To Be Developed
-
-
