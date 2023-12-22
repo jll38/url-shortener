@@ -7,8 +7,10 @@ import { hashPassword } from "@/lib/authHandlers";
 export default function Login() {
   const [email, setEmail] = useState(null);
   const [password, setPassword] = useState(null);
-
+  const [errorMessage, setErrorMessage] = useState(null);
+  const [status, setStatus] = useState(null);
   const handleLogin = async (e) => {
+    setStatus(null);
     e.preventDefault();
     fetch("/api/auth/login", {
       method: "POST",
@@ -17,12 +19,18 @@ export default function Login() {
         email,
         password,
       }),
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        localStorage.setItem("JWT_X_AUTH", data.accessToken);
-        window.location.reload();
+    }).then((res) => {
+      console.log(res.status);
+
+      return res.json().then((data) => {
+        if (res.status === 200) {
+          localStorage.setItem("JWT_X_AUTH", data.accessToken);
+          window.location.reload();
+        } else {
+          setErrorMessage(data.message);
+        }
       });
+    });
   };
 
   return (
@@ -55,8 +63,11 @@ export default function Login() {
           setPassword(e.target.value);
         }}
       ></input>
-      <Link href="/register" className="-mt-4 hover:underline">Don&apos;t have an account?</Link>
-      <br/>
+      {errorMessage && <div className="text-red-600">{errorMessage}</div>}
+      <Link href="/register" className="-mt-4 hover:underline">
+        Don&apos;t have an account?
+      </Link>
+      <br />
       <button
         type="submit"
         className="bg-payne-gray text-white p-4 rounded-lg hover:bg-delft-blue transition-all duration-100"
