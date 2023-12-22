@@ -8,8 +8,8 @@ import { ENVIRONMENT } from "@/lib/constants";
 
 export function TopPerformers({ topPerformers }) {
   return (
-    <Sheet className="h-[85%]">
-      <Table
+    <Sheet className="h-[85%] w-full">
+      {topPerformers && topPerformers.length > 0 ? (<Table
         sx={{
           "& thead th:nth-child(1)": {
             width: "10%",
@@ -50,7 +50,7 @@ export function TopPerformers({ topPerformers }) {
             <th></th>
           </tr>
         </thead>
-        {topPerformers && (
+        
           <tbody>
             {topPerformers.map((performer, i) => {
               return (
@@ -79,8 +79,17 @@ export function TopPerformers({ topPerformers }) {
               );
             })}
           </tbody>
-        )}
-      </Table>
+        
+      </Table>) : (<div
+          style={{
+            display: "grid",
+            placeItems: "center",
+            height: "80%",
+            width: "100%",
+          }}
+        >
+          No data to display
+        </div>)}
     </Sheet>
   );
 }

@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { Prisma } from "../prisma";
 import { ENVIRONMENT } from "@/lib/constants";
-
+import { validAlias } from "@/lib/shorten";
 export async function POST(request) {
   const body = await request.json(); // parse the request body
   const devDomain = "http://localhost:3000/";
@@ -9,13 +9,16 @@ export async function POST(request) {
   let s = body.shortURL;
   const name = body.name || null;
   const alias = body.alias || null;
-  if (alias) {
+  const rawAlias = body.rawAlias || null;
+  
+  if (alias && rawAlias) {
+    if(!validAlias(rawAlias)) return NextResponse.json({message:"Invalid Alias"}, {status: 400});
     const existingAlias = await Prisma.Link.findFirst({
       where: {
         shortURL: alias,
       },
     });
-    if (existingAlias) return NextResponse({message:"Link with alias already exists"}, {status: 400});
+    if (existingAlias) return NextResponse.json({message:"Link with alias already exists"}, {status: 400});
     s = alias;
   }
 
@@ -38,7 +41,7 @@ export async function POST(request) {
           originalURL: body.originalURL,
         },
         orderBy: {
-          createdAt: "desc", // Assuming you have a createdAt field
+          createdAt: "desc", 
         },
         select: {
           shortURL: true,
