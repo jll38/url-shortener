@@ -34,6 +34,7 @@ export default function Links() {
   const [isAliasOpen, setIsAliasOpen] = useState(false);
   const [isDestinationOpen, setIsDestinationOpen] = useState(false);
   const [newUrlOpen, setNewUrlOpen] = useState(false);
+  const [errorMessage, setErrorMessage] = useState(null);
 
   const [newName, setNewName] = useState(null);
   const [newAlias, setNewAlias] = useState(null);
@@ -42,7 +43,6 @@ export default function Links() {
   const [loading, setLoading] = useState(true);
   const [renameRes, setRenameRes] = useState(null);
 
-  const [error, setError] = useState(null);
 
   //Data States
   const [topPerformers, setTopPerformers] = useState(null);
@@ -79,6 +79,7 @@ export default function Links() {
   }, []);
 
   async function handleModify(operation) {
+    const assignedUser = await assignUser();
     let value;
     if (operation === "alias") {
       value = newAlias;
@@ -106,10 +107,11 @@ export default function Links() {
       .then((info) => {
         setRenameRes(info);
         if (info.status == 200) {
-          {
-            setIsAliasOpen(false);
-            setIsRenameOpen(false);
-          }
+          setIsAliasOpen(false);
+          setIsRenameOpen(false);
+          setNewUrlOpen(false);
+        } else {
+          setErrorMessage(info.message);
         }
       })
       .finally(
@@ -144,16 +146,19 @@ export default function Links() {
                   >
                     <AddIcon />
                   </Button>
-                  <Modal open={newUrlOpen} >
-                    <ModalDialog sx={{width: "600px"}} className="flex justify-center">
+                  <Modal open={newUrlOpen}>
+                    <ModalDialog
+                      sx={{ width: "600px" }}
+                      className="flex justify-center"
+                    >
                       <ModalClose
                         onClick={() => {
-                          setIsDestinationOpen(false);
+                          setNewUrlOpen(false);
                         }}
                       />
                       <Typography>New Link</Typography>
                       <hr />
-                      <DisplayUrl variant={"modal"}/>
+                      <DisplayUrl variant={"modal"} />
                     </ModalDialog>
                   </Modal>
                 </>
@@ -237,6 +242,8 @@ export default function Links() {
                             setNewName(e.target.value);
                           }}
                         ></Input>
+                        {errorMessage && <div>{errorMessage}</div>}
+
                         {renameRes && (
                           <div
                             className={`${
@@ -296,6 +303,8 @@ export default function Links() {
                             setNewAlias(e.target.value);
                           }}
                         ></Input>
+                        {errorMessage && <div>{errorMessage}</div>}
+
                         {renameRes && (
                           <div
                             className={`${
@@ -374,7 +383,9 @@ export default function Links() {
                       {getTime(data.data[selectedLink].createdAt)}
                     </Typography>
                     <Typography sx={{ opacity: ".75" }}>
-                      {data.data[selectedLink].createdAt !== data.data[selectedLink].modifiedAt && `Last modified at
+                      {data.data[selectedLink].createdAt !==
+                        data.data[selectedLink].modifiedAt &&
+                        `Last modified at
                       ${getDate(data.data[selectedLink].modifiedAt)}
                       ${getTime(data.data[selectedLink].modifiedAt)}`}
                     </Typography>

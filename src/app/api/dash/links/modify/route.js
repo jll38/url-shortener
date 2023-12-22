@@ -11,7 +11,7 @@ export async function POST(request) {
   if (body.operation === "alias") {
     let alias = body.value;
     if (TOP_LEVEL_ROUTES.includes(alias))
-      return NextResponse.json({ message: "Invalid alias." }, { status: 403 });
+      return NextResponse.json({ message: "Invalid alias." }, { status: 400 });
     alias =
       ENVIRONMENT === "dev"
         ? "http://localhost:3000/" + body.value
@@ -22,7 +22,7 @@ export async function POST(request) {
     });
 
     if (existingAlias)
-      return NextResponse.json(
+      return new NextResponse.json(
         { message: "Alias already exists." },
         { status: 400 }
       );
