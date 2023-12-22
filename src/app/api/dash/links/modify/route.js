@@ -4,14 +4,17 @@ import { domain } from "@/lib/domain";
 import qs from "qs";
 import { ENVIRONMENT } from "@/lib/constants";
 import { TOP_LEVEL_ROUTES } from "@/lib/constants";
+import { validAlias } from "@/lib/shorten";
 export async function POST(request) {
   const body = await request.json();
   const toChange = body.selectedShort;
   const userId = body.userId;
   if (body.operation === "alias") {
     let alias = body.value;
-    if (TOP_LEVEL_ROUTES.includes(alias))
-      return NextResponse.json({ message: "Invalid alias." }, { status: 403 });
+    console.log(alias);
+    if (TOP_LEVEL_ROUTES.includes(alias) || !validAlias(alias)) 
+      return NextResponse.json({ message: "Invalid alias." }, { status: 400 });
+    
     alias =
       ENVIRONMENT === "dev"
         ? "http://localhost:3000/" + body.value
@@ -22,7 +25,7 @@ export async function POST(request) {
     });
 
     if (existingAlias)
-      return NextResponse.json(
+      return new NextResponse.json(
         { message: "Alias already exists." },
         { status: 400 }
       );

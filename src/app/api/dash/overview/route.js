@@ -6,8 +6,6 @@ import qs from "qs";
 export async function POST(request) {
   const { userId, operation, timeZone } = await request.json();
   let data;
-  getDeviceAndBrowser();
-
   const topPerformers = await getTopPerformers(userId);
   const { dailyClicks, todaysClicks } = await getDailyClicks(userId, timeZone);
   const deviceAndBrowser = await getDeviceAndBrowser(userId);
@@ -84,19 +82,34 @@ async function getDailyClicks(userId, timeZone) {
       todaysClicks += link.traffic.length;
     });
   });
-  console.log(dailyClicks)
   return { dailyClicks, todaysClicks };
 }
 
 //Update for to only include traffic from links made by current user
-async function getDeviceAndBrowser() {
-  // Fetch the traffic records
+async function getDeviceAndBrowser(userId) {
+  const userLinks = await Prisma.Link.findMany({
+    where: {
+      userId: userId,
+    },
+    select: {
+      id: true,
+    },
+  });
+    
+  const linkIds = userLinks.map(link => link.id);
+
   const TrafficRecords = await Prisma.Traffic.findMany({
+    where: {
+      linkId: {
+        in: linkIds,
+      },
+    },
     select: {
       device: true,
       browser: true,
     },
   });
+  
 
   // Initialize objects to hold the counts for devices and browsers
   const deviceCounts = {};
@@ -147,7 +160,6 @@ async function getReferrers() {
     if (!referrer || !referrer.source) {
       continue;
     }
-    console.log(referrer)
     if (referrer) {
       const selectedData = {
         title: referrer.source.title,
