@@ -1,3 +1,4 @@
+import { HeroTextChange } from "./../components/HeroTextChange";
 import { Footer } from "./../components/footer";
 import { PremiumFeatureHome } from "./../components/PremiumFeatureHome";
 import Image from "next/image";
@@ -18,12 +19,8 @@ export default function Home() {
           className="h-[100%] md:w-1/2 w-full flex justify-center items-center"
         >
           <div className="w-full flex items-left flex-col justify-center text-payne-gray font-medium relative z-20 px-12">
-            <div className="-mt-4 mb-4 text-[1.75em] ml-4">
-              A simple, <br />
-              yet powerful tool <br />
-              for <span className="font-bold underline">YOU</span>
-            </div>
-            <DisplayUrl />
+            <HeroTextChange />
+            <DisplayUrl/>
           </div>
         </section>
         <section className="px-10 md:w-1/2 w-full md:h-[100%] flex justify-start flex-col mt-[10%]">
