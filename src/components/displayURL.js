@@ -16,6 +16,7 @@ export default function DisplayUrl({ variant = "home" }) {
 
   const [name, setName] = useState(null);
   const [alias, setAlias] = useState(null);
+  const [rawAlias, setRawAlias] = useState(null);
 
   useEffect(() => {
     setUser(getUser());
@@ -41,7 +42,8 @@ export default function DisplayUrl({ variant = "home" }) {
           shortURL: result,
           userId: user ? user.id : null,
           name,
-          alias
+          alias,
+          rawAlias,
         };
         fetch("/api/create-url", {
           method: "POST",
@@ -56,8 +58,8 @@ export default function DisplayUrl({ variant = "home" }) {
           .then((data) => {
             console.log("Response data:", data);
             setResShortURL(data.short);
-            console.log(variant)
-            if(variant === "modal") window.location.reload();
+            console.log(variant);
+            if (variant === "modal") window.location.reload();
           })
           .catch((err) => console.log("Error:", err));
       }, 1000);
@@ -120,18 +122,29 @@ export default function DisplayUrl({ variant = "home" }) {
             onChange={(e) => setURL("http://" + e.target.value)}
             autoComplete={"off"}
           ></Input>
-           <Input
-            startDecorator={`http://${ENVIRONMENT === "dev" ? "localhost:3000/" : "tinyclicks.co/"}`}
+          <Input
+            startDecorator={`http://${
+              ENVIRONMENT === "dev" ? "localhost:3000/" : "tinyclicks.co/"
+            }`}
             type="text"
             id="aliasInput"
             className="h-[40px] w-[60%] px-4 bg-gray-100 focus:outline-payne-gray focus:outline "
             placeholder="Alias"
-            onChange={(e) => setAlias(`http://${ENVIRONMENT === "dev" ? "localhost:3000/" : "tinyclicks.co/"}` + e.target.value)}
+            onChange={(e) => {
+              setAlias(
+                `http://${
+                  ENVIRONMENT === "dev" ? "localhost:3000/" : "tinyclicks.co/"
+                }` + e.target.value
+              );
+              setRawAlias(e.target.value);
+            }}
             autoComplete={"off"}
           ></Input>
           <button
             className="py-2 px-4 bg-payne-gray hover:bg-delft-blue focus:outline-payne-gray focus:outline transition-all duration-200 text-white font-semibold rounded-lg w-[8rem]"
-            onClick={() => {handleURLSubmit("modal")}}
+            onClick={() => {
+              handleURLSubmit("modal");
+            }}
           >
             Create
           </button>

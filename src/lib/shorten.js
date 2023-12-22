@@ -15,3 +15,10 @@ function hashStr(string) {
     hash.update(string);
     return hash.digest('hex');
 }
+
+export function validAlias(str){
+    const pattern = /^[a-zA-Z0-9-]+$/
+    console.log(str)
+    console.log(pattern.test(str))
+    return pattern.test(str);
+}

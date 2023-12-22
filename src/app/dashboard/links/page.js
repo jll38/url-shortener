@@ -301,6 +301,7 @@ export default function Links() {
                           placeholder=""
                           onChange={(e) => {
                             setNewAlias(e.target.value);
+                            console.log(newAlias)
                           }}
                         ></Input>
                         {errorMessage && <div>{errorMessage}</div>}
