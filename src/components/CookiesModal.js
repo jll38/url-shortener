@@ -3,20 +3,24 @@ import React, { useState, useEffect } from "react";
 import { Modal, Sheet, Typography, Button } from "@mui/joy";
 import { usePathname } from 'next/navigation'
 import { cookiesPages } from "@/lib/constants";
+
 export default function CookiesModal() {
   const [allowCookies, setAllowCookies] = useState(false);
+  const [isLoading, setIsLoading] = useState(true); // Added loading state
   const pathname = usePathname();
+
   useEffect(() => {
     const storedAllowCookies = localStorage.getItem("allowCookies") === "true";
     setAllowCookies(storedAllowCookies);
+    setIsLoading(false); // Set loading to false after checking local storage
   }, []);
 
   const handleCookieAccept = () => {
     localStorage.setItem("allowCookies", "true");
     setAllowCookies(true);
   };
-  console.log(cookiesPages);
-  if (!allowCookies && cookiesPages.includes(pathname)) {
+
+  if (!isLoading && !allowCookies && cookiesPages.includes(pathname)) {
     return (
       <Modal
         open={!allowCookies}
@@ -38,7 +42,7 @@ export default function CookiesModal() {
           <Button
             onClick={handleCookieAccept}
             variant="outlined"
-            sx={{marginTop: "10px"}}
+            sx={{ marginTop: "10px" }}
           >
             I accept
           </Button>

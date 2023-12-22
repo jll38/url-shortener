@@ -9,6 +9,7 @@ export default function Register() {
   const [password, setPassword] = useState(null);
   const [passwordStrength, setPasswordStrength] = useState({});
   const [confirmPassword, setConfirmPassword] = useState(null);
+  const [errorMessage, setErrorMessage] = useState(null);
 
   const registerUser = async (e) => {
     e.preventDefault();
@@ -19,10 +20,17 @@ export default function Register() {
         name,
         email,
         password,
+        passwordStrength: passwordStrength.id,
+        confirmPassword
       }),
-    }).then((res) => {
-      if (res.ok) window.location.assign('/login');
-    });
+    })
+      .then((res) => {
+        if (res.status === 200) window.location.assign("/login");
+        else return res.json();
+      })
+      .then((data) => {
+        setErrorMessage(data.message);
+      });
   };
 
   function passwordCheck(event) {
@@ -53,12 +61,6 @@ export default function Register() {
       message: message,
       color: color,
     });
-    console.log(strengthID);
-  }
-
-  function confirmPasswordHandler(event) {
-    const confirm = event.target.value;
-    setConfirmPassword(confirm === password);
   }
   return (
     <form
@@ -142,12 +144,15 @@ export default function Register() {
         type="password"
         placeholder="Re-enter your password"
         className="block bg-white/50 rounded-lg"
-        onChange={confirmPasswordHandler}
+        onChange={(e) => {
+          setConfirmPassword(e.target.value);
+        }}
       ></input>
+      {errorMessage && <div className="text-red-600">{errorMessage}</div>}
       <Link href="/login" className="-mt-4 hover:underline">
         Have an account?
       </Link>
-      <br/>
+      <br />
       <button
         type="submit"
         className="bg-payne-gray text-white p-4 rounded-lg hover:bg-delft-blue transition-all duration-100"
