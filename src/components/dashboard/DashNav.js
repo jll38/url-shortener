@@ -41,7 +41,7 @@ export default function DashNav() {
         <Sheet sx={{ width: "100%" }}>
           <div className="w-full h-[80px] flex flex-col items-center justify-center">
             <i className="fa-solid fa-link"></i> TinyClicks
-            <Typography className={"text-[70%]"}>Dashboard</Typography>
+            <Typography sx={{fontSize: "70%"}}>Dashboard</Typography>
           </div>
           {dashPages.map((panel, i) => {
             return (
