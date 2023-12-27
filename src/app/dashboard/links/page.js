@@ -1,4 +1,5 @@
 "use client";
+import { CheckedSearchResult } from "./../../../components/dashboard/CheckedSearchResult";
 import React from "react";
 import { useState, useEffect } from "react";
 import { getUser } from "@/lib/authHandlers";
@@ -18,10 +19,19 @@ import {
   Typography,
   Input,
   Button,
+  Tabs,
+  TabList,
+  Tab,
+  TabPanel,
+  Radio,
+  RadioGroup,
+  FormLabel,
+  Checkbox,
 } from "@mui/joy";
 
+import SearchIcon from "@mui/icons-material/Search";
 import DisplayUrl from "@/components/displayURL";
-
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import EditIcon from "@mui/icons-material/Edit";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import AddIcon from "@mui/icons-material/Add";
@@ -29,6 +39,9 @@ import AddIcon from "@mui/icons-material/Add";
 export default function Links() {
   const [data, setData] = useState(null);
   const [user, setUser] = useState(null);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filteredResults, setFilteredResults] = useState([]);
+
   const [selectedLink, setSelectedLink] = useState(null);
   const [isRenameOpen, setIsRenameOpen] = useState(false);
   const [isAliasOpen, setIsAliasOpen] = useState(false);
@@ -42,7 +55,6 @@ export default function Links() {
 
   const [loading, setLoading] = useState(true);
   const [renameRes, setRenameRes] = useState(null);
-
 
   //Data States
   const [topPerformers, setTopPerformers] = useState(null);
@@ -77,6 +89,16 @@ export default function Links() {
     }
     fetchData();
   }, []);
+
+  useEffect(() => {
+    if (!data) return;
+
+    const results = data.data.filter((item) =>
+      item.name.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+
+    setFilteredResults(results);
+  }, [data, searchTerm]);
 
   async function handleModify(operation) {
     const assignedUser = await assignUser();
@@ -156,9 +178,46 @@ export default function Links() {
                           setNewUrlOpen(false);
                         }}
                       />
-                      <Typography>New Link</Typography>
-                      <hr />
-                      <DisplayUrl variant={"modal"} />
+                      <Tabs>
+                        <TabList>
+                          <Tab>Link</Tab>
+                          <Tab>Collection</Tab>
+                        </TabList>
+
+                        <TabPanel value={0}>
+                          <DisplayUrl variant={"modal"} />
+                        </TabPanel>
+                        <TabPanel value={1}>
+                          <Typography>Collection Name</Typography>
+                          <Input
+                            type="text"
+                            id="collectionNameInput"
+                            className="h-[40px] w-[60%] px-4 bg-gray-100 focus:outline-payne-gray focus:outline "
+                            placeholder="New Collection"
+                            onChange={(e) => {}}
+                            autoComplete={"off"}
+                          ></Input>
+                          <div className="w-[60%]">
+                            <Typography>Add Links</Typography>
+                            <Input
+                              startDecorator={<SearchIcon />}
+                              type="text"
+                              id="collectionNameInput"
+                              className="h-[40px] px-4 bg-gray-100 focus:outline-payne-gray focus:outline "
+                              placeholder="Search"
+                              onChange={(e) => {
+                                setSearchTerm(e.target.value);
+                              }}
+                              autoComplete={"off"}
+                            ></Input>
+                            <div className="flex flex-col border-2 bg-white absolute w-[56%]">
+                              {filteredResults.map((item, i) => {
+                                return <CheckedSearchResult key={"search-result" + i} value={item.name}/>;
+                              })}
+                            </div>
+                          </div>
+                        </TabPanel>
+                      </Tabs>
                     </ModalDialog>
                   </Modal>
                 </>
@@ -301,7 +360,7 @@ export default function Links() {
                           placeholder=""
                           onChange={(e) => {
                             setNewAlias(e.target.value);
-                            console.log(newAlias)
+                            console.log(newAlias);
                           }}
                         ></Input>
                         {errorMessage && <div>{errorMessage}</div>}
