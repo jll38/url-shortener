@@ -36,7 +36,7 @@ export function HeroTextChange() {
   }, [subIndex, index]);
 
   return (
-    <div className="-mt-4 mb-4 text-[3em] ml-4 hidden sm:flex">
+    <div className="-mt-4 mb-4 text-[3em] ml-4 hidden md:block">
       A simple, <br />
       yet powerful tool <br />
       for <span className="font-bold underline">{text}<span className="blinking-cursor">|</span></span>
