@@ -41,7 +41,8 @@ export default function Links() {
   const [user, setUser] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredResults, setFilteredResults] = useState([]);
-
+  const [searchIsFocused, setSearchIsFocused] = useState(false);
+  const [newCollectionItems, setNewCollectionItems] = useState([]);
   const [selectedLink, setSelectedLink] = useState(null);
   const [isRenameOpen, setIsRenameOpen] = useState(false);
   const [isAliasOpen, setIsAliasOpen] = useState(false);
@@ -64,6 +65,10 @@ export default function Links() {
     setUser(userData); // Set user data to state
     return userData; // Return the user data
   }
+  useEffect(() => {
+    console.log(newCollectionItems);
+  }, [newCollectionItems]);
+
   useEffect(() => {
     async function fetchData() {
       const assignedUser = await assignUser();
@@ -187,7 +192,7 @@ export default function Links() {
                         <TabPanel value={0}>
                           <DisplayUrl variant={"modal"} />
                         </TabPanel>
-                        <TabPanel value={1}>
+                        <TabPanel value={1} className="flex flex-col gap-2">
                           <Typography>Collection Name</Typography>
                           <Input
                             type="text"
@@ -208,13 +213,43 @@ export default function Links() {
                               onChange={(e) => {
                                 setSearchTerm(e.target.value);
                               }}
+                              onFocus={() => setSearchIsFocused(true)}
+                              onBlur={() => {
+                                if (!searchTerm) {
+                                  setSearchIsFocused(false);
+                                }
+                              }}
                               autoComplete={"off"}
                             ></Input>
-                            <div className="flex flex-col border-2 bg-white absolute w-[56%]">
-                              {filteredResults.map((item, i) => {
-                                return <CheckedSearchResult key={"search-result" + i} value={item.name}/>;
-                              })}
-                            </div>
+                            {searchIsFocused && searchTerm && (
+                              <div className="flex flex-col border-2 bg-white absolute w-[56%]">
+                                {filteredResults.length > 0 ? (
+                                  filteredResults.map((item, i) => {
+                                    return (
+                                      <CheckedSearchResult
+                                        key={"search-result" + i}
+                                        value={item.name}
+                                        valueId={item.id}
+                                        setNewCollectionItems={
+                                          setNewCollectionItems
+                                        }
+                                        newCollectionItems={newCollectionItems}
+                                      />
+                                    );
+                                  })
+                                ) : (
+                                  <div className="h-[30px] flex justify-between items-center px-2">
+                                    No results found
+                                  </div>
+                                )}
+                              </div>
+                            )}
+                            <button
+                              className="py-2 px-4 bg-payne-gray hover:bg-delft-blue focus:outline-payne-gray focus:outline transition-all duration-200 text-white font-semibold rounded-lg w-[8rem] mt-2"
+                              onClick={() => {}}
+                            >
+                              Create
+                            </button>
                           </div>
                         </TabPanel>
                       </Tabs>
