@@ -18,10 +18,11 @@ model Link {
   shortURL    String    @unique
   protected   Boolean   @default(false)
   clicks      Int       @default(0)
-  user        User?      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user        User?     @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId      String? // Foreign key to User model
   traffic     Traffic[] // One-to-Many relation with Traffic
   modifiedAt  DateTime? @default(now())
+  archived    Boolean   @default(false)
 }
 
 model DailyClicks {
