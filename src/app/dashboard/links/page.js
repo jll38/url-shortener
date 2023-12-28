@@ -84,10 +84,10 @@ export default function Links() {
         })
           .then((res) => {
             console.log("Response");
-            console.log(res.json());
             return res.json();
           })
           .then((info) => {
+            console.log("info");
             console.log(info);
             setData(info);
           })
