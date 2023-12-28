@@ -29,6 +29,7 @@ import {
   Checkbox,
 } from "@mui/joy";
 
+import Inventory2Icon from "@mui/icons-material/Inventory2";
 import SearchIcon from "@mui/icons-material/Search";
 import DisplayUrl from "@/components/displayURL";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
@@ -44,7 +45,6 @@ export default function Links() {
   const [searchIsFocused, setSearchIsFocused] = useState(false);
   const [collectionName, setCollectionName] = useState(null);
   const [newCollectionItems, setNewCollectionItems] = useState([]);
-  const [selectedLink, setSelectedLink] = useState(null);
   const [isRenameOpen, setIsRenameOpen] = useState(false);
   const [isAliasOpen, setIsAliasOpen] = useState(false);
   const [isDestinationOpen, setIsDestinationOpen] = useState(false);
@@ -54,6 +54,9 @@ export default function Links() {
   const [newName, setNewName] = useState(null);
   const [newAlias, setNewAlias] = useState(null);
   const [newDestination, setNewDestination] = useState(null);
+
+  const [selectedLink, setSelectedLink] = useState(null);
+  const [selectedCollection, setSelectedCollection] = useState(null);
 
   const [loading, setLoading] = useState(true);
   const [renameRes, setRenameRes] = useState(null);
@@ -103,7 +106,12 @@ export default function Links() {
     if (!data) return;
 
     const results = data.data.links.filter((item) => {
-      return item.name !== null ? item.name.toLowerCase().includes(searchTerm.toLowerCase()) : item.originalURL.slice(7).toLowerCase().includes(searchTerm.toLowerCase());
+      return item.name !== null
+        ? item.name.toLowerCase().includes(searchTerm.toLowerCase())
+        : item.originalURL
+            .slice(7)
+            .toLowerCase()
+            .includes(searchTerm.toLowerCase());
     });
 
     setFilteredResults(results);
@@ -172,7 +180,8 @@ export default function Links() {
       })
       .then((info) => {
         console.log(info);
-      });
+      })
+      .finally(() => {window.location.reload();});
   }
   if (data)
     return (
@@ -188,7 +197,7 @@ export default function Links() {
             className={"rounded-[1.5rem] shadow-lg"}
           >
             <div className="text-[2em] font-bold flex justify-between">
-              {selectedLink === null ? (
+              {selectedLink === null && selectedCollection === null ? (
                 <>
                   <div>Links</div>
                   <Button
@@ -256,7 +265,11 @@ export default function Links() {
                                     return (
                                       <CheckedSearchResult
                                         key={"search-result" + i}
-                                        value={item.name !== null ? item.name : item.originalURL.slice(7)}
+                                        value={
+                                          item.name !== null
+                                            ? item.name
+                                            : item.originalURL.slice(7)
+                                        }
                                         valueId={item.id}
                                         isChecked={newCollectionItems.includes(
                                           item.id
@@ -293,31 +306,59 @@ export default function Links() {
                 <div className="flex gap-2">
                   <button
                     onClick={() => {
-                      setSelectedLink(null);
+                      setSelectedLink(null)
+                      setSelectedCollection(null);
                     }}
                   >
-                    <ArrowBackIcon />
+                    <ArrowBackIcon /> 
                   </button>
-                  <button
-                    onClick={() => {
-                      setIsRenameOpen(true);
-                    }}
-                  >
-                    {data.data.links[selectedLink].name ||
-                      data.data.links[selectedLink].originalURL.slice(
-                        data.data.links[selectedLink].originalURL.indexOf("/") + 2,
-                        data.data.links[selectedLink].originalURL.indexOf(".")
-                      )}{" "}
-                    <EditIcon />
-                  </button>
+                  {data &&
+                    data.data &&
+                    data.data.links &&
+                    data.data.links[selectedLink] && (
+                      <button
+                        onClick={() => {
+                          setIsRenameOpen(true);
+                        }}
+                      >
+                        {data.data.links[selectedLink].name ||
+                          data.data.links[selectedLink].originalURL.slice(
+                            data.data.links[selectedLink].originalURL.indexOf(
+                              "/"
+                            ) + 2,
+                            data.data.links[selectedLink].originalURL.indexOf(
+                              "."
+                            )
+                          )}{" "}
+                        <EditIcon />
+                      </button>
+                    )}
                 </div>
               )}
             </div>
             <hr />
             {data && (
               <>
-                {selectedLink === null && (
+                {selectedLink === null && selectedCollection === null && (
                   <div className="pt-1">
+                    {data.data.collections.map((link, i) => {
+                      return (
+                        <button
+                          key={`link-${i}`}
+                          className="w-full h-[60px] flex items-center hover:bg-slate-100"
+                          onClick={() => {
+                            setSelectedCollection(i);
+                          }}
+                        >
+                          <div
+                            href=""
+                            className="capitalize text-[1.25em] font-medium flex items-center gap-2"
+                          >
+                            <Inventory2Icon /> {link.name}
+                          </div>
+                        </button>
+                      );
+                    })}
                     {data.data.links.map((link, i) => {
                       let name;
                       if (link.name) {
@@ -507,7 +548,8 @@ export default function Links() {
                       </ModalDialog>
                     </Modal>
                     <Typography sx={{ opacity: ".75" }}>
-                      Created on {getDate(data.data.links[selectedLink].createdAt)}{" "}
+                      Created on{" "}
+                      {getDate(data.data.links[selectedLink].createdAt)}{" "}
                       {getTime(data.data.links[selectedLink].createdAt)}
                     </Typography>
                     <Typography sx={{ opacity: ".75" }}>
@@ -520,6 +562,37 @@ export default function Links() {
                     <Typography>Password Protection: off</Typography>
                   </>
                 )}
+                {selectedCollection !== null && selectedLink === null && <div>
+                  {data.data.collections[selectedCollection].links.map((link, i) => {
+                      let name;
+                      if (link.link.name) {
+                        name = link.link.name;
+                      } else {
+                        name = link.link.originalURL;
+                        name = name.link.slice(
+                          name.indexOf("/") + 2,
+                          name.indexOf(".")
+                        );
+                      }
+
+                      return (
+                        <button
+                          key={`link-${i}`}
+                          className="w-full h-[40px] flex items-center hover:bg-slate-100"
+                          onClick={() => {
+                            setSelectedLink(i);
+                          }}
+                        >
+                          <div
+                            href=""
+                            className="capitalize text-[1.25em] font-medium"
+                          >
+                            {name}
+                          </div>
+                        </button>
+                      );
+                    })}
+                </div>}
               </>
             )}
           </Sheet>
