@@ -33,13 +33,30 @@ export async function POST(request) {
 }
 
 async function NewCollection(name, userId, links) {
-  await Prisma.Collection.create({
-    data: {
-      name,
-      userId,
-      links: {
-        connect: links.map((link) => ({ id: link })),
+  // Start a transaction
+  const collection = await Prisma.$transaction(async (prisma) => {
+    // Create the collection
+    const newCollection = await prisma.collection.create({
+      data: {
+        name,
+        userId,
       },
-    },
+    });
+
+    // Create links in the junction table
+    await Promise.all(
+      links.map(linkId =>
+        prisma.collectionLink.create({
+          data: {
+            linkId,
+            collectionId: newCollection.id,
+          },
+        })
+      )
+    );
+
+    return newCollection;
   });
+
+  return collection;
 }
