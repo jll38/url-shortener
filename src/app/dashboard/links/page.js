@@ -66,9 +66,6 @@ export default function Links() {
     setUser(userData); // Set user data to state
     return userData; // Return the user data
   }
-  useEffect(() => {
-    console.log(newCollectionItems);
-  }, [newCollectionItems]);
 
   useEffect(() => {
     async function fetchData() {
