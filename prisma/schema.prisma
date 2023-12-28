@@ -11,18 +11,37 @@ datasource db {
 }
 
 model Link {
-  id          String    @id @default(auto()) @map("_id") @db.ObjectId
-  createdAt   DateTime  @default(now())
+  id          String           @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt   DateTime         @default(now())
   name        String?
   originalURL String
-  shortURL    String    @unique
-  protected   Boolean   @default(false)
-  clicks      Int       @default(0)
-  user        User?     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  shortURL    String           @unique
+  protected   Boolean          @default(false)
+  clicks      Int              @default(0)
+  user        User?            @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId      String? // Foreign key to User model
   traffic     Traffic[] // One-to-Many relation with Traffic
-  modifiedAt  DateTime? @default(now())
-  archived    Boolean   @default(false)
+  modifiedAt  DateTime?        @default(now())
+  archived    Boolean          @default(false)
+  collections CollectionLink[] // Many-to-Many relation with Collection
+}
+
+model Collection {
+  id        String           @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt DateTime         @default(now())
+  name      String
+  user      User?            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String? // Foreign key to User model
+  links     CollectionLink[] // Many-to-Many relation with Link
+}
+
+// Junction table for many-to-many relationship between Link and Collection
+model CollectionLink {
+  id           String     @id @default(auto()) @map("_id") @db.ObjectId
+  link         Link       @relation(fields: [linkId], references: [id])
+  linkId       String     @db.ObjectId
+  collection   Collection @relation(fields: [collectionId], references: [id])
+  collectionId String     @db.ObjectId
 }
 
 model DailyClicks {
@@ -44,6 +63,7 @@ model User {
   password      String
   salt          String
   DailyClicks   DailyClicks[]
+  collections   Collection[] // One-to-Many relation with Collection
 }
 
 model Traffic {
