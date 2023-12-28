@@ -69,7 +69,7 @@ export default function Links() {
 
   useEffect(() => {
     async function fetchData() {
-      console.log('Fetching Link data');
+      console.log("Fetching Link data");
       const assignedUser = await assignUser();
       if (assignedUser) {
         fetch("/api/dash/links", {
@@ -83,15 +83,17 @@ export default function Links() {
           }),
         })
           .then((res) => {
-            console.log('Response')
+            console.log("Response");
             console.log(res.json());
             return res.json();
           })
           .then((info) => {
-            console.log(info)
+            console.log(info);
             setData(info);
+          })
+          .finally(() => {
+            setLoading(false);
           });
-        setLoading(false);
       }
     }
     fetchData();
@@ -170,7 +172,7 @@ export default function Links() {
       })
       .then((info) => {
         console.log(info);
-      })
+      });
   }
   if (data)
     return (
@@ -256,7 +258,9 @@ export default function Links() {
                                         key={"search-result" + i}
                                         value={item.name}
                                         valueId={item.id}
-                                        isChecked={newCollectionItems.includes(item.id)}
+                                        isChecked={newCollectionItems.includes(
+                                          item.id
+                                        )}
                                         setNewCollectionItems={
                                           setNewCollectionItems
                                         }
