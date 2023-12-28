@@ -569,7 +569,7 @@ export default function Links() {
                         name = link.link.name;
                       } else {
                         name = link.link.originalURL;
-                        name = name.link.slice(
+                        name = name.slice(
                           name.indexOf("/") + 2,
                           name.indexOf(".")
                         );
