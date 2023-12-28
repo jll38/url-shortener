@@ -102,9 +102,9 @@ export default function Links() {
   useEffect(() => {
     if (!data) return;
 
-    const results = data.data.filter((item) =>
-      item.name.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+    const results = data.data.filter((item) => {
+      return item.name !== null ? item.name.toLowerCase().includes(searchTerm.toLowerCase()) : item.originalURL.slice(7).toLowerCase().includes(searchTerm.toLowerCase());
+    });
 
     setFilteredResults(results);
   }, [data, searchTerm]);
@@ -256,7 +256,7 @@ export default function Links() {
                                     return (
                                       <CheckedSearchResult
                                         key={"search-result" + i}
-                                        value={item.name}
+                                        value={item.name !== null ? item.name : item.originalURL.slice(7)}
                                         valueId={item.id}
                                         isChecked={newCollectionItems.includes(
                                           item.id
@@ -318,7 +318,7 @@ export default function Links() {
               <>
                 {selectedLink === null && (
                   <div className="pt-1">
-                    {/* {data.data.map((link, i) => {
+                    {data.data.map((link, i) => {
                       let name;
                       if (link.name) {
                         name = link.name;
@@ -346,7 +346,7 @@ export default function Links() {
                           </div>
                         </button>
                       );
-                    })} */}
+                    })}
                   </div>
                 )}
                 {selectedLink !== null && (
