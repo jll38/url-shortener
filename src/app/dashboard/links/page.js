@@ -340,7 +340,7 @@ export default function Links() {
             {data && (
               <>
                 {selectedLink === null && selectedCollection === null && (
-                  <div className="pt-1">
+                  <div className="pt-1 max-h-[300px] overflow-y-scroll">
                     {data.data.collections.map((link, i) => {
                       return (
                         <button
