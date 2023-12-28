@@ -29,6 +29,7 @@ import {
   Checkbox,
 } from "@mui/joy";
 
+import Inventory2Icon from "@mui/icons-material/Inventory2";
 import SearchIcon from "@mui/icons-material/Search";
 import DisplayUrl from "@/components/displayURL";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
@@ -44,7 +45,6 @@ export default function Links() {
   const [searchIsFocused, setSearchIsFocused] = useState(false);
   const [collectionName, setCollectionName] = useState(null);
   const [newCollectionItems, setNewCollectionItems] = useState([]);
-  const [selectedLink, setSelectedLink] = useState(null);
   const [isRenameOpen, setIsRenameOpen] = useState(false);
   const [isAliasOpen, setIsAliasOpen] = useState(false);
   const [isDestinationOpen, setIsDestinationOpen] = useState(false);
@@ -54,6 +54,9 @@ export default function Links() {
   const [newName, setNewName] = useState(null);
   const [newAlias, setNewAlias] = useState(null);
   const [newDestination, setNewDestination] = useState(null);
+
+  const [selectedLink, setSelectedLink] = useState(null);
+  const [selectedCollection, setSelectedCollection] = useState(null);
 
   const [loading, setLoading] = useState(true);
   const [renameRes, setRenameRes] = useState(null);
@@ -69,6 +72,7 @@ export default function Links() {
 
   useEffect(() => {
     async function fetchData() {
+      console.log("Fetching Link data");
       const assignedUser = await assignUser();
       if (assignedUser) {
         fetch("/api/dash/links", {
@@ -82,12 +86,17 @@ export default function Links() {
           }),
         })
           .then((res) => {
+            console.log("Response");
             return res.json();
           })
           .then((info) => {
+            console.log("info");
+            console.log(info);
             setData(info);
+          })
+          .finally(() => {
+            setLoading(false);
           });
-        setLoading(false);
       }
     }
     fetchData();
@@ -96,9 +105,14 @@ export default function Links() {
   useEffect(() => {
     if (!data) return;
 
-    const results = data.data.filter((item) =>
-      item.name.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+    const results = data.data.links.filter((item) => {
+      return item.name !== null
+        ? item.name.toLowerCase().includes(searchTerm.toLowerCase())
+        : item.originalURL
+            .slice(7)
+            .toLowerCase()
+            .includes(searchTerm.toLowerCase());
+    });
 
     setFilteredResults(results);
   }, [data, searchTerm]);
@@ -123,7 +137,7 @@ export default function Links() {
         userId: assignedUser.id,
         operation,
         value,
-        selectedShort: data.data[selectedLink].shortURL,
+        selectedShort: data.data.links[selectedLink].shortURL,
       }),
     })
       .then((res) => {
@@ -148,6 +162,7 @@ export default function Links() {
 
   async function createCollection() {
     const assignedUser = await assignUser();
+    console.log("test collection");
     fetch("/api/dash/links/collections", {
       method: "POST",
       headers: {
@@ -166,7 +181,7 @@ export default function Links() {
       .then((info) => {
         console.log(info);
       })
-      .finally();
+      .finally(() => {window.location.reload();});
   }
   if (data)
     return (
@@ -182,7 +197,7 @@ export default function Links() {
             className={"rounded-[1.5rem] shadow-lg"}
           >
             <div className="text-[2em] font-bold flex justify-between">
-              {selectedLink === null ? (
+              {selectedLink === null && selectedCollection === null ? (
                 <>
                   <div>Links</div>
                   <Button
@@ -250,9 +265,15 @@ export default function Links() {
                                     return (
                                       <CheckedSearchResult
                                         key={"search-result" + i}
-                                        value={item.name}
+                                        value={
+                                          item.name !== null
+                                            ? item.name
+                                            : item.originalURL.slice(7)
+                                        }
                                         valueId={item.id}
-                                        isChecked={newCollectionItems.includes(item.id)}
+                                        isChecked={newCollectionItems.includes(
+                                          item.id
+                                        )}
                                         setNewCollectionItems={
                                           setNewCollectionItems
                                         }
@@ -285,32 +306,60 @@ export default function Links() {
                 <div className="flex gap-2">
                   <button
                     onClick={() => {
-                      setSelectedLink(null);
+                      setSelectedLink(null)
+                      setSelectedCollection(null);
                     }}
                   >
-                    <ArrowBackIcon />
+                    <ArrowBackIcon /> 
                   </button>
-                  <button
-                    onClick={() => {
-                      setIsRenameOpen(true);
-                    }}
-                  >
-                    {data.data[selectedLink].name ||
-                      data.data[selectedLink].originalURL.slice(
-                        data.data[selectedLink].originalURL.indexOf("/") + 2,
-                        data.data[selectedLink].originalURL.indexOf(".")
-                      )}{" "}
-                    <EditIcon />
-                  </button>
+                  {data &&
+                    data.data &&
+                    data.data.links &&
+                    data.data.links[selectedLink] && (
+                      <button
+                        onClick={() => {
+                          setIsRenameOpen(true);
+                        }}
+                      >
+                        {data.data.links[selectedLink].name ||
+                          data.data.links[selectedLink].originalURL.slice(
+                            data.data.links[selectedLink].originalURL.indexOf(
+                              "/"
+                            ) + 2,
+                            data.data.links[selectedLink].originalURL.indexOf(
+                              "."
+                            )
+                          )}{" "}
+                        <EditIcon />
+                      </button>
+                    )}
                 </div>
               )}
             </div>
             <hr />
             {data && (
               <>
-                {selectedLink === null && (
-                  <div className="pt-1">
-                    {data.data.map((link, i) => {
+                {selectedLink === null && selectedCollection === null && (
+                  <div className="pt-1 max-h-[300px] overflow-y-scroll">
+                    {data.data.collections.map((link, i) => {
+                      return (
+                        <button
+                          key={`link-${i}`}
+                          className="w-full h-[60px] flex items-center hover:bg-slate-100"
+                          onClick={() => {
+                            setSelectedCollection(i);
+                          }}
+                        >
+                          <div
+                            href=""
+                            className="capitalize text-[1.25em] font-medium flex items-center gap-2"
+                          >
+                            <Inventory2Icon /> {link.name}
+                          </div>
+                        </button>
+                      );
+                    })}
+                    {data.data.links.map((link, i) => {
                       let name;
                       if (link.name) {
                         name = link.name;
@@ -392,7 +441,7 @@ export default function Links() {
                     >
                       Shortened:{" "}
                       <span className="text-payne-gray hover:text-black">
-                        {data.data[selectedLink].shortURL}{" "}
+                        {data.data.links[selectedLink].shortURL}{" "}
                         <EditIcon
                           fontSize="10px"
                           className="relative bottom-[3px]"
@@ -454,7 +503,7 @@ export default function Links() {
                     >
                       Destination:{" "}
                       <span className="text-payne-gray hover:text-black">
-                        {data.data[selectedLink].originalURL}{" "}
+                        {data.data.links[selectedLink].originalURL}{" "}
                         <EditIcon
                           fontSize="10px"
                           className="relative bottom-[3px]"
@@ -499,19 +548,51 @@ export default function Links() {
                       </ModalDialog>
                     </Modal>
                     <Typography sx={{ opacity: ".75" }}>
-                      Created on {getDate(data.data[selectedLink].createdAt)}{" "}
-                      {getTime(data.data[selectedLink].createdAt)}
+                      Created on{" "}
+                      {getDate(data.data.links[selectedLink].createdAt)}{" "}
+                      {getTime(data.data.links[selectedLink].createdAt)}
                     </Typography>
                     <Typography sx={{ opacity: ".75" }}>
-                      {data.data[selectedLink].createdAt !==
-                        data.data[selectedLink].modifiedAt &&
+                      {data.data.links[selectedLink].createdAt !==
+                        data.data.links[selectedLink].modifiedAt &&
                         `Last modified at
-                      ${getDate(data.data[selectedLink].modifiedAt)}
-                      ${getTime(data.data[selectedLink].modifiedAt)}`}
+                      ${getDate(data.data.links[selectedLink].modifiedAt)}
+                      ${getTime(data.data.links[selectedLink].modifiedAt)}`}
                     </Typography>
                     <Typography>Password Protection: off</Typography>
                   </>
                 )}
+                {selectedCollection !== null && selectedLink === null && <div>
+                  {data.data.collections[selectedCollection].links.map((link, i) => {
+                      let name;
+                      if (link.link.name) {
+                        name = link.link.name;
+                      } else {
+                        name = link.link.originalURL;
+                        name = name.link.slice(
+                          name.indexOf("/") + 2,
+                          name.indexOf(".")
+                        );
+                      }
+
+                      return (
+                        <button
+                          key={`link-${i}`}
+                          className="w-full h-[40px] flex items-center hover:bg-slate-100"
+                          onClick={() => {
+                            setSelectedLink(i);
+                          }}
+                        >
+                          <div
+                            href=""
+                            className="capitalize text-[1.25em] font-medium"
+                          >
+                            {name}
+                          </div>
+                        </button>
+                      );
+                    })}
+                </div>}
               </>
             )}
           </Sheet>
