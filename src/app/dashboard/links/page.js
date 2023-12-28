@@ -42,6 +42,7 @@ export default function Links() {
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredResults, setFilteredResults] = useState([]);
   const [searchIsFocused, setSearchIsFocused] = useState(false);
+  const [collectionName, setCollectionName] = useState(null);
   const [newCollectionItems, setNewCollectionItems] = useState([]);
   const [selectedLink, setSelectedLink] = useState(null);
   const [isRenameOpen, setIsRenameOpen] = useState(false);
@@ -148,6 +149,28 @@ export default function Links() {
       );
   }
 
+  async function createCollection() {
+    const assignedUser = await assignUser();
+    fetch("/api/dash/links/collections", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        userId: assignedUser.id,
+        operation: "create",
+        links: newCollectionItems,
+        name: collectionName !== null ? collectionName : "Unnamed Collection",
+      }),
+    })
+      .then((res) => {
+        return res.json();
+      })
+      .then((info) => {
+        console.log(info);
+      })
+      .finally();
+  }
   if (data)
     return (
       <main className="w-full h-screen grid place-items-center">
@@ -199,7 +222,9 @@ export default function Links() {
                             id="collectionNameInput"
                             className="h-[40px] w-[60%] px-4 bg-gray-100 focus:outline-payne-gray focus:outline "
                             placeholder="New Collection"
-                            onChange={(e) => {}}
+                            onChange={(e) => {
+                              setCollectionName(e.target.value);
+                            }}
                             autoComplete={"off"}
                           ></Input>
                           <div className="w-[60%]">
@@ -230,6 +255,7 @@ export default function Links() {
                                         key={"search-result" + i}
                                         value={item.name}
                                         valueId={item.id}
+                                        isChecked={newCollectionItems.includes(item.id)}
                                         setNewCollectionItems={
                                           setNewCollectionItems
                                         }
@@ -246,7 +272,9 @@ export default function Links() {
                             )}
                             <button
                               className="py-2 px-4 bg-payne-gray hover:bg-delft-blue focus:outline-payne-gray focus:outline transition-all duration-200 text-white font-semibold rounded-lg w-[8rem] mt-2"
-                              onClick={() => {}}
+                              onClick={() => {
+                                createCollection();
+                              }}
                             >
                               Create
                             </button>
