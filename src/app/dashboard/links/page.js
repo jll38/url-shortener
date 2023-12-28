@@ -69,6 +69,7 @@ export default function Links() {
 
   useEffect(() => {
     async function fetchData() {
+      console.log('Fetching Link data');
       const assignedUser = await assignUser();
       if (assignedUser) {
         fetch("/api/dash/links", {
@@ -203,7 +204,7 @@ export default function Links() {
                           setNewUrlOpen(false);
                         }}
                       />
-                      {/* <Tabs>
+                      <Tabs>
                         <TabList>
                           <Tab>Link</Tab>
                           <Tab>Collection</Tab>
@@ -277,7 +278,7 @@ export default function Links() {
                             </button>
                           </div>
                         </TabPanel>
-                      </Tabs> */}
+                      </Tabs>
                     </ModalDialog>
                   </Modal>
                 </>
