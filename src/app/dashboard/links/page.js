@@ -102,7 +102,7 @@ export default function Links() {
   useEffect(() => {
     if (!data) return;
 
-    const results = data.data.filter((item) => {
+    const results = data.data.links.filter((item) => {
       return item.name !== null ? item.name.toLowerCase().includes(searchTerm.toLowerCase()) : item.originalURL.slice(7).toLowerCase().includes(searchTerm.toLowerCase());
     });
 
@@ -129,7 +129,7 @@ export default function Links() {
         userId: assignedUser.id,
         operation,
         value,
-        selectedShort: data.data[selectedLink].shortURL,
+        selectedShort: data.data.links[selectedLink].shortURL,
       }),
     })
       .then((res) => {
@@ -303,10 +303,10 @@ export default function Links() {
                       setIsRenameOpen(true);
                     }}
                   >
-                    {data.data[selectedLink].name ||
-                      data.data[selectedLink].originalURL.slice(
-                        data.data[selectedLink].originalURL.indexOf("/") + 2,
-                        data.data[selectedLink].originalURL.indexOf(".")
+                    {data.data.links[selectedLink].name ||
+                      data.data.links[selectedLink].originalURL.slice(
+                        data.data.links[selectedLink].originalURL.indexOf("/") + 2,
+                        data.data.links[selectedLink].originalURL.indexOf(".")
                       )}{" "}
                     <EditIcon />
                   </button>
@@ -318,7 +318,7 @@ export default function Links() {
               <>
                 {selectedLink === null && (
                   <div className="pt-1">
-                    {data.data.map((link, i) => {
+                    {data.data.links.map((link, i) => {
                       let name;
                       if (link.name) {
                         name = link.name;
@@ -400,7 +400,7 @@ export default function Links() {
                     >
                       Shortened:{" "}
                       <span className="text-payne-gray hover:text-black">
-                        {data.data[selectedLink].shortURL}{" "}
+                        {data.data.links[selectedLink].shortURL}{" "}
                         <EditIcon
                           fontSize="10px"
                           className="relative bottom-[3px]"
@@ -462,7 +462,7 @@ export default function Links() {
                     >
                       Destination:{" "}
                       <span className="text-payne-gray hover:text-black">
-                        {data.data[selectedLink].originalURL}{" "}
+                        {data.data.links[selectedLink].originalURL}{" "}
                         <EditIcon
                           fontSize="10px"
                           className="relative bottom-[3px]"
@@ -507,15 +507,15 @@ export default function Links() {
                       </ModalDialog>
                     </Modal>
                     <Typography sx={{ opacity: ".75" }}>
-                      Created on {getDate(data.data[selectedLink].createdAt)}{" "}
-                      {getTime(data.data[selectedLink].createdAt)}
+                      Created on {getDate(data.data.links[selectedLink].createdAt)}{" "}
+                      {getTime(data.data.links[selectedLink].createdAt)}
                     </Typography>
                     <Typography sx={{ opacity: ".75" }}>
-                      {data.data[selectedLink].createdAt !==
-                        data.data[selectedLink].modifiedAt &&
+                      {data.data.links[selectedLink].createdAt !==
+                        data.data.links[selectedLink].modifiedAt &&
                         `Last modified at
-                      ${getDate(data.data[selectedLink].modifiedAt)}
-                      ${getTime(data.data[selectedLink].modifiedAt)}`}
+                      ${getDate(data.data.links[selectedLink].modifiedAt)}
+                      ${getTime(data.data.links[selectedLink].modifiedAt)}`}
                     </Typography>
                     <Typography>Password Protection: off</Typography>
                   </>

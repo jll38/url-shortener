@@ -14,10 +14,10 @@ export async function POST(request) {
       modifiedAt: "desc",
     },
   });
-  console.log(await getCollections(userId));
+
   console.log(await TopPerformingToday(userId, timeZone))
   return new NextResponse(
-    JSON.stringify({ data: await URLS, message: "MATCH FOUND" }),
+    JSON.stringify({ data: {links: await URLS, collections: await getCollections(userId)}, message: "MATCH FOUND" }),
     {
       status: 200,
     }
