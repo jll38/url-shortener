@@ -148,6 +148,7 @@ export default function Links() {
 
   async function createCollection() {
     const assignedUser = await assignUser();
+    console.log("test collection");
     fetch("/api/dash/links/collections", {
       method: "POST",
       headers: {
@@ -166,7 +167,6 @@ export default function Links() {
       .then((info) => {
         console.log(info);
       })
-      .finally();
   }
   if (data)
     return (
@@ -203,7 +203,7 @@ export default function Links() {
                           setNewUrlOpen(false);
                         }}
                       />
-                      <Tabs>
+                      {/* <Tabs>
                         <TabList>
                           <Tab>Link</Tab>
                           <Tab>Collection</Tab>
@@ -277,7 +277,7 @@ export default function Links() {
                             </button>
                           </div>
                         </TabPanel>
-                      </Tabs>
+                      </Tabs> */}
                     </ModalDialog>
                   </Modal>
                 </>
