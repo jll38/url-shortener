@@ -14,7 +14,7 @@ export async function POST(request) {
       modifiedAt: "desc",
     },
   });
-
+  console.log(await getCollections(userId));
   console.log(await TopPerformingToday(userId, timeZone))
   return new NextResponse(
     JSON.stringify({ data: await URLS, message: "MATCH FOUND" }),
@@ -23,6 +23,36 @@ export async function POST(request) {
     }
   );
 }
+
+async function getCollections(userId) {
+  let collections = await Prisma.Collection.findMany({
+    where: {
+      userId: userId
+    },
+    select: {
+      id: true,          
+      name: true,
+      createdAt: true,
+      links: {
+        select: {
+          link: {
+            select: {
+              id: true,      
+              name: true,
+              originalURL: true,
+              shortURL: true
+            }
+          }
+        }
+      }
+    }
+  });
+
+  console.log(collections);
+  return collections;
+}
+
+
 
 async function TopPerformingToday(userId, timeZone) {
   const moment = require("moment-timezone");
