@@ -1,4 +1,5 @@
 "use client";
+import { CheckedSearchResult } from "./../../../components/dashboard/CheckedSearchResult";
 import React from "react";
 import { useState, useEffect } from "react";
 import { getUser } from "@/lib/authHandlers";
@@ -18,10 +19,19 @@ import {
   Typography,
   Input,
   Button,
+  Tabs,
+  TabList,
+  Tab,
+  TabPanel,
+  Radio,
+  RadioGroup,
+  FormLabel,
+  Checkbox,
 } from "@mui/joy";
 
+import SearchIcon from "@mui/icons-material/Search";
 import DisplayUrl from "@/components/displayURL";
-
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import EditIcon from "@mui/icons-material/Edit";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import AddIcon from "@mui/icons-material/Add";
@@ -29,6 +39,11 @@ import AddIcon from "@mui/icons-material/Add";
 export default function Links() {
   const [data, setData] = useState(null);
   const [user, setUser] = useState(null);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filteredResults, setFilteredResults] = useState([]);
+  const [searchIsFocused, setSearchIsFocused] = useState(false);
+  const [collectionName, setCollectionName] = useState(null);
+  const [newCollectionItems, setNewCollectionItems] = useState([]);
   const [selectedLink, setSelectedLink] = useState(null);
   const [isRenameOpen, setIsRenameOpen] = useState(false);
   const [isAliasOpen, setIsAliasOpen] = useState(false);
@@ -43,7 +58,6 @@ export default function Links() {
   const [loading, setLoading] = useState(true);
   const [renameRes, setRenameRes] = useState(null);
 
-
   //Data States
   const [topPerformers, setTopPerformers] = useState(null);
 
@@ -52,6 +66,7 @@ export default function Links() {
     setUser(userData); // Set user data to state
     return userData; // Return the user data
   }
+
   useEffect(() => {
     async function fetchData() {
       const assignedUser = await assignUser();
@@ -77,6 +92,16 @@ export default function Links() {
     }
     fetchData();
   }, []);
+
+  useEffect(() => {
+    if (!data) return;
+
+    const results = data.data.filter((item) =>
+      item.name.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+
+    setFilteredResults(results);
+  }, [data, searchTerm]);
 
   async function handleModify(operation) {
     const assignedUser = await assignUser();
@@ -121,6 +146,28 @@ export default function Links() {
       );
   }
 
+  async function createCollection() {
+    const assignedUser = await assignUser();
+    fetch("/api/dash/links/collections", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        userId: assignedUser.id,
+        operation: "create",
+        links: newCollectionItems,
+        name: collectionName !== null ? collectionName : "Unnamed Collection",
+      }),
+    })
+      .then((res) => {
+        return res.json();
+      })
+      .then((info) => {
+        console.log(info);
+      })
+      .finally();
+  }
   if (data)
     return (
       <main className="w-full h-screen grid place-items-center">
@@ -156,9 +203,81 @@ export default function Links() {
                           setNewUrlOpen(false);
                         }}
                       />
-                      <Typography>New Link</Typography>
-                      <hr />
-                      <DisplayUrl variant={"modal"} />
+                      <Tabs>
+                        <TabList>
+                          <Tab>Link</Tab>
+                          <Tab>Collection</Tab>
+                        </TabList>
+
+                        <TabPanel value={0}>
+                          <DisplayUrl variant={"modal"} />
+                        </TabPanel>
+                        <TabPanel value={1} className="flex flex-col gap-2">
+                          <Typography>Collection Name</Typography>
+                          <Input
+                            type="text"
+                            id="collectionNameInput"
+                            className="h-[40px] w-[60%] px-4 bg-gray-100 focus:outline-payne-gray focus:outline "
+                            placeholder="New Collection"
+                            onChange={(e) => {
+                              setCollectionName(e.target.value);
+                            }}
+                            autoComplete={"off"}
+                          ></Input>
+                          <div className="w-[60%]">
+                            <Typography>Add Links</Typography>
+                            <Input
+                              startDecorator={<SearchIcon />}
+                              type="text"
+                              id="collectionNameInput"
+                              className="h-[40px] px-4 bg-gray-100 focus:outline-payne-gray focus:outline "
+                              placeholder="Search"
+                              onChange={(e) => {
+                                setSearchTerm(e.target.value);
+                              }}
+                              onFocus={() => setSearchIsFocused(true)}
+                              onBlur={() => {
+                                if (!searchTerm) {
+                                  setSearchIsFocused(false);
+                                }
+                              }}
+                              autoComplete={"off"}
+                            ></Input>
+                            {searchIsFocused && searchTerm && (
+                              <div className="flex flex-col border-2 bg-white absolute w-[56%]">
+                                {filteredResults.length > 0 ? (
+                                  filteredResults.map((item, i) => {
+                                    return (
+                                      <CheckedSearchResult
+                                        key={"search-result" + i}
+                                        value={item.name}
+                                        valueId={item.id}
+                                        isChecked={newCollectionItems.includes(item.id)}
+                                        setNewCollectionItems={
+                                          setNewCollectionItems
+                                        }
+                                        newCollectionItems={newCollectionItems}
+                                      />
+                                    );
+                                  })
+                                ) : (
+                                  <div className="h-[30px] flex justify-between items-center px-2">
+                                    No results found
+                                  </div>
+                                )}
+                              </div>
+                            )}
+                            <button
+                              className="py-2 px-4 bg-payne-gray hover:bg-delft-blue focus:outline-payne-gray focus:outline transition-all duration-200 text-white font-semibold rounded-lg w-[8rem] mt-2"
+                              onClick={() => {
+                                createCollection();
+                              }}
+                            >
+                              Create
+                            </button>
+                          </div>
+                        </TabPanel>
+                      </Tabs>
                     </ModalDialog>
                   </Modal>
                 </>
@@ -301,7 +420,7 @@ export default function Links() {
                           placeholder=""
                           onChange={(e) => {
                             setNewAlias(e.target.value);
-                            console.log(newAlias)
+                            console.log(newAlias);
                           }}
                         ></Input>
                         {errorMessage && <div>{errorMessage}</div>}
