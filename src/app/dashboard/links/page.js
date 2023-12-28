@@ -318,7 +318,7 @@ export default function Links() {
               <>
                 {selectedLink === null && (
                   <div className="pt-1">
-                    {data.data.map((link, i) => {
+                    {/* {data.data.map((link, i) => {
                       let name;
                       if (link.name) {
                         name = link.name;
@@ -346,7 +346,7 @@ export default function Links() {
                           </div>
                         </button>
                       );
-                    })}
+                    })} */}
                   </div>
                 )}
                 {selectedLink !== null && (
