@@ -44,10 +44,11 @@ export default function Dashboard() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [hoveredCell, setHoveredCell] = useState(null);
-
+  const [clicksVal, setClicksVal] = useState("daily");
   //Data States
   const [topPerformers, setTopPerformers] = useState(null);
   const [dailyClicks, setDailyClicks] = useState(null);
+  const [weeklyClicks, setWeeklyClicks] = useState(null);
   const [todaysClicks, setTodaysClicks] = useState(null);
   const [devices, setDevices] = useState(null);
   const [browsers, setBrowsers] = useState(null);
@@ -58,6 +59,7 @@ export default function Dashboard() {
     setUser(userData); // Set user data to state
     return userData; // Return the user data
   }
+
   useEffect(() => {
     async function fetchData() {
       const assignedUser = await assignUser();
@@ -78,9 +80,10 @@ export default function Dashboard() {
           })
           .then((info) => {
             setData(info);
-            console.log(info.data)
+            console.log(info.data);
             setTopPerformers(info.data.topPerformers);
             setDailyClicks(info.data.dailyClicks);
+            setWeeklyClicks(info.data.weeklyClicks);
             setTodaysClicks(info.data.todaysClicks);
 
             setDevices(
@@ -147,7 +150,9 @@ export default function Dashboard() {
             {dailyClicks && (
               <TodaysClicksBox
                 todaysClicks={todaysClicks}
-                yesterdaysClicks={dailyClicks[dailyClicks.length - 1]?.clicks || 0}
+                yesterdaysClicks={
+                  dailyClicks[dailyClicks.length - 1]?.clicks || 0
+                }
               />
             )}
           </div>
@@ -190,16 +195,24 @@ export default function Dashboard() {
                 defaultValue="daily"
                 variant="plain"
                 sx={{ width: "120px" }}
+
               >
-                <Option value={"daily"}>Daily</Option>
-                <Option value={"weekly"}>Weekly</Option>
-                <Option value={"monthly"}>Monthly</Option>
-              </Select>{" "}
+                <Option value={"daily"} onClick={() => {setClicksVal("daily")}}>Daily</Option>
+                <Option value={"weekly"} onClick={() => {setClicksVal("weekly")}}>Weekly</Option>
+                <Option value={"monthly"} onClick={() => {setClicksVal("monthly")}}>Monthly</Option>
+              </Select>
               <div className="w-full h-full flex justify-center">
-                {dailyClicks && (
+                {dailyClicks && clicksVal === "daily" && (
                   <AreaLine
                     dailyClicks={dailyClicks}
                     todaysClicks={todaysClicks}
+                  />
+                )}
+                {weeklyClicks && clicksVal === "weekly" && (
+                  <AreaLine
+                    dailyClicks={weeklyClicks}
+                    todaysClicks={todaysClicks}
+                    type="weekly"
                   />
                 )}
               </div>
@@ -241,7 +254,9 @@ export default function Dashboard() {
                           return {
                             x: i,
                             y: ref.count,
-                            title: ref.selectedData.sitename || ref.selectedData.title,
+                            title:
+                              ref.selectedData.sitename ||
+                              ref.selectedData.title,
                           };
                         })}
                         fill={colors[4]}
@@ -319,19 +334,18 @@ export default function Dashboard() {
                       <div>
                         <Typography>Browser</Typography>
                         <PieChart value={browsers} />
-                        
                       </div>
                     )}
                     {devices.length === 0 && browsers.length === 0 && (
-                     <div
-                     style={{
-                       display: "grid",
-                       placeItems: "center",
-                       height: "60%",
-                     }}
-                   >
-                     No data to display
-                   </div>
+                      <div
+                        style={{
+                          display: "grid",
+                          placeItems: "center",
+                          height: "60%",
+                        }}
+                      >
+                        No data to display
+                      </div>
                     )}
                   </>
                 )}

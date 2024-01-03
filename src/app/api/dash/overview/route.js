@@ -2,12 +2,14 @@ import { NextRequest, NextResponse } from "next/server";
 import { Prisma } from "../../prisma";
 import { domain } from "@/lib/domain";
 import qs from "qs";
+import { create } from "@mui/material/styles/createTransitions";
 
 export async function POST(request) {
   const { userId, operation, timeZone } = await request.json();
   let data;
   const topPerformers = await getTopPerformers(userId);
   const { dailyClicks, todaysClicks } = await getDailyClicks(userId, timeZone);
+  const weeklyClicks = await getWeeklyClicks(dailyClicks);
   const deviceAndBrowser = await getDeviceAndBrowser(userId);
   const referrers = await getReferrers(userId);
   return new NextResponse(
@@ -15,6 +17,7 @@ export async function POST(request) {
       data: {
         topPerformers,
         dailyClicks,
+        weeklyClicks,
         todaysClicks,
         deviceAndBrowser,
         referrers,
@@ -85,6 +88,32 @@ async function getDailyClicks(userId, timeZone) {
   return { dailyClicks, todaysClicks };
 }
 
+function getWeeklyClicks(dailyClicks) {
+  const moment = require("moment-timezone");
+
+  let weeklyClicksSummary = [];
+
+  for (let i = 0; i < 5; i++) {
+      const startOfWeek = moment().subtract(i, 'weeks').startOf('week');
+      const endOfWeek = moment(startOfWeek).endOf('week');
+      let totalClicks = 0;
+
+      dailyClicks.forEach(click => {
+          const clickDate = moment(click.createdAt); // Assuming 'createdAt' is the date field
+          if (clickDate.isSameOrAfter(startOfWeek) && clickDate.isSameOrBefore(endOfWeek)) {
+              totalClicks += click.clicks; // Assuming 'clicks' is the field for number of clicks
+          }
+      });
+
+      // Using UTC Zulu time format for createdAt
+      const createdAt = startOfWeek.utc().format();
+
+      weeklyClicksSummary.push({ createdAt: createdAt, clicks: totalClicks });
+  }
+
+  return weeklyClicksSummary;
+}
+
 //Update for to only include traffic from links made by current user
 async function getDeviceAndBrowser(userId) {
   const userLinks = await Prisma.Link.findMany({
@@ -95,8 +124,8 @@ async function getDeviceAndBrowser(userId) {
       id: true,
     },
   });
-    
-  const linkIds = userLinks.map(link => link.id);
+
+  const linkIds = userLinks.map((link) => link.id);
 
   const TrafficRecords = await Prisma.Traffic.findMany({
     where: {
@@ -109,7 +138,6 @@ async function getDeviceAndBrowser(userId) {
       browser: true,
     },
   });
-  
 
   // Initialize objects to hold the counts for devices and browsers
   const deviceCounts = {};
@@ -165,7 +193,7 @@ async function getReferrers() {
         title: referrer.source.title,
         sitename: referrer.source.sitename,
         description: referrer.source.description,
-        images: referrer.source.images
+        images: referrer.source.images,
       };
 
       let existingEntry = allReferrers.find(
@@ -181,5 +209,6 @@ async function getReferrers() {
       }
     }
   }
+
   return allReferrers;
 }
