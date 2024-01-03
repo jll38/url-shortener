@@ -6,16 +6,18 @@ import { Table, Sheet, Typography, Skeleton } from "@mui/joy";
 import mapboxgl from "mapbox-gl";
 import Link from "next/link";
 import { CircularProgress } from "@mui/joy";
+import Tooltip from "@mui/joy/Tooltip";
 
 import { getUser } from "@/lib/authHandlers";
 import { useState, useEffect } from "react";
 import { DASHBOARD_FETCH_INTERVAL, MAPBOX_API_KEY } from "@/lib/constants";
-
+import Draggable from "gsap/Draggable";
 //Icons
 import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
 import ArrowDropUpIcon from "@mui/icons-material/ArrowDropUp";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
-import { ArrowDropUp } from "@mui/icons-material";
+import { ArrowDropUp, Close } from "@mui/icons-material";
+import CloseIcon from "@mui/icons-material/Close";
 export default function Geography() {
   const [data, setData] = useState(null);
   const [isEmptyData, setIsEmptyData] = useState(null);
@@ -24,7 +26,10 @@ export default function Geography() {
   const [user, setUser] = useState(null);
   const [userLoading, setUserLoading] = useState(true);
 
-  mapboxgl.accessToken = MAPBOX_API_KEY;
+  // Widget States
+  const [topLocationsWidgetOpen, setTopLocationsWidgetOpen] = useState(true);
+
+  mapboxgl.accessToken = MAPBOX_API_KEY; //Mabox Setup Token
 
   async function assignUser() {
     const userData = getUser(); // Fetch user data
@@ -51,6 +56,7 @@ export default function Geography() {
         })
         .then((data) => {
           setData(data);
+          console.log(data);
           if (data.error) {
             setIsEmptyData(true);
           }
@@ -107,10 +113,77 @@ export default function Geography() {
       )}
       {data && (
         <>
-          <section className="h-full">
+          <section className="h-full relative">
             {isEmptyData && <h4>No data to display</h4>}
 
-            {!isEmptyData && <Map records={data.data}></Map>}
+            {!isEmptyData && (
+              <>
+                <Sheet
+                  name="tool-bar"
+                  sx={{
+                    position: "absolute",
+                    right: 0,
+                    margin: 4,
+                    padding: 1,
+                    width: 125,
+                    borderRadius: 4,
+                    opacity: 0.75,
+                    boxShadow: "black 2px 2px 12px",
+                  }}
+                >
+                  <table className="w-full">
+                    <thead>
+                      <th className="text-left">Tool</th>
+                      <th></th>
+                    </thead>
+                    <tbody>
+                      <tr className="border-b flex justify-between items-center">
+                        <td className="text-[.75em]">Top Locations</td>
+                        <td>
+                          <input
+                            type={"checkbox"}
+                            checked={topLocationsWidgetOpen}
+                            onClick={() => {
+                              setTopLocationsWidgetOpen(
+                                !topLocationsWidgetOpen
+                              );
+                            }}
+                          ></input>
+                        </td>
+                      </tr>
+                     
+                    </tbody>
+                  </table>
+                </Sheet>
+                {topLocationsWidgetOpen && (
+                  <Sheet
+                    name="city-country"
+                    sx={{
+                      position: "absolute",
+                      margin: 4,
+                      padding: 1,
+                      width: 200,
+                      borderRadius: 4,
+                      opacity: 0.75,
+                      boxShadow: "black 2px 2px 12px",
+                    }}
+                  >
+                    <Typography sx={{ fontWeight: 700 }}>
+                      Top Clickers
+                    </Typography>
+                    <div className="flex items-center gap-1">
+                      Country:{" "}
+                      <Tooltip title="United States" placement="right">
+                        <span className="drop-shadow text-[1.5em]">🇺🇸</span>
+                      </Tooltip>
+                    </div>
+                    <div>City: {data.topCities[0].city}</div>
+                  </Sheet>
+                )}
+
+                <Map records={data.data}></Map>
+              </>
+            )}
           </section>
         </>
       )}
