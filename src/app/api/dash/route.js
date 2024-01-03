@@ -15,14 +15,14 @@ export async function POST(request) {
   });
 
   // Extract the link IDs
-  const linkIds = userLinks.map(link => link.id);
+  const linkIds = userLinks.map((link) => link.id);
 
   let urlRecord;
   if (limit) {
     urlRecord = await Prisma.Traffic.findMany({
       where: {
         linkId: {
-          in: linkIds, 
+          in: linkIds,
         },
       },
       orderBy: {
@@ -54,11 +54,38 @@ export async function POST(request) {
       status: 404,
     });
   }
-
+  const topCities = await getTopCity(urlRecord);
   return new NextResponse(
-    JSON.stringify({ data: urlRecord, message: "MATCH FOUND" }),
+    JSON.stringify({ data: urlRecord, topCities, message: "MATCH FOUND" }),
     {
       status: 200,
     }
   );
+}
+
+async function getTopCity(records) {
+  let data = records;
+
+  let cityCounts = new Map();
+
+  // Count each city
+  data.forEach((item) => {
+    let city = item.location.city;
+    cityCounts.set(city, (cityCounts.get(city) || 0) + 1);
+  });
+
+  // Convert to an array and sort by count
+  let sortedCities = Array.from(cityCounts).sort((a, b) => b[1] - a[1]);
+
+  // Get top 5 cities or fill with null if less than 5 cities
+  let top5Cities = sortedCities.slice(0, 5);
+  while (top5Cities.length < 5) {
+    top5Cities.push(null);
+  }
+
+  // Map to desired format
+  let formattedTop5Cities = top5Cities.map((item) =>
+    item ? { city: item[0], count: item[1] } : null
+  );
+  return formattedTop5Cities;
 }
