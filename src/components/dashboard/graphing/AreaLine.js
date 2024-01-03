@@ -5,7 +5,7 @@ import { Crosshair } from "react-vis";
 import { Sheet } from "@mui/joy";
 
 import { getDate } from "@/lib/time";
-export function AreaLine({ dailyClicks, todaysClicks }) {
+export function AreaLine({ dailyClicks, todaysClicks, type="daily"  }) {
   const [points, setPoints] = useState([]);
   let count = 0;
   const daily = [].concat(dailyClicks).reverse();
@@ -40,10 +40,10 @@ export function AreaLine({ dailyClicks, todaysClicks }) {
                 sx={{ bgcolor: "white", color: "black" }}
                 className="flex flex-col h-[60px] w-full ml-2 shadow-md rounded-md overflow-hidden "
               >
-                <div className="px-2 w-full h-[24px] bg-gray-300 text-gray-800 text-[.8em] flex items-center">
-                  {points[0].date}
+                <div className={`px-2 w-full bg-gray-300 text-gray-800 text-[.8em] flex items-center ${type === "daily" ? 'h-[24px]' : 'h-[40px]'}`}>
+                  {type === "weekly" && "Week of"} {points[0].date}
                 </div>
-                <div className="flex items-center px-2 text-gray-800 text-[.75em]">
+                <div className={`flex items-center px-2 text-gray-800 text-[.75em]`}>
                   {points[0].y} Clicks
                 </div>
               </Sheet>
