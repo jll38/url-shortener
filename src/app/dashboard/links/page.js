@@ -9,7 +9,7 @@ import { ENVIRONMENT } from "@/lib/constants";
 import { TIME_ZONE } from "@/lib/constants";
 
 import { CircularProgress } from "@mui/joy";
-
+import CopyClipboard from "@/components/CopyClipboard";
 import {
   Sheet,
   Table,
@@ -181,7 +181,9 @@ export default function Links() {
       .then((info) => {
         console.log(info);
       })
-      .finally(() => {window.location.reload();});
+      .finally(() => {
+        window.location.reload();
+      });
   }
   if (data)
     return (
@@ -306,11 +308,11 @@ export default function Links() {
                 <div className="flex gap-2">
                   <button
                     onClick={() => {
-                      setSelectedLink(null)
+                      setSelectedLink(null);
                       setSelectedCollection(null);
                     }}
                   >
-                    <ArrowBackIcon /> 
+                    <ArrowBackIcon />
                   </button>
                   {data &&
                     data.data &&
@@ -374,7 +376,7 @@ export default function Links() {
                       return (
                         <button
                           key={`link-${i}`}
-                          className="w-full h-[40px] flex items-center hover:bg-slate-100"
+                          className="w-full h-[40px] flex items-center gap-4 hover:bg-slate-100"
                           onClick={() => {
                             setSelectedLink(i);
                           }}
@@ -384,6 +386,12 @@ export default function Links() {
                             className="capitalize text-[1.25em] font-medium"
                           >
                             {name}
+                          </div>
+                          <div
+                            href=""
+                            className="text-[.75em] font-medium opacity-75 italic" 
+                          >
+                            {link.originalURL}
                           </div>
                         </button>
                       );
@@ -433,21 +441,27 @@ export default function Links() {
                         </Button>
                       </ModalDialog>
                     </Modal>
-                    <button
-                      onClick={() => {
-                        setIsAliasOpen(true);
-                      }}
-                      className="flex items-center gap-2 justify-center  transition-all duration-100"
-                    >
-                      Shortened:{" "}
-                      <span className="text-payne-gray hover:text-black">
-                        {data.data.links[selectedLink].shortURL}{" "}
-                        <EditIcon
-                          fontSize="10px"
-                          className="relative bottom-[3px]"
-                        />
-                      </span>{" "}
-                    </button>
+                    <div className="flex">
+                      {" "}
+                      <button
+                        onClick={() => {
+                          setIsAliasOpen(true);
+                        }}
+                        className="flex items-center gap-2 justify-center  transition-all duration-100"
+                      >
+                        Shortened:{" "}
+                        <span className="text-payne-gray hover:text-black">
+                          {data.data.links[selectedLink].shortURL}{" "}
+                          <EditIcon
+                            fontSize="10px"
+                            className="relative bottom-[1px]"
+                          />
+                        </span>{" "}
+                      </button>{" "}
+                      <CopyClipboard
+                        value={data.data.links[selectedLink].shortURL}
+                      />
+                    </div>
                     <Modal open={isAliasOpen}>
                       <ModalDialog>
                         <ModalClose
@@ -562,37 +576,41 @@ export default function Links() {
                     <Typography>Password Protection: off</Typography>
                   </>
                 )}
-                {selectedCollection !== null && selectedLink === null && <div>
-                  {data.data.collections[selectedCollection].links.map((link, i) => {
-                      let name;
-                      if (link.link.name) {
-                        name = link.link.name;
-                      } else {
-                        name = link.link.originalURL;
-                        name = name.slice(
-                          name.indexOf("/") + 2,
-                          name.indexOf(".")
+                {selectedCollection !== null && selectedLink === null && (
+                  <div>
+                    {data.data.collections[selectedCollection].links.map(
+                      (link, i) => {
+                        let name;
+                        if (link.link.name) {
+                          name = link.link.name;
+                        } else {
+                          name = link.link.originalURL;
+                          name = name.slice(
+                            name.indexOf("/") + 2,
+                            name.indexOf(".")
+                          );
+                        }
+
+                        return (
+                          <button
+                            key={`link-${i}`}
+                            className="w-full h-[40px] flex items-center hover:bg-slate-100"
+                            onClick={() => {
+                              setSelectedLink(i);
+                            }}
+                          >
+                            <div
+                              href=""
+                              className="capitalize text-[1.25em] font-medium"
+                            >
+                              {name}
+                            </div>
+                          </button>
                         );
                       }
-
-                      return (
-                        <button
-                          key={`link-${i}`}
-                          className="w-full h-[40px] flex items-center hover:bg-slate-100"
-                          onClick={() => {
-                            setSelectedLink(i);
-                          }}
-                        >
-                          <div
-                            href=""
-                            className="capitalize text-[1.25em] font-medium"
-                          >
-                            {name}
-                          </div>
-                        </button>
-                      );
-                    })}
-                </div>}
+                    )}
+                  </div>
+                )}
               </>
             )}
           </Sheet>
