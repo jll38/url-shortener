@@ -5,6 +5,7 @@ import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 
 export default function CopyClipboard({ value = " " }) {
   const [toolTipText, setToolTipText] = useState("Copy to Clipboard");
+  const [toolTipOpen, setToolTipOpen] = useState(false);
   function copyToClipboard() {
     navigator.clipboard.writeText(value);
     setToolTipText("Copied!");
@@ -13,8 +14,13 @@ export default function CopyClipboard({ value = " " }) {
   return (
     <Tooltip
       title={toolTipText}
+      open={toolTipOpen}
+      onMouseEnter={() => {
+        setToolTipOpen(true);
+      }}
       onMouseLeave={() => {
         setToolTipText("Copy to Clipboard");
+        setToolTipOpen(false);
       }}
     >
       <button
