@@ -18,15 +18,16 @@ export default function DashNav() {
   const pathname = usePathname();
 
   const dashPages = [
-    { name: "Overview", route: "/dashboard", icon: <Dashboard /> },
-    { name: "Analytics", route: "/dashboard/analytics", icon: <BarChart /> },
-    { name: "Geography", route: "/dashboard/geography", icon: <Public /> },
+    { name: "Overview", route: "/dashboard", icon: <Dashboard />, disabled: false },
+    { name: "Analytics", route: "/dashboard/analytics", icon: <BarChart />, disabled: true },
+    { name: "Geography", route: "/dashboard/geography", icon: <Public />, disabled: false},
     {
       name: "Demographics",
       route: "/dashboard/demographics",
       icon: <Groups3Icon />,
+      disabled: true,
     },
-    { name: "My Links", route: "/dashboard/links", icon: <Link /> },
+    { name: "My Links", route: "/dashboard/links", icon: <Link />, disabled: false,},
   ];
 
   useEffect(() => {
@@ -51,10 +52,11 @@ export default function DashNav() {
                   pathname === panel.route
                     ? "bg-slate-200"
                     : "hover:bg-slate-100"
-                } lg:text-left text-center flex lg:flex-row flex-col lg:gap-1 items-center justify-center h-[80px]`}
+                } lg:text-left text-center flex lg:flex-row flex-col lg:gap-1 items-center justify-center h-[80px] ${panel.disabled ? 'opacity-50' : ''}`}
                 onClick={() => {
                   window.location.assign(panel.route);
                 }}
+                disabled={panel.disabled}
               >
                 {panel.icon} {panel.name}
               </button>
