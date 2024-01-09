@@ -66,7 +66,7 @@ export function Navbar() {
                   <Person color="grey" />
                 </MenuButton>
                 <Menu>
-                  <MenuItem>
+                  <MenuItem disabled={true}>
                     <Person />
                     Profile
                   </MenuItem>
@@ -79,7 +79,7 @@ export function Navbar() {
                     My Links
                   </MenuItem>
 
-                  <MenuItem onClick={() => {window.location.assign('/settings')}}>
+                  <MenuItem disabled={true} onClick={() => {window.location.assign('/settings')}}>
                     <SettingsIcon />
                     Settings
                   </MenuItem>
