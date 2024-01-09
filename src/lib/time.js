@@ -10,5 +10,5 @@ export function getTime(zTime) {
 
 export function getDate(zTime) {
   const date = new Date(zTime);
-  return `${date.getMonth()}/${date.getDate()}/${date.getFullYear()}`;
+  return `${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()}`;
 }
