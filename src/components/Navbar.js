@@ -33,7 +33,7 @@ export function Navbar() {
 
   return (
     <nav
-      className={`w-full h-[75px] flex items-center px-5 md:px-10 justify-between`}
+      className={`w-full h-[75px] flex items-center px-5 md:px-10 justify-between bg-white drop-shadow-lg`}
     >
       <Link
         name="nav-logo"

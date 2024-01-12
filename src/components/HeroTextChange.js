@@ -36,10 +36,10 @@ export function HeroTextChange() {
   }, [subIndex, index]);
 
   return (
-    <div className="-mt-4 mb-4 text-[3em] ml-4 hidden md:block">
+    <div className="-mt-4 mb-4 text-[3em] ml-4 hidden md:block text-white drop-shadow-md">
       A simple, <br />
       yet powerful tool <br />
-      for <span className="font-bold underline">{text}<span className="blinking-cursor">|</span></span>
+      for <span className="font-bold underline text-cyan-100">{text}<span className="blinking-cursor">|</span></span>
     </div>
   );
 }
