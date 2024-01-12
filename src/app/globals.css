@@ -34,3 +34,10 @@
   margin-left: 2px;
   vertical-align: text-bottom;
 }
+
+@keyframes fadeIn {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+.fade-in { animation: fadeIn .5s; }

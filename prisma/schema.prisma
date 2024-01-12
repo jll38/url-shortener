@@ -64,6 +64,7 @@ model User {
   salt          String
   DailyClicks   DailyClicks[]
   collections   Collection[] // One-to-Many relation with Collection
+  createdAt     DateTime?      @default(now())
 }
 
 model Traffic {

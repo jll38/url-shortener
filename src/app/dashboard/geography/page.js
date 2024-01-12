@@ -12,6 +12,7 @@ import { getUser } from "@/lib/authHandlers";
 import { useState, useEffect } from "react";
 import { DASHBOARD_FETCH_INTERVAL, MAPBOX_API_KEY } from "@/lib/constants";
 import Draggable from "gsap/Draggable";
+
 //Icons
 import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
 import ArrowDropUpIcon from "@mui/icons-material/ArrowDropUp";
@@ -131,7 +132,7 @@ export default function Geography() {
                     boxShadow: "black 2px 2px 12px",
                   }}
                 >
-                  <table className="w-full">
+                  <table className="w-full fade-in">
                     <thead>
                       <th className="text-left">Tool</th>
                       <th></th>
@@ -151,35 +152,54 @@ export default function Geography() {
                           ></input>
                         </td>
                       </tr>
-                     
                     </tbody>
                   </table>
                 </Sheet>
-                {topLocationsWidgetOpen && (
-                  <Sheet
-                    name="city-country"
-                    sx={{
-                      position: "absolute",
-                      margin: 4,
-                      padding: 1,
-                      width: 200,
-                      borderRadius: 4,
-                      opacity: 0.75,
-                      boxShadow: "black 2px 2px 12px",
-                    }}
-                  >
-                    <Typography sx={{ fontWeight: 700 }}>
-                      Top Clickers
-                    </Typography>
-                    <div className="flex items-center gap-1">
-                      Country:{" "}
-                      <Tooltip title="United States" placement="right">
-                        <span className="drop-shadow text-[1.5em]">🇺🇸</span>
-                      </Tooltip>
-                    </div>
-                    <div>City: {data.topCities[0].city}</div>
-                  </Sheet>
-                )}
+                <div className="absolute m-4 fade-in">
+                  <div className="flex flex-col gap-4">
+                    {topLocationsWidgetOpen && (
+                      <Sheet
+                        name="city-country"
+                        sx={{
+                          padding: 1,
+                          width: 200,
+                          borderRadius: 4,
+                          opacity: 0.75,
+                          boxShadow: "black 2px 2px 12px",
+                        }}
+                      >
+                        <Typography sx={{ fontWeight: 700 }}>
+                          Top Clickers
+                        </Typography>
+                        <div className="flex items-center gap-1">
+                          Country:{" "}
+                          <Tooltip title="United States" placement="right">
+                            <span className="drop-shadow text-[1.5em]">🇺🇸</span>
+                          </Tooltip>
+                        </div>
+                        <div>City: {data.topCities[0].city}</div>
+                      </Sheet>
+                    )}
+                    <Sheet
+                      name="timeframe"
+                      sx={{
+                        padding: 1,
+                        width: 200,
+                        borderRadius: 4,
+                        opacity: 0.75,
+                        boxShadow: "black 2px 2px 12px",
+                      }}
+                    >
+                      <Typography sx={{ fontWeight: 700 }}>
+                        Timeframe
+                      </Typography>
+                      <div className="flex items-center gap-1">
+                        <input type="range"></input>
+                      </div>
+                      <div>City: {data.topCities[0].city}</div>
+                    </Sheet>
+                  </div>
+                </div>
 
                 <Map records={data.data}></Map>
               </>
