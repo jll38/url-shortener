@@ -86,13 +86,13 @@ export default function DisplayUrl({ variant = "home" }) {
             startDecorator="http://"
             type="text"
             id="urlInput"
-            className="h-[40px] w-[60%] px-4 bg-gray-100 focus:outline-payne-gray focus:outline "
+            className="h-[40px] w-[60%] px-4 bg-gray-100 focus:outline-cyan-700 focus:outline "
             placeholder="Enter a long URL here..."
             onChange={(e) => setURL("http://" + e.target.value)}
             autoComplete={"off"}
           ></Input>
           <button
-            className="py-2 px-4 bg-payne-gray hover:bg-delft-blue focus:outline-payne-gray focus:outline transition-all duration-200 text-white font-semibold rounded-r-lg"
+            className="py-2 px-4 bg-cyan-600 hover:bg-cyan-700 focus:outline-payne-gray focus:outline transition-all duration-200 text-white font-semibold rounded-r-lg"
             onClick={handleURLSubmit}
           >
             Shorten It!
