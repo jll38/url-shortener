@@ -13,12 +13,12 @@ import PublicIcon from '@mui/icons-material/Public';
 export default function Home() {
   return (
     <>
-    <main className="overflow-y-hidden">
+    <main className=" h-screen">
       <div className="z-20">
         <Navbar />
       </div>
-      <section name="hero-cta" className="h-[85vh]">
-        <div className="absolute h-[85vh] w-full bg-black -z-10 blur-sm ">
+      <section name="hero-cta" className="h-[87vh] overflow-hidden">
+        <div className="absolute h-[87vh] w-full bg-black -z-10 blur-s overflow-hidden">
           <div className="h-full w-full bg-gradient-to-tr from-cyan-300 via-cyan-200 to-sky-500 scale-[1.25]"></div>
         </div>
         <div className="flex flex-col-reverse md:flex-row justify-center gap-2 h-full z-30 pt-[4rem] bg-black/20">
@@ -26,7 +26,7 @@ export default function Home() {
             name="shortener"
             className="h-[100%] md:w-1/2 w-full flex justify-center items-center"
           >
-            <div className="w-full flex items-left flex-col justify-center text-payne-gray font-medium relative z-20 px-12 -mt-[6rem]">
+            <div className="w-full flex items-left flex-col justify-center text-payne-gray font-medium relative 20 px-12 -mt-[6rem]">
               <HeroTextChange />
               <DisplayUrl />
             </div>

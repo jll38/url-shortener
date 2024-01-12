@@ -33,11 +33,11 @@ export function Navbar() {
 
   return (
     <nav
-      className={`w-full h-[75px] flex items-center px-5 md:px-10 justify-between bg-white drop-shadow-lg`}
+      className={`w-full h-[6vh] sm:h-[8vh] flex items-center px-5 md:px-10 justify-between bg-white drop-shadow-lg`}
     >
       <Link
         name="nav-logo"
-        className="font-semibold text-[.8em] md:text-[1.2em]"
+        className="font-semibold text-[.75em] md:text-[1.2em]"
         href="/"
       >
         <Typography>
@@ -47,13 +47,13 @@ export function Navbar() {
 
       <div
         name="nav-right"
-        className="flex items-center gap-4 md:gap-10 text-[.8em] md:text-[1.2em]"
+        className="flex items-center gap-4 md:gap-10 text-[.75em] md:text-[.8em]"
       >
         <Link
           className="hover:text-gray-600 transition-all duration-200"
           href="/features"
         >
-          <Typography fontWeight={500}>Features</Typography>
+          <Typography fontWeight={500} className="hidden sm:block">Features</Typography>
         </Link>
         {!loading && (
           <>

@@ -7,12 +7,12 @@ export default function ShortURL({ children }) {
       animate={{ opacity: 1, scale: 1 }}
       transition={{ duration: 0.25 }}
     >
-      <div className="w-[300px] py-4 px-2 mt-4 rounded-xl">
+      <div className="w-[300px] py-4 px-2 mt-4 rounded-xl text-white drop-shadow-lg">
         <div className="text-center mx-2 py-2 rounded-lg">
           <div className="font-semibold text-[1.5em]">
-            Your TinyClicks URL is:
+            Your <span className="text-cyan-100">TinyClicks URL</span> is:
           </div>
-          <a href={children} target="_blank">
+          <a href={children} target="_blank" className="text-cyan-100">
             {children}
           </a>
         </div>
