@@ -123,13 +123,7 @@ export default function Dashboard() {
           <div className="h-[150px] p-4 flex gap-2 items-center">
             {user ? (
               <div className="flex items-center gap-8">
-                <Image
-                  src={"/images/dash-user-greeting.png"}
-                  width={150}
-                  height={150}
-                  draggable={"false"}
-                  alt="/"
-                ></Image>
+
                 <div>
                   <Typography sx={{ fontWeight: 700 }} className={"text-[2em]"}>
                     Hello, {user.name}!
@@ -146,7 +140,7 @@ export default function Dashboard() {
               </div>
             )}
           </div>
-          <div className="px-4 flex flex-wrap gap-8">
+          <div className="px-4 flex flex-wrap gap-8 fade-in">
             {dailyClicks && (
               <TodaysClicksBox
                 todaysClicks={todaysClicks}
@@ -156,7 +150,7 @@ export default function Dashboard() {
               />
             )}
           </div>
-          <div className="px-4 flex flex-wrap gap-8">
+          <div className="px-4 flex flex-wrap gap-8 fade-in">
             {topPerformers && (
               <Sheet
                 sx={{
@@ -201,7 +195,7 @@ export default function Dashboard() {
                 <Option value={"weekly"} onClick={() => {setClicksVal("weekly")}}>Weekly</Option>
                 <Option value={"monthly"} onClick={() => {setClicksVal("monthly")}}>Monthly</Option>
               </Select>
-              <div className="w-full h-full flex justify-center">
+              <div className="w-full h-full flex justify-center fade-in">
                 {dailyClicks && clicksVal === "daily" && (
                   <AreaLine
                     dailyClicks={dailyClicks}
