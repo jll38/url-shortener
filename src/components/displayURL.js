@@ -81,18 +81,18 @@ export default function DisplayUrl({ variant = "home" }) {
   if (variant === "home")
     return (
       <>
-        <div className="flex justify-left items-center drop-shadow-lg h-[4vh] w-full md:w-[50vw]">
+        <div className="flex justify-left items-center drop-shadow-lg h-[40px] w-full md:w-[50vw]">
           <Input
             startDecorator="http://"
             type="text"
             id="urlInput"
-            className=" px-4 bg-gray-100 focus:outline-cyan-700 focus:outline  text-[1.75vh] w-full md:w-[40%]"
+            className="h-full px-4 bg-gray-100 focus:outline-cyan-700 focus:outline  w-full md:w-[40%]"
             placeholder="Enter a long URL here..."
             onChange={(e) => setURL("http://" + e.target.value)}
             autoComplete={"off"}
           ></Input>
           <button
-            className="py-2 px-4  bg-cyan-600 hover:bg-cyan-700 focus:outline-payne-gray focus:outline  text-white font-semibold rounded-r-lg text-[1.3vh]"
+            className="py-2 px-4  bg-cyan-600 hover:bg-cyan-700 focus:outline-payne-gray focus:outline  text-white font-semibold rounded-r-lg h-full"
             onClick={handleURLSubmit}
           >
             Shorten It!

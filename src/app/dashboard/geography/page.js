@@ -7,6 +7,8 @@ import mapboxgl from "mapbox-gl";
 import Link from "next/link";
 import { CircularProgress } from "@mui/joy";
 import Tooltip from "@mui/joy/Tooltip";
+import MultiRangeSlider from "multi-range-slider-react";
+import Box from "@mui/joy";
 
 import { getUser } from "@/lib/authHandlers";
 import { useState, useEffect } from "react";
@@ -26,6 +28,10 @@ export default function Geography() {
   const [moreRecords, setMoreRecords] = useState(true);
   const [user, setUser] = useState(null);
   const [userLoading, setUserLoading] = useState(true);
+  const [dateRange, setDateRange] = useState(null); 
+  //The minimum and maximum dates are the first ever traffic record and the most recent respsectively
+  // dateRange[0] Minimum
+  // dateRange[1] Maximum
 
   // Widget States
   const [topLocationsWidgetOpen, setTopLocationsWidgetOpen] = useState(true);
@@ -57,7 +63,7 @@ export default function Geography() {
         })
         .then((data) => {
           setData(data);
-          console.log(data);
+          setDateRange([data.data[data.data.length-1].createdAt, data.data[0].createdAt]);
           if (data.error) {
             setIsEmptyData(true);
           }
@@ -80,8 +86,8 @@ export default function Geography() {
       setUser(loggedInUser);
       fetchData();
 
-      // Call the API every X seconds
-      const interval = setInterval(fetchData, DASHBOARD_FETCH_INTERVAL * 1000); // replace X with your interval in seconds
+      // // Call the API every X seconds
+      // const interval = setInterval(fetchData, DASHBOARD_FETCH_INTERVAL * 1000); // replace X with your interval in seconds
 
       // Clean up the interval on component unmount
       return () => clearInterval(interval);
@@ -194,9 +200,8 @@ export default function Geography() {
                         Timeframe
                       </Typography>
                       <div className="flex items-center gap-1">
-                        <input type="range"></input>
+                        {dateRange[0]} {dateRange[1]}
                       </div>
-                      <div>City: {data.topCities[0].city}</div>
                     </Sheet>
                   </div>
                 </div>
