@@ -39,6 +39,7 @@ export default function Geography() {
 
   // Widget States
   const [topLocationsWidgetOpen, setTopLocationsWidgetOpen] = useState(true);
+  const [timeframeWidgetOpen, setTimeframeWidgetOpen] = useState(true);
 
   mapboxgl.accessToken = MAPBOX_API_KEY; //Mabox Setup Token
 
@@ -47,6 +48,10 @@ export default function Geography() {
     setUser(userData); // Set user data to state
     return userData; // Return the user data
   }
+
+  useEffect(() => {
+    console.log(dateRange);
+  }, [dateRange]);
   const fetchData = async () => {
     const assignedUser = await assignUser();
     if (assignedUser) {
@@ -141,6 +146,7 @@ export default function Geography() {
                   sx={{
                     position: "absolute",
                     right: 0,
+                    bottom: 0,
                     margin: 4,
                     padding: 1,
                     width: 125,
@@ -150,11 +156,25 @@ export default function Geography() {
                   }}
                 >
                   <table className="w-full fade-in">
-                    <thead>
-                      <th className="text-left">Tool</th>
-                      <th></th>
-                    </thead>
+                    <div className="flex justify-between items-center">
+                      <thead>
+                        <th className="text-left">Tool</th>
+                      </thead>
+                      {/*TODO: Create a "Toggle All" checkbox here*/}
+                    </div>
                     <tbody>
+                      <tr className="border-b flex justify-between items-center">
+                        <td className="text-[.75em]">Date Range</td>
+                        <td>
+                          <input
+                            type={"checkbox"}
+                            checked={timeframeWidgetOpen}
+                            onClick={() => {
+                              setTimeframeWidgetOpen(!timeframeWidgetOpen);
+                            }}
+                          ></input>
+                        </td>
+                      </tr>
                       <tr className="border-b flex justify-between items-center">
                         <td className="text-[.75em]">Top Locations</td>
                         <td>
@@ -174,42 +194,42 @@ export default function Geography() {
                 </Sheet>
                 <div className="absolute m-4 fade-in">
                   <div className="flex flex-col gap-4">
-                    <Sheet
-                      name="timeframe"
-                      sx={{
-                        padding: 1,
-                        width: 350,
-                        borderRadius: 4,
-                        opacity: 0.75,
-                        boxShadow: "black 2px 2px 12px",
-                      }}
-                    >
-                      <Typography sx={{ fontWeight: 700 }}>
-                        Timeframe
-                      </Typography>
-                      <div className="flex items-center gap-1 pt-2">
-                        <LocalizationProvider dateAdapter={AdapterDayjs}>
-                          <DatePicker
-                            label="Starting From"
-                            defaultValue={dayjs(realDateRange[0])}
-                            minDate={dayjs(realDateRange[0])}
-                            disableFuture
-                            onChange={(newValue) => {
-                              setDateRange([newValue, dateRange[1]]);
-                            }}
-                          ></DatePicker>
-                          <DatePicker
-                            label="To"
-                            defaultValue={dayjs(realDateRange[1])}
-                            disableFuture
-                            minDate={dayjs(realDateRange[0])}
-                            onChange={(newValue) => {
-                              setDateRange([dateRange[0], newValue]);
-                            }}
-                          ></DatePicker>
-                        </LocalizationProvider>
-                      </div>
-                    </Sheet>
+                    {timeframeWidgetOpen && (
+                      <Sheet
+                        name="timeframe"
+                        sx={{
+                          padding: 1,
+                          width: 350,
+                          borderRadius: 4,
+                          opacity: 0.75,
+                          boxShadow: "black 2px 2px 12px",
+                        }}
+                      >
+                        <div className="flex items-center justify-center gap-1 pt-2">
+                          <LocalizationProvider dateAdapter={AdapterDayjs}>
+                            <DatePicker
+                              label="Starting From"
+                              defaultValue={dayjs(realDateRange[0])}
+                              minDate={dayjs(realDateRange[0])}
+                              maxDate={dayjs(dateRange[1])}
+                              onChange={(newValue) => {
+                                setDateRange([newValue, dateRange[1]]);
+                              }}
+                            ></DatePicker>
+                            <DatePicker
+                              label="To"
+                              defaultValue={dayjs(realDateRange[1])}
+                              disableFuture
+                              minDate={dayjs(dateRange[0])}
+                              maxDate={dayjs(realDateRange[1])}
+                              onChange={(newValue) => {
+                                setDateRange([dateRange[0], newValue]);
+                              }}
+                            ></DatePicker>
+                          </LocalizationProvider>
+                        </div>
+                      </Sheet>
+                    )}
                     {topLocationsWidgetOpen && (
                       <Sheet
                         name="city-country"
@@ -230,13 +250,29 @@ export default function Geography() {
                             <span className="drop-shadow text-[1.5em]">🇺🇸</span>
                           </Tooltip>
                         </div>
-                        <div>City: {data.topCities[0].city}</div>
+                        <div>City: {data.topCities[0].city}</div> {/*TODO: Calculate top city from dateRange*/}
+                        
                       </Sheet>
                     )}
                   </div>
                 </div>
 
-                <Map records={data.data}></Map>
+                <Map
+                  records={data.data.filter((record) => {
+                    var isSameOrAfter = require("dayjs/plugin/isSameOrAfter");
+                    var isSameOrBefore = require("dayjs/plugin/isSameOrBefore");
+                    dayjs.extend(isSameOrAfter);
+                    dayjs.extend(isSameOrBefore);
+                    const recordDate = dayjs(record.createdAt); // assuming record.createdAt is the date you want to compare
+                    const startDate = dayjs(dateRange[0]);
+                    const endDate = dayjs(dateRange[1]);
+                    return (
+                      recordDate.isSameOrAfter(startDate) &&
+                      recordDate.isSameOrBefore(endDate)
+                    );
+                  })}
+                  dateRange={dateRange}
+                ></Map>
               </>
             )}
           </section>
@@ -246,7 +282,7 @@ export default function Geography() {
   );
 }
 
-const Map = ({ records }) => {
+const Map = ({ records, dateRange }) => {
   const coordinates = [];
   records.map((record) => {
     coordinates.push({
@@ -254,6 +290,7 @@ const Map = ({ records }) => {
       lat: record.location.latitude,
     });
   });
+  console.log(coordinates);
   useEffect(() => {
     const map = new mapboxgl.Map({
       container: "map", // container ID
@@ -296,7 +333,7 @@ const Map = ({ records }) => {
       });
     });
     return () => map.remove();
-  }, []);
+  }, [dateRange]);
 
   return (
     <div
