@@ -38,6 +38,7 @@
     "jsonwebtoken": "^9.0.2",
     "mapbox-gl": "^3.0.0",
     "moment-timezone": "^0.5.43",
+    "multi-range-slider-react": "^2.0.7",
     "next": "13.4.12",
     "react": "18.2.0",
     "react-countup": "^6.5.0",
