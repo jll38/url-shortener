@@ -1,7 +1,7 @@
 # Next.JS 13 URL-Shortener
 
 A URL shortening service with an analytics dashboard.
-Built using Next.JS 13, backed by Prisma and MongoDB for data management
+Built using Next.JS 13, backed by Prisma and MongoDB for data management, and AWS services.
 
 
 ## Features
@@ -35,11 +35,12 @@ Upon a shortened link being clicked, the user's IP address is collected and use 
 From the dashboard, users will be able to create and customize new links, as well as viewing and/or modifying exisitng links. The link's "alias" is what replaces the random string of characters that identifies the Short URL. For example, rather than ```https://tinyclicks.co/d7Qw2eP```, a user could set the alias for their URL to be ```https://tinyclicks.co/CoOlLiNk```.
 In the event of duplicate links, they will point to the same original URL/destination, but the link will be modified to avoid issues with collecting analytics for each link and user.
 
+### Link Tree Hosting
+Users can create a "portal" to host all of their links they want to share. Similar to websites such as linktree and linkinbio. Detailed analytics will also be available.
+
 ### Password Protection
 To Be Developed
 ### QR Code Generation
 To Be Developed
 ### Bulk Shortening
-To Be Developed
-### Link Tree Hosting
 To Be Developed
