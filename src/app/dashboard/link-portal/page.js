@@ -19,7 +19,19 @@ export default function Geography() {
   const [userLoading, setUserLoading] = useState(true);
 
   const [unsavedChanges, setSavedChanges] = useState(false);
-  const [changes, setChanges] = useState(false);
+
+  const [changes, setChanges] = useState([]);
+
+  const [newProfilePicture, setNewProfilePicture] = useState(null);
+
+  useEffect(() => {
+    if (newProfilePicture) {
+      //Handle if a new picture was already added.
+      //Replace the existing "newPicture" in the array of changes
+    } else {
+      setChanges;
+    }
+  }, [newProfilePicture]);
 
   async function saveChanges() {
     setSavedChanges(false);
@@ -104,7 +116,11 @@ export default function Geography() {
       {data && (
         <>
           <section className="h-full relative w-full flex flex-col items-center">
-            <ProfilePicture editable={user ? true : false} />
+            <ProfilePicture
+              editable={user ? true : false}
+              setNewProfilePicture={setNewProfilePicture}
+              picture={newProfilePicture || user.profilePicture}
+            />
             <p>description</p>
             <button onClick={saveChanges}></button>
           </section>

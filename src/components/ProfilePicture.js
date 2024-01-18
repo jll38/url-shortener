@@ -1,7 +1,11 @@
 "use client";
 import React from "react";
 import EditIcon from "@mui/icons-material/Edit";
-export function ProfilePicture({ editable = false }) {
+import { Edit } from "@mui/icons-material";
+export function ProfilePicture({
+  editable = false,
+  setNewProfilePicture = null,
+}) {
   const [showEditButton, setShowEditButton] = React.useState(false);
 
   const fileInputRef = React.useRef(null);
@@ -35,8 +39,15 @@ export function ProfilePicture({ editable = false }) {
             style={{ display: "none" }}
             accept="image/*"
           />
-          <button className="w-full h-full hover:bg-gray-200" onClick={handleButtonClick}>
-            <EditIcon></EditIcon>{" "}
+          <button
+            className="w-full h-full hover:bg-gray-200"
+            onClick={handleButtonClick}
+          >
+            {setNewProfilePicture === null ? (
+              "newPicture state does not exist"
+            ) : (
+              <EditIcon />
+            )}
           </button>
         </>
       ) : (
