@@ -18,7 +18,7 @@ export default function Geography() {
   const [user, setUser] = useState(null);
   const [userLoading, setUserLoading] = useState(true);
 
-  const [unsavedChanges, setSavedChanges] = useState(false);
+  const [unsavedChanges, setUnsavedChanges] = useState(null);
 
   const [changes, setChanges] = useState([]);
 
@@ -29,7 +29,15 @@ export default function Geography() {
       //Handle if a new picture was already added.
       //Replace the existing "newPicture" in the array of changes
     } else {
-      setChanges;
+      const pfpChange = {
+        type: "profilePicture",
+        value: newProfilePicture,
+      };
+      if (unsavedChanges) {
+        setUnsavedChanges([...unsavedChanges, pfpChange]);
+      } else {
+        setUnsavedChanges([pfpChange]);
+      }
     }
   }, [newProfilePicture]);
 
@@ -47,13 +55,14 @@ export default function Geography() {
   const fetchData = async () => {
     const assignedUser = await assignUser();
     if (assignedUser) {
-      fetch(`/api/dash`, {
+      fetch(`/api/dash/link-portal`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
           userId: assignedUser.id,
+          operation: "retrieve-portal",
         }),
       })
         .then((res) => {
@@ -63,6 +72,7 @@ export default function Geography() {
           return res.json();
         })
         .then((data) => {
+          console.log(data);
           if (data.error) {
             setIsEmptyData(true);
           }
