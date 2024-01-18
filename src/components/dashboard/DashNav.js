@@ -28,6 +28,7 @@ export default function DashNav() {
       disabled: true,
     },
     { name: "My Links", route: "/dashboard/links", icon: <Link />, disabled: false,},
+    { name: "Link Portal", route: "/dashboard/link-portal"}
   ];
 
   useEffect(() => {
