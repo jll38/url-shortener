@@ -4,6 +4,8 @@ import { Sheet, Input } from "@mui/joy";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import CheckIcon from '@mui/icons-material/Check';
+import Close from "@mui/icons-material/Close";
+
 import { Check } from "@mui/icons-material";
 
 export function NewLink({ setOpen }) {
@@ -30,9 +32,17 @@ export function NewLink({ setOpen }) {
           {!name && (
             <div className="flex">
               {" "}
+              <button
+                className="px-2 bg-[#0891b280] hover:bg-cyan-500 text-white rounded-lg"
+                onClick={() => {
+                  setOpen(false);
+                }}
+              >
+                <Close />
+              </button>
               <Input type="text" id="nameInput" placeholder="Title"></Input>
               <button
-                className="px-2 bg-cyan-400 hover:bg-cyan-500 text-white rounded-lg"
+                className="px-2 bg-[#0891b280] hover:bg-cyan-500 text-white rounded-lg"
                 onClick={() => {
                   setName(document.getElementById("nameInput").value);
                 }}
@@ -44,7 +54,7 @@ export function NewLink({ setOpen }) {
           {name && (
             <div className="flex">
               <button
-                className="px-2 bg-cyan-400 hover:bg-cyan-500 text-white rounded-lg"
+                className="px-2 bg-[#0891b280] hover:bg-cyan-500 text-white rounded-lg"
                 onClick={() => {
                   setName(null);
                 }}
@@ -60,7 +70,7 @@ export function NewLink({ setOpen }) {
               ></Input>
               <div className="flex gap-10">
                 <button
-                  className="px-2 bg-cyan-400 hover:bg-cyan-500 text-white rounded-lg"
+                  className="px-2 bg-[#0891b280] hover:bg-cyan-500 text-white rounded-lg"
                   onClick={() => {
                     setLink(document.getElementById("linkInput").value);
                   }}

@@ -147,12 +147,10 @@ export default function Geography() {
                 </button>
               )}
             </div>
-            <div>
-              {data.description || <em className="text-gray-500">No bio</em>}
-            </div>
+            <div>{data.description || ""}</div>
             <button onClick={saveChanges}></button>
-            <div>
-              <div className="text-center">Links</div>
+            <div className="mt-2 mb-4">
+              <h3 className="text-center font-bold">Links</h3>
               <div className="flex flex-col gap-4 items-center">
                 {data.links.map((link, i) => {
                   return (
@@ -179,32 +177,34 @@ export default function Geography() {
                   );
                 })}
                 {newLinkOpen && <NewLink setOpen={setNewLinkOpen} />}
-                {!newLinkOpen && <Sheet
-                  sx={{
-                    width: "55px",
-                    height: "50px",
-                    overflow: "hidden",
-                    borderRadius: "20px",
-                  }}
-                  className="hover:bg-gray-300 drop-shadow-md transition-colors duration-200"
-                >
-                  <button
-                    className="w-full h-full grid place-items-center"
-                    onClick={() => {
-                      setNewLinkOpen(true);
+                {!newLinkOpen && (
+                  <Sheet
+                    sx={{
+                      width: "55px",
+                      height: "50px",
+                      overflow: "hidden",
+                      borderRadius: "20px",
                     }}
-                    disabled={newLinkOpen}
+                    className="hover:bg-gray-300 drop-shadow-md transition-colors duration-200"
                   >
-                    <AddIcon />
-                  </button>
-                </Sheet>}
+                    <button
+                      className="w-full h-full grid place-items-center"
+                      onClick={() => {
+                        setNewLinkOpen(true);
+                      }}
+                      disabled={newLinkOpen}
+                    >
+                      <AddIcon />
+                    </button>
+                  </Sheet>
+                )}
               </div>
             </div>
             {data.public ? (
               "true"
             ) : (
               <button
-                className="py-2 px-4 bg-cyan-400 hover:bg-cyan-500 transition-colors duration-150 text-white rounded-lg"
+                className="py-2 px-4 bg-[#0891b280] hover:bg-cyan-500 transition-colors duration-150 text-white rounded-lg"
                 disabled={!unsavedChanges}
               >
                 Publish

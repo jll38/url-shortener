@@ -38,6 +38,7 @@ export function ProfilePicture({
         width="100"
         height="100"
         style={{ zIndex: 1 }}
+        alt="profile picture"
       ></Image>
       {showEditButton ? (
         <>
