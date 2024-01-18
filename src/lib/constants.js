@@ -4,5 +4,6 @@ export const cookiesPages = ['/', '/dashboard', '/features'];
 export const ENVIRONMENT = process.env.NEXT_PUBLIC_ENVIRONMENT;
 export const REFERRER_API_KEY = process.env.NEXT_PUBLIC_REFERRER_API_KEY;
 export const TIME_ZONE = Intl.DateTimeFormat().resolvedOptions().timeZone;
+export const AWS_S3_PREFIX = process.env.NEXT_PUBLIC_AWS_S3_PREFIX;
 
 export const TOP_LEVEL_ROUTES = ['dashboard', 'features', 'login', 'register', 'settings', '/user', '/profile', '/premium']
