@@ -221,7 +221,7 @@ export default function Geography() {
                               defaultValue={dayjs(realDateRange[1])}
                               disableFuture
                               minDate={dayjs(dateRange[0])}
-                              maxDate={dayjs(realDateRange[1])}
+                              maxDate={dayjs()}
                               onChange={(newValue) => {
                                 setDateRange([dateRange[0], newValue]);
                               }}
@@ -283,6 +283,9 @@ export default function Geography() {
 }
 
 const Map = ({ records, dateRange }) => {
+  const [mapCenter, setMapCenter] = useState([-74.5, 40]); // Default center
+  const [mapZoom, setMapZoom] = useState(9); // Default zoom
+
   const coordinates = [];
   records.map((record) => {
     coordinates.push({
@@ -299,7 +302,12 @@ const Map = ({ records, dateRange }) => {
       zoom: 9,
       attributionControl: false,
     });
-
+    
+    map.on('move', () => {
+      setMapCenter([map.getCenter().lng, map.getCenter().lat]);
+      setMapZoom(map.getZoom());
+    });
+    
     // Add your heatmap layer here
     map.on("load", function () {
       map.addSource("points", {
