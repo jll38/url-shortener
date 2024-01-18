@@ -1,7 +1,8 @@
 "use client";
 import React from "react";
+import Router from "next/router";
 
-import { Table, Sheet, Typography, Skeleton } from "@mui/joy";
+import { Table, Sheet, Typography, Skeleton, Input } from "@mui/joy";
 
 import Link from "next/link";
 import { CircularProgress } from "@mui/joy";
@@ -10,7 +11,11 @@ import Tooltip from "@mui/joy/Tooltip";
 import { getUser } from "@/lib/authHandlers";
 import { useState, useEffect } from "react";
 
+import { NewLink } from "./../../../components/dashboard/linkportal/NewLink";
+
 import { ProfilePicture } from "./../../../components/ProfilePicture";
+import AddIcon from "@mui/icons-material/Add";
+import EditIcon from "@mui/icons-material/Edit";
 
 export default function Geography() {
   const [data, setData] = useState(null);
@@ -21,6 +26,9 @@ export default function Geography() {
   const [unsavedChanges, setUnsavedChanges] = useState(null);
 
   const [changes, setChanges] = useState([]);
+
+  const [newLink, setNewLink] = useState(false);
+  const [newLinkOpen, setNewLinkOpen] = useState(false);
 
   const [newProfilePicture, setNewProfilePicture] = useState(null);
 
@@ -117,7 +125,7 @@ export default function Geography() {
   }
 
   return (
-    <main className="h-screen overflow-x-hidden w-full">
+    <main className="h-screen overflow-x-hidden w-full p-4">
       {!data && (
         <div className="h-screen w-full flex justify-center items-center">
           <CircularProgress size="lg" />
@@ -129,10 +137,79 @@ export default function Geography() {
             <ProfilePicture
               editable={user ? true : false}
               setNewProfilePicture={setNewProfilePicture}
-              picture={newProfilePicture || user.profilePicture}
+              picture={newProfilePicture || data.picture}
             />
-            <p>description</p>
+            <div>
+              {data.name || (
+                <button className="flex justify-center items-center">
+                  Name...
+                  <EditIcon sx={{ fontSize: "16px" }} />
+                </button>
+              )}
+            </div>
+            <div>
+              {data.description || <em className="text-gray-500">No bio</em>}
+            </div>
             <button onClick={saveChanges}></button>
+            <div>
+              <div className="text-center">Links</div>
+              <div className="flex flex-col gap-4 items-center">
+                {data.links.map((link, i) => {
+                  return (
+                    <Sheet
+                      key={"link-" + i}
+                      sx={{
+                        width: "400px",
+                        height: "50px",
+                        overflow: "hidden",
+                        borderRadius: "20px",
+                      }}
+                      className="hover:bg-gray-300 drop-shadow-md transition-colors duration-200"
+                    >
+                      <Link
+                        href={link.originalURL}
+                        target="_blank"
+                        className=""
+                      >
+                        <div className="w-[400px] h-[50px] grid place-items-center">
+                          {link.name}
+                        </div>
+                      </Link>
+                    </Sheet>
+                  );
+                })}
+                {newLinkOpen && <NewLink setOpen={setNewLinkOpen} />}
+                {!newLinkOpen && <Sheet
+                  sx={{
+                    width: "55px",
+                    height: "50px",
+                    overflow: "hidden",
+                    borderRadius: "20px",
+                  }}
+                  className="hover:bg-gray-300 drop-shadow-md transition-colors duration-200"
+                >
+                  <button
+                    className="w-full h-full grid place-items-center"
+                    onClick={() => {
+                      setNewLinkOpen(true);
+                    }}
+                    disabled={newLinkOpen}
+                  >
+                    <AddIcon />
+                  </button>
+                </Sheet>}
+              </div>
+            </div>
+            {data.public ? (
+              "true"
+            ) : (
+              <button
+                className="py-2 px-4 bg-cyan-400 hover:bg-cyan-500 transition-colors duration-150 text-white rounded-lg"
+                disabled={!unsavedChanges}
+              >
+                Publish
+              </button>
+            )}
           </section>
         </>
       )}

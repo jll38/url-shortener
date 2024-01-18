@@ -67,7 +67,7 @@ model User {
   DailyClicks   DailyClicks[]
   collections   Collection[] // One-to-Many relation with Collection
   createdAt     DateTime?     @default(now())
-  linkPortal    LinkPortal?    
+  linkPortal    LinkPortal?
 }
 
 model Traffic {
@@ -87,11 +87,14 @@ enum Role {
 }
 
 model LinkPortal {
-  id         String    @id @default(auto()) @map("_id") @db.ObjectId
-  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId     String    @unique
-  picture    String?
-  createdAt  DateTime? @default(now())
-  modifiedAt DateTime?
-  links      Link[]
+  id          String    @id @default(auto()) @map("_id") @db.ObjectId
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId      String    @unique
+  picture     String?
+  createdAt   DateTime? @default(now())
+  modifiedAt  DateTime?
+  links       Link[]
+  public      Boolean   @default(false)
+  name        String?
+  description String?
 }

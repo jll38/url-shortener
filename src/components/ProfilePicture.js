@@ -1,10 +1,13 @@
 "use client";
 import React from "react";
+import Image from "next/image";
+
 import EditIcon from "@mui/icons-material/Edit";
 import { Edit } from "@mui/icons-material";
 export function ProfilePicture({
   editable = false,
   setNewProfilePicture = null,
+  picture,
 }) {
   const [showEditButton, setShowEditButton] = React.useState(false);
 
@@ -22,7 +25,7 @@ export function ProfilePicture({
 
   return (
     <div
-      className="h-[100px] w-[100px] grid place-items-center bg-gray-100  rounded-[10em] overflow-hidden"
+      className="h-[100px] w-[100px] grid place-items-center bg-gray-100 rounded-[10em] overflow-hidden relative"
       onMouseEnter={() => {
         if (editable) setShowEditButton(true);
       }}
@@ -30,6 +33,12 @@ export function ProfilePicture({
         if (editable) setShowEditButton(false);
       }}
     >
+      <Image
+        src={picture}
+        width="100"
+        height="100"
+        style={{ zIndex: 1 }}
+      ></Image>
       {showEditButton ? (
         <>
           <input
@@ -40,13 +49,14 @@ export function ProfilePicture({
             accept="image/*"
           />
           <button
-            className="w-full h-full hover:bg-gray-200"
+            className="w-full h-full hover:bg-gray-200/75 absolute top-0 left-0 flex justify-center items-center"
             onClick={handleButtonClick}
+            style={{ zIndex: 2 }}
           >
             {setNewProfilePicture === null ? (
               "newPicture state does not exist"
             ) : (
-              <EditIcon />
+              <EditIcon sx={{ fontSize: 36 }} />
             )}
           </button>
         </>

@@ -28,6 +28,9 @@ export async function POST(request) {
       where: {
         userId: userId,
       },
+      include:{
+        links: true,
+      }
     });
 
     if (!portalInfo) {
