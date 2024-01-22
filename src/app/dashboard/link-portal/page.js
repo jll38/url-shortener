@@ -23,7 +23,7 @@ export default function Geography() {
   const [user, setUser] = useState(null);
   const [userLoading, setUserLoading] = useState(true);
 
-  const [unsavedChanges, setUnsavedChanges] = useState(null);
+  const [unsavedChanges, setUnsavedChanges] = useState([]);
 
   const [changes, setChanges] = useState([]);
 
@@ -41,7 +41,7 @@ export default function Geography() {
         type: "profilePicture",
         value: newProfilePicture,
       };
-      if (unsavedChanges) {
+      if (unsavedChanges.length > 0) {
         setUnsavedChanges([...unsavedChanges, pfpChange]);
       } else {
         setUnsavedChanges([pfpChange]);

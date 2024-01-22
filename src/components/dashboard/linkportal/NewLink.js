@@ -17,6 +17,8 @@ export function NewLink({ setOpen }) {
       setOpen(false);
     }
   }, [name, link]);
+
+  
   return (
     <Sheet
       sx={{

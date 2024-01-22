@@ -3,11 +3,12 @@ import React from "react";
 import Image from "next/image";
 
 import EditIcon from "@mui/icons-material/Edit";
-import { Edit } from "@mui/icons-material";
+import PersonIcon from '@mui/icons-material/Person';
+
 export function ProfilePicture({
   editable = false,
   setNewProfilePicture = null,
-  picture,
+  picture
 }) {
   const [showEditButton, setShowEditButton] = React.useState(false);
 
@@ -20,7 +21,8 @@ export function ProfilePicture({
   const handleFileChange = (event) => {
     const file = event.target.files[0];
     console.log(file);
-    // Handle the file...
+    const objectUrl = URL.createObjectURL(file)
+    setNewProfilePicture(objectUrl);
   };
 
   return (
@@ -33,14 +35,13 @@ export function ProfilePicture({
         if (editable) setShowEditButton(false);
       }}
     >
-      <Image
+      {picture ? <Image
         src={picture}
-        width="100"
-        height="100"
+        fill
         style={{ zIndex: 1 }}
         alt="profile picture"
-      ></Image>
-      {showEditButton ? (
+      ></Image> : <PersonIcon sx={{fontSize: 36}}/> }
+      {showEditButton && (
         <>
           <input
             type="file"
@@ -61,9 +62,7 @@ export function ProfilePicture({
             )}
           </button>
         </>
-      ) : (
-        "test"
-      )}
+      ) }
     </div>
   );
 }
