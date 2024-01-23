@@ -2,7 +2,12 @@ import { NextRequest, NextResponse } from "next/server";
 import { Prisma } from "../../prisma";
 import qs from "qs";
 
-
+//AWS
+import { uploadImage } from "@/lib/aws-helper";
+import {
+  S3_PROFILE_PICTURE_DIRECTORY_PREFIX,
+  S3_LINK_PICTURE_DIRECTORY_PREFIX,
+} from "@/lib/constants";
 
 export async function POST(request) {
   const { userId, operation, data = null } = await request.json();
@@ -70,8 +75,8 @@ export async function POST(request) {
         name = change.name;
       }
       if (change.type === "profile-image") {
-        pictureLink = change.name;
-        
+        pictureLink = change.image.name;
+
       }
     });
     await Prisma.LinkPortal.upsert({

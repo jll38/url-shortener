@@ -51,6 +51,11 @@ export default function Geography() {
   }, [unsavedChanges]);
 
   useEffect(() => {
+     /*
+      Converts file to a readable format for <Image/> 
+      component and either adds it to the "unsavedChanges"
+      array or replaces the previous instance in the array
+      */
     if (newProfilePicture) {
       const object = URL.createObjectURL(newProfilePicture);
       setNewProfilePictureLink(object);
@@ -59,6 +64,9 @@ export default function Geography() {
           name: S3_PROFILE_PICTURE_DIRECTORY_PREFIX + newProfilePicture.name,
           description: null,
           type: "profile-image",
+          image: new Blob([newProfilePicture], {
+            type: newProfilePicture.type,
+          }),
           link: null,
           action: "edit",
         };
@@ -81,7 +89,9 @@ export default function Geography() {
             name: null,
             description: null,
             type: "profile-image",
-            image: newProfilePicture,
+            image: new Blob([newProfilePicture], {
+              type: newProfilePicture.type,
+            }),
             link: null,
             action: "edit",
           },
