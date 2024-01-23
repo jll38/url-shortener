@@ -191,6 +191,7 @@ export default function Geography() {
                               type: "name",
                               image: null,
                               link: null,
+                              action: "edit"
                             },
                           ]);
                         }
@@ -202,6 +203,7 @@ export default function Geography() {
                             type: "name",
                             image: null,
                             link: null,
+                            action: "edit"
                           },
                         ]);
                       }
@@ -250,7 +252,7 @@ export default function Geography() {
             <div className="mt-2 mb-4 w-full">
               <h3 className="text-center font-bold">Links</h3>
               <div className="flex flex-col gap-4 items-center w-full">
-                {data.links.map((link, i) => {
+                {data.links && data.links.map((link, i) => {
                   return (
                     <Sheet
                       key={"link-" + i}
@@ -276,7 +278,7 @@ export default function Geography() {
                 })}
 
                 {unsavedChanges.map((link, i) => {
-                  if (link.type === "link")
+                  if (link.type === "link" && link.action === "add")
                     return (
                       <Sheet
                         sx={{
@@ -287,7 +289,8 @@ export default function Geography() {
                         }}
                         className="drop-shadow-md transition-colors duration-200"
                       >
-                        <div target="_blank" className="">
+                        <div target="_blank" className="relative">
+                          <button className="absolute right-4 top-2 text-slate-800 hover:text-slate-600">Remove</button>
                           <div className="w-[400px] h-[100px] flex justify-start items-center px-10 gap-[40px]">
                             <div className="bg-gray-300 p-4 rounded-md">t</div>
                             <div>

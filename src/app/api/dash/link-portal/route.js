@@ -6,11 +6,15 @@ export async function POST(request) {
   const { userId, operation, data = null } = await request.json();
 
   if (!userId) {
-    return new NextResponse(JSON.stringify({ message: "No user specified" }, { status: 400 }));
+    return new NextResponse(
+      JSON.stringify({ message: "No user specified" }, { status: 400 })
+    );
   }
 
   if (!operation) {
-    return new NextResponse(JSON.stringify({ message: "No operation specified" }, { status: 400 }));
+    return new NextResponse(
+      JSON.stringify({ message: "No operation specified" }, { status: 400 })
+    );
   }
 
   const user = await Prisma.User.findUnique({
@@ -20,7 +24,9 @@ export async function POST(request) {
   });
 
   if (!user) {
-    return new NextResponse(JSON.stringify({ message: "User does not exist" }, { status: 404 }));
+    return new NextResponse(
+      JSON.stringify({ message: "User does not exist" }, { status: 404 })
+    );
   }
 
   if (operation === "retrieve-portal") {
@@ -45,8 +51,11 @@ export async function POST(request) {
   }
   if (operation === "save") {
     if (!data || data.length === 0)
-      return new NextResponse(JSON.stringify({ message: "Missing data" }, { status: 400 }));
+      return new NextResponse(
+        JSON.stringify({ message: "Missing data" }, { status: 400 })
+      );
     let formattedChanges = [];
+    let name;
     console.log(data);
     data.map((change) => {
       if (change.type === "link") {
@@ -55,8 +64,23 @@ export async function POST(request) {
       }
       if (change.type === "name") {
         formattedChanges.push("Name");
+        name = change.name;
       }
     });
-    return new NextResponse(JSON.stringify({ message: formattedChanges }, { status: 200 }));
+    await Prisma.LinkPortal.upsert({
+      where: {
+        userId: userId,
+      },
+      create: {
+        userId: userId,
+        public: true,
+      },
+      update: {
+        name: name,
+      }
+    });
+    return new NextResponse(
+      JSON.stringify({ message: formattedChanges }, { status: 200 })
+    );
   }
 }

@@ -19,8 +19,26 @@ export function NewLink({ open, setOpen, unsavedChanges, setUnsavedChanges }) {
 
   const [openAnim, setOpenAnim] = React.useState(false);
 
+  const handleKeyPress = (event) => {
+    if(event.key === "Escape"){
+      handleClose();; 
+    }
+    if(event.key === "Enter"){
+      addLink()
+    }
+  };
+
   React.useEffect(() => {
-    console.log("Opened");
+    // Adding the keypress event listener
+    window.addEventListener('keydown', handleKeyPress);
+
+    // Cleanup function to remove the event listener
+    return () => {
+      window.removeEventListener('keydown', handleKeyPress);
+    };
+  }, []);
+
+  React.useEffect(() => {
     setTimeout(() => {
       setOpenAnim(true);
     }, 100)
@@ -40,6 +58,7 @@ export function NewLink({ open, setOpen, unsavedChanges, setUnsavedChanges }) {
           type: "link",
           image: image,
           link: link,
+          action: "add"
         },
       ]);
     } else {
@@ -50,6 +69,7 @@ export function NewLink({ open, setOpen, unsavedChanges, setUnsavedChanges }) {
           type: "link",
           image: image,
           link: link,
+          action: "add"
         },
       ]);
     }

@@ -6,6 +6,8 @@ export const TIME_ZONE = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
 //AWS configuration
 export const AWS_S3_PREFIX = process.env.NEXT_PUBLIC_AWS_S3_PREFIX;
+export const S3_PROFILE_PICTURE_DIRECTORY_PREFIX = 'profile-picture/'
+export const S3_LINK_PICTURE_DIRECTORY_PREFIX = 'link/'
 export const AWS_ACCESS_KEY = process.env.NEXT_PUBLIC_AWS_S3_ACCESS_KEY;
 export const AWS_SECRET_ACCESS_KEY = process.env.NEXT_PUBLIC_AWS_S3_SECRET_KEY
 
