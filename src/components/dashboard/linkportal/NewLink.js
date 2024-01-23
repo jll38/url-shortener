@@ -11,12 +11,25 @@ import Close from "@mui/icons-material/Close";
 import { Check } from "@mui/icons-material";
 import { TruncateText } from "@/lib/general-helpers";
 
-export function NewLink({ setOpen, unsavedChanges, setUnsavedChanges }) {
+export function NewLink({ open, setOpen, unsavedChanges, setUnsavedChanges }) {
   const [name, setName] = React.useState(null);
   const [description, setDescription] = React.useState(null);
   const [image, setImage] = React.useState(null);
   const [link, setLink] = React.useState(null);
 
+  const [openAnim, setOpenAnim] = React.useState(false);
+
+  React.useEffect(() => {
+    console.log("Opened");
+    setTimeout(() => {
+      setOpenAnim(true);
+    }, 100)
+  }, [open]);
+
+  const handleClose = () => {
+    setOpenAnim(false);
+    setTimeout(() => {setOpen(false)}, 200)
+  }
   const addLink = () => {
     if (unsavedChanges.length >= 0) {
       setUnsavedChanges([
@@ -45,7 +58,7 @@ export function NewLink({ setOpen, unsavedChanges, setUnsavedChanges }) {
 
   return (
     <div className="relative flex w-full justify-center">
-      <Sheet className="absolute  w-[400px] border left-0 p-4 flex flex-col gap-4">
+      <Sheet className={`absolute w-[30%] border ${openAnim ? 'left-0' : '-left-[35%]'} p-4 flex flex-col gap-4 transition-all duration-150`}>
         <Typography sx={{ fontWeight: 500 }}>Portal Creator</Typography>
         <div className="flex gap-2">
           <span className="text-red-700">*</span>
@@ -89,12 +102,20 @@ export function NewLink({ setOpen, unsavedChanges, setUnsavedChanges }) {
           type={"file"}
           accept="image/*"
         ></input>
-        <button
-          className="py-2 px-4 bg-[#0891b280] hover:bg-cyan-500 transition-colors duration-150 text-white rounded-lg"
-          onClick={addLink}
-        >
-          Create
-        </button>
+        <div className="flex gap-2">
+          <button
+            className="py-2 px-4 bg-[#0891b280] hover:bg-cyan-500 transition-colors duration-150 text-white rounded-lg"
+            onClick={addLink}
+          >
+            Create
+          </button>
+          <button
+            className="py-2 px-4 bg-[#b2082780] hover:bg-[#5d1515b5] transition-colors duration-150 text-white rounded-lg"
+            onClick={handleClose}
+          >
+            Cancel
+          </button>
+        </div>
       </Sheet>
       <Sheet
         sx={{
@@ -103,7 +124,7 @@ export function NewLink({ setOpen, unsavedChanges, setUnsavedChanges }) {
           overflow: "hidden",
           borderRadius: "20px",
         }}
-        className="drop-shadow-md transition-colors duration-200"
+        className={`drop-shadow-md transition-colors duration-200`}
       >
         <div target="_blank" className="">
           <div className="w-[400px] h-[100px] flex justify-start items-center px-10 gap-[40px]">

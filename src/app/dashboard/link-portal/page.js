@@ -169,13 +169,7 @@ export default function Geography() {
                     </Sheet>
                   );
                 })}
-                {newLinkOpen && (
-                  <NewLink
-                    setOpen={setNewLinkOpen}
-                    unsavedChanges={unsavedChanges}
-                    setUnsavedChanges={setUnsavedChanges}
-                  />
-                )}
+
                 {unsavedChanges.map((link, i) => {
                   if (link.type === "link")
                     return (
@@ -192,9 +186,12 @@ export default function Geography() {
                           <div className="w-[400px] h-[100px] flex justify-start items-center px-10 gap-[40px]">
                             <div className="bg-gray-300 p-4 rounded-md">t</div>
                             <div>
-                              <div className="font-semibold">{link.name || ""}</div>
+                              <div className="font-semibold">
+                                {link.name || ""}
+                              </div>
                               <div className="text-slate-400">
-                                {link.description && TruncateText(description, 24)}
+                                {link.description &&
+                                  TruncateText(description, 24)}
                               </div>
                               <div></div>
                             </div>
@@ -203,6 +200,14 @@ export default function Geography() {
                       </Sheet>
                     );
                 })}
+                {newLinkOpen && (
+                  <NewLink
+                    open={newLinkOpen}
+                    setOpen={setNewLinkOpen}
+                    unsavedChanges={unsavedChanges}
+                    setUnsavedChanges={setUnsavedChanges}
+                  />
+                )}
                 {!newLinkOpen && (
                   <Sheet
                     sx={{
