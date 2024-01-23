@@ -46,8 +46,24 @@ export default function Geography() {
   }, [unsavedChanges]);
 
   async function saveChanges() {
-    setSavedChanges(false);
-    //Add backend query
+    const assignedUser = await assignUser();
+    fetch(`/api/dash/link-portal`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        userId: assignedUser.id,
+        operation: "save",
+        data: unsavedChanges,
+      }),
+    })
+      .then((res) => {
+        return res.json();
+      })
+      .then((data) => {
+        console.log(data);
+      });
   }
 
   async function assignUser() {
@@ -158,7 +174,7 @@ export default function Geography() {
                         };
                         let replaced = false;
                         const newArr = unsavedChanges.map((obj) => {
-                          if (obj && obj['type'] === "name") {
+                          if (obj && obj["type"] === "name") {
                             replaced = true;
                             return newNameObject;
                           }

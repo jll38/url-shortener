@@ -3,14 +3,14 @@ import { Prisma } from "../../prisma";
 import qs from "qs";
 
 export async function POST(request) {
-  const { userId, operation } = await request.json();
+  const { userId, operation, data = null } = await request.json();
 
   if (!userId) {
-    return NextResponse({ message: "No user specified" }, { status: 400 });
+    return new NextResponse(JSON.stringify({ message: "No user specified" }, { status: 400 }));
   }
 
   if (!operation) {
-    return NextResponse({ message: "No operation specified" }, { status: 400 });
+    return new NextResponse(JSON.stringify({ message: "No operation specified" }, { status: 400 }));
   }
 
   const user = await Prisma.User.findUnique({
@@ -20,7 +20,7 @@ export async function POST(request) {
   });
 
   if (!user) {
-    return NextResponse({ message: "User does not exist" }, { status: 404 });
+    return new NextResponse(JSON.stringify({ message: "User does not exist" }, { status: 404 }));
   }
 
   if (operation === "retrieve-portal") {
@@ -28,9 +28,9 @@ export async function POST(request) {
       where: {
         userId: userId,
       },
-      include:{
+      include: {
         links: true,
-      }
+      },
     });
 
     if (!portalInfo) {
@@ -40,7 +40,23 @@ export async function POST(request) {
         },
       });
     }
-    
+
     return new NextResponse(JSON.stringify(portalInfo));
+  }
+  if (operation === "save") {
+    if (!data || data.length === 0)
+      return new NextResponse(JSON.stringify({ message: "Missing data" }, { status: 400 }));
+    let formattedChanges = [];
+    console.log(data);
+    data.map((change) => {
+      if (change.type === "link") {
+        //ShortenURL and add to existing link portal
+        formattedChanges.push("Link");
+      }
+      if (change.type === "name") {
+        formattedChanges.push("Name");
+      }
+    });
+    return new NextResponse(JSON.stringify({ message: formattedChanges }, { status: 200 }));
   }
 }
