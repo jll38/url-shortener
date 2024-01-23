@@ -43,3 +43,4 @@ To Be Developed
 To Be Developed
 ### Link Tree Hosting
 <img width="1508" alt="image" src="https://github.com/jll38/url-shortener/assets/97925400/6c946b7e-57b7-451e-8ead-8d4bce3b0ee5">
+Integrated with Amazon Web Services S3 Buckets to store user profile pictures. Link Portals are stored as records in the database, with links being connected through a relation. These links are stored as the pre-existing Link model so they will be able to collect analytics as well.
