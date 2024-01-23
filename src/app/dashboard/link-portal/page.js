@@ -17,6 +17,8 @@ import { ProfilePicture } from "./../../../components/ProfilePicture";
 import AddIcon from "@mui/icons-material/Add";
 import EditIcon from "@mui/icons-material/Edit";
 
+import { TruncateText } from "@/lib/general-helpers";
+
 //AWS
 import { uploadImage } from "@/lib/aws-helper";
 
@@ -35,26 +37,10 @@ export default function Geography() {
 
   const [newProfilePicture, setNewProfilePicture] = useState(null);
   const [newProfilePictureLink, setNewProfilePictureLink] = useState(null);
+
   useEffect(() => {
-    if (newProfilePicture) {
-      //Handle if a new picture was already added.
-      //Replace the existing "newPicture" in the array of changes
-      console.log("Original")
-      console.log(newProfilePicture);
-      setNewProfilePictureLink(URL.createObjectURL(newProfilePicture));
-      uploadImage(newProfilePicture)
-    } else {
-      const pfpChange = {
-        type: "profilePicture",
-        value: newProfilePicture,
-      };
-      if (unsavedChanges.length > 0) {
-        setUnsavedChanges([...unsavedChanges, pfpChange]);
-      } else {
-        setUnsavedChanges([pfpChange]);
-      }
-    }
-  }, [newProfilePicture]);
+    console.log(unsavedChanges);
+  }, [unsavedChanges]);
 
   async function saveChanges() {
     setSavedChanges(false);
@@ -144,7 +130,7 @@ export default function Geography() {
             <ProfilePicture
               editable={user ? true : false}
               setNewProfilePicture={setNewProfilePicture}
-              picture={newProfilePictureLink || data.picture }
+              picture={newProfilePictureLink || data.picture}
             />
             <div>
               {data.name || (
@@ -183,7 +169,40 @@ export default function Geography() {
                     </Sheet>
                   );
                 })}
-                {newLinkOpen && <NewLink setOpen={setNewLinkOpen} />}
+                {newLinkOpen && (
+                  <NewLink
+                    setOpen={setNewLinkOpen}
+                    unsavedChanges={unsavedChanges}
+                    setUnsavedChanges={setUnsavedChanges}
+                  />
+                )}
+                {unsavedChanges.map((link, i) => {
+                  if (link.type === "link")
+                    return (
+                      <Sheet
+                        sx={{
+                          width: "400px",
+                          height: "100px",
+                          overflow: "hidden",
+                          borderRadius: "20px",
+                        }}
+                        className="drop-shadow-md transition-colors duration-200"
+                      >
+                        <div target="_blank" className="">
+                          <div className="w-[400px] h-[100px] flex justify-start items-center px-10 gap-[40px]">
+                            <div className="bg-gray-300 p-4 rounded-md">t</div>
+                            <div>
+                              <div className="font-semibold">{link.name || ""}</div>
+                              <div className="text-slate-400">
+                                {link.description && TruncateText(description, 24)}
+                              </div>
+                              <div></div>
+                            </div>
+                          </div>
+                        </div>
+                      </Sheet>
+                    );
+                })}
                 {!newLinkOpen && (
                   <Sheet
                     sx={{
