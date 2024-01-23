@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { Prisma } from "../../prisma";
 import qs from "qs";
 
+
+
 export async function POST(request) {
   const { userId, operation, data = null } = await request.json();
 
@@ -56,6 +58,7 @@ export async function POST(request) {
       );
     let formattedChanges = [];
     let name;
+    let pictureLink;
     console.log(data);
     data.map((change) => {
       if (change.type === "link") {
@@ -65,6 +68,10 @@ export async function POST(request) {
       if (change.type === "name") {
         formattedChanges.push("Name");
         name = change.name;
+      }
+      if (change.type === "profile-image") {
+        pictureLink = change.name;
+        
       }
     });
     await Prisma.LinkPortal.upsert({
@@ -77,7 +84,8 @@ export async function POST(request) {
       },
       update: {
         name: name,
-      }
+        picture: pictureLink
+      },
     });
     return new NextResponse(
       JSON.stringify({ message: formattedChanges }, { status: 200 })

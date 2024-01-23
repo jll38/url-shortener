@@ -9,13 +9,13 @@ name with be stored in the MongoDB database
 for the link-portal record of the user.
 */
 
-export const uploadImage = async (blob) => {
+export const uploadImage = async (blob, directory) => {
   const S3_BUCKET = "tinyclicks";
   const REGION = "us-east-2";
 
   console.log(blob)
   console.log("Converting...")
-  const convertedFile = new File([blob], "test", { type: blob.type }); //"Test" Placeholder name
+  const convertedFile = new File([blob], blob.name, { type: blob.type }); //"Test" Placeholder name
 
   
   console.log(convertedFile);
@@ -30,7 +30,7 @@ export const uploadImage = async (blob) => {
 
   const params = {
     Bucket: S3_BUCKET,
-    Key: convertedFile.name,
+    Key: directory ? directory + convertedFile.name : convertedFile.name,
     Body: convertedFile,
     ContentType: convertedFile.type
   };

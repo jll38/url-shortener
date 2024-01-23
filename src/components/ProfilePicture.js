@@ -20,8 +20,6 @@ export function ProfilePicture({
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
-    console.log(file);
-    const objectUrl = URL.createObjectURL(file);
     setNewProfilePicture(file);
   };  
 

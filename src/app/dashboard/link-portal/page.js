@@ -21,6 +21,11 @@ import { TruncateText } from "@/lib/general-helpers";
 
 //AWS
 import { uploadImage } from "@/lib/aws-helper";
+import {
+  S3_PROFILE_PICTURE_DIRECTORY_PREFIX,
+  S3_LINK_PICTURE_DIRECTORY_PREFIX,
+  AWS_S3_PREFIX,
+} from "@/lib/constants";
 
 export default function Geography() {
   const [data, setData] = useState(null);
@@ -45,8 +50,49 @@ export default function Geography() {
     console.log(unsavedChanges);
   }, [unsavedChanges]);
 
+  useEffect(() => {
+    if (newProfilePicture) {
+      const object = URL.createObjectURL(newProfilePicture);
+      setNewProfilePictureLink(object);
+      if (unsavedChanges.length > 0) {
+        const newPictureObject = {
+          name: S3_PROFILE_PICTURE_DIRECTORY_PREFIX + newProfilePicture.name,
+          description: null,
+          type: "profile-image",
+          link: null,
+          action: "edit",
+        };
+        let replaced = false;
+        const newArr = unsavedChanges.map((obj) => {
+          if (obj && obj["type"] === "profile-image") {
+            replaced = true;
+            return newPictureObject;
+          }
+          return obj;
+        });
+        setUnsavedChanges([...newArr]);
+
+        if (!replaced) {
+          setUnsavedChanges([...unsavedChanges, newPictureObject]);
+        }
+      } else {
+        setUnsavedChanges([
+          {
+            name: null,
+            description: null,
+            type: "profile-image",
+            image: newProfilePicture,
+            link: null,
+            action: "edit",
+          },
+        ]);
+      }
+    }
+  }, [newProfilePicture]);
+
   async function saveChanges() {
     const assignedUser = await assignUser();
+    uploadImage(newProfilePicture, S3_PROFILE_PICTURE_DIRECTORY_PREFIX);
     fetch(`/api/dash/link-portal`, {
       method: "POST",
       headers: {
@@ -149,7 +195,7 @@ export default function Geography() {
             <ProfilePicture
               editable={user ? true : false}
               setNewProfilePicture={setNewProfilePicture}
-              picture={newProfilePictureLink || data.picture}
+              picture={newProfilePictureLink || AWS_S3_PREFIX + data.picture}
             />
             {newName !== null ? (
               <div>
@@ -191,7 +237,7 @@ export default function Geography() {
                               type: "name",
                               image: null,
                               link: null,
-                              action: "edit"
+                              action: "edit",
                             },
                           ]);
                         }
@@ -203,7 +249,7 @@ export default function Geography() {
                             type: "name",
                             image: null,
                             link: null,
-                            action: "edit"
+                            action: "edit",
                           },
                         ]);
                       }
@@ -252,30 +298,31 @@ export default function Geography() {
             <div className="mt-2 mb-4 w-full">
               <h3 className="text-center font-bold">Links</h3>
               <div className="flex flex-col gap-4 items-center w-full">
-                {data.links && data.links.map((link, i) => {
-                  return (
-                    <Sheet
-                      key={"link-" + i}
-                      sx={{
-                        width: "400px",
-                        height: "50px",
-                        overflow: "hidden",
-                        borderRadius: "20px",
-                      }}
-                      className="hover:bg-gray-300 drop-shadow-md transition-colors duration-200"
-                    >
-                      <Link
-                        href={link.originalURL}
-                        target="_blank"
-                        className=""
+                {data.links &&
+                  data.links.map((link, i) => {
+                    return (
+                      <Sheet
+                        key={"link-" + i}
+                        sx={{
+                          width: "400px",
+                          height: "50px",
+                          overflow: "hidden",
+                          borderRadius: "20px",
+                        }}
+                        className="hover:bg-gray-300 drop-shadow-md transition-colors duration-200"
                       >
-                        <div className="w-[400px] h-[50px] grid place-items-center">
-                          {link.name}
-                        </div>
-                      </Link>
-                    </Sheet>
-                  );
-                })}
+                        <Link
+                          href={link.originalURL}
+                          target="_blank"
+                          className=""
+                        >
+                          <div className="w-[400px] h-[50px] grid place-items-center">
+                            {link.name}
+                          </div>
+                        </Link>
+                      </Sheet>
+                    );
+                  })}
 
                 {unsavedChanges.map((link, i) => {
                   if (link.type === "link" && link.action === "add")
@@ -290,7 +337,9 @@ export default function Geography() {
                         className="drop-shadow-md transition-colors duration-200"
                       >
                         <div target="_blank" className="relative">
-                          <button className="absolute right-4 top-2 text-slate-800 hover:text-slate-600">Remove</button>
+                          <button className="absolute right-4 top-2 text-slate-800 hover:text-slate-600">
+                            Remove
+                          </button>
                           <div className="w-[400px] h-[100px] flex justify-start items-center px-10 gap-[40px]">
                             <div className="bg-gray-300 p-4 rounded-md">t</div>
                             <div>
