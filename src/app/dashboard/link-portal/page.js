@@ -34,11 +34,14 @@ export default function Geography() {
   const [newLinkOpen, setNewLinkOpen] = useState(false);
 
   const [newProfilePicture, setNewProfilePicture] = useState(null);
-
+  const [newProfilePictureLink, setNewProfilePictureLink] = useState(null);
   useEffect(() => {
     if (newProfilePicture) {
       //Handle if a new picture was already added.
       //Replace the existing "newPicture" in the array of changes
+      console.log("Original")
+      console.log(newProfilePicture);
+      setNewProfilePictureLink(URL.createObjectURL(newProfilePicture));
       uploadImage(newProfilePicture)
     } else {
       const pfpChange = {
@@ -141,7 +144,7 @@ export default function Geography() {
             <ProfilePicture
               editable={user ? true : false}
               setNewProfilePicture={setNewProfilePicture}
-              picture={newProfilePicture || data.picture}
+              picture={newProfilePictureLink || data.picture }
             />
             <div>
               {data.name || (

@@ -6,7 +6,11 @@ export const uploadImage = async (blob) => {
   const S3_BUCKET = "tinyclicks";
   const REGION = "us-east-2";
 
-  const convertedFile = blobToFile(blob, "filename.jpg");
+  console.log(blob)
+  console.log("Converting...")
+  const convertedFile = new File([blob], "test", { type: blob.type });
+
+  
   console.log(convertedFile);
   AWS.config.update({
     accessKeyId: AWS_ACCESS_KEY,
@@ -21,7 +25,9 @@ export const uploadImage = async (blob) => {
     Bucket: S3_BUCKET,
     Key: convertedFile.name,
     Body: convertedFile,
+    ContentType: convertedFile.type
   };
+  
 
   var upload = s3
     .putObject(params)
@@ -39,15 +45,6 @@ export const uploadImage = async (blob) => {
 };
 
 //Private Methods
-
-const blobToFile = (blob) => {
-    // Create a new File object with the same properties as the Blob object
-    return new File([blob], "test.jpg", {
-      type: blob.type,
-      lastModified: Date.now(),
-    });
-  };
-
 // function FormatFileName(file) {
 //     //Hopefully ensures duplicate file names don't occur
 //     const crypto = require("crypto");
