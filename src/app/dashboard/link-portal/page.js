@@ -17,6 +17,9 @@ import { ProfilePicture } from "./../../../components/ProfilePicture";
 import AddIcon from "@mui/icons-material/Add";
 import EditIcon from "@mui/icons-material/Edit";
 
+//AWS
+import { uploadImage } from "@/lib/aws-helper";
+
 export default function Geography() {
   const [data, setData] = useState(null);
   const [isEmptyData, setIsEmptyData] = useState(null);
@@ -36,6 +39,7 @@ export default function Geography() {
     if (newProfilePicture) {
       //Handle if a new picture was already added.
       //Replace the existing "newPicture" in the array of changes
+      uploadImage(newProfilePicture)
     } else {
       const pfpChange = {
         type: "profilePicture",

@@ -22,6 +22,7 @@
     "@mui/x-date-pickers": "^6.18.7",
     "@prisma/client": "^5.1.0",
     "@types/mapbox-gl": "^2.7.19",
+    "aws-sdk": "^2.1541.0",
     "base-x": "^4.0.0",
     "bcrypt": "^5.1.1",
     "check-password-strength": "^2.0.7",
