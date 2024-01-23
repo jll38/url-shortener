@@ -2,13 +2,20 @@ import AWS from "aws-sdk";
 
 import { AWS_SECRET_ACCESS_KEY, AWS_ACCESS_KEY } from "./constants";
 
+/*
+Server Route will call uploadImage, 
+if it succeeds, the uploaded image 
+name with be stored in the MongoDB database
+for the link-portal record of the user.
+*/
+
 export const uploadImage = async (blob) => {
   const S3_BUCKET = "tinyclicks";
   const REGION = "us-east-2";
 
   console.log(blob)
   console.log("Converting...")
-  const convertedFile = new File([blob], "test", { type: blob.type });
+  const convertedFile = new File([blob], "test", { type: blob.type }); //"Test" Placeholder name
 
   
   console.log(convertedFile);
@@ -43,22 +50,3 @@ export const uploadImage = async (blob) => {
     alert("File uploaded successfully.");
   });
 };
-
-//Private Methods
-// function FormatFileName(file) {
-//     //Hopefully ensures duplicate file names don't occur
-//     const crypto = require("crypto");
-//     const path = require("path");
-//     const BASE62 =
-//       "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
-//     const baseX = require("base-x")(BASE62);
-//     const hash = crypto.createHash("sha256");
-
-//     // Extract the extension from the file name
-//     const extension = path.extname(file.name);
-
-//     const str = file.name + " " + file.lastModified.toString();
-//     hash.update(str);
-
-//     return hash.digest("hex") + extension;
-//   }

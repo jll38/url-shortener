@@ -154,11 +154,11 @@ export default function Geography() {
                 </button>
               )}
             </div>
-            <div>{data.description || ""}</div>
+            <div>{data.description || "Description"}</div>
             <button onClick={saveChanges}></button>
-            <div className="mt-2 mb-4">
+            <div className="mt-2 mb-4 w-full">
               <h3 className="text-center font-bold">Links</h3>
-              <div className="flex flex-col gap-4 items-center">
+              <div className="flex flex-col gap-4 items-center w-full">
                 {data.links.map((link, i) => {
                   return (
                     <Sheet
