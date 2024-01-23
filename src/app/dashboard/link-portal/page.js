@@ -32,6 +32,9 @@ export default function Geography() {
 
   const [changes, setChanges] = useState([]);
 
+  const [newName, setNewName] = useState(null);
+  const [confirmedNewName, setConfirmedNewName] = useState(null);
+
   const [newLink, setNewLink] = useState(false);
   const [newLinkOpen, setNewLinkOpen] = useState(false);
 
@@ -132,14 +135,100 @@ export default function Geography() {
               setNewProfilePicture={setNewProfilePicture}
               picture={newProfilePictureLink || data.picture}
             />
-            <div>
-              {data.name || (
-                <button className="flex justify-center items-center">
-                  Name...
-                  <EditIcon sx={{ fontSize: "16px" }} />
-                </button>
-              )}
-            </div>
+            {newName !== null ? (
+              <div>
+                <Input
+                  variant="plain"
+                  placeholder="Display name"
+                  onChange={(e) => {
+                    setNewName(e.target.value);
+                  }}
+                ></Input>
+                <div className="w-full flex justify-between text-slate-500">
+                  <button
+                    className="hover:text-slate-700"
+                    onClick={() => {
+                      if (unsavedChanges.length > 0) {
+                        const newNameObject = {
+                          name: newName,
+                          description: null,
+                          type: "name",
+                          image: null,
+                          link: null,
+                        };
+                        let replaced = false;
+                        const newArr = unsavedChanges.map((obj) => {
+                          if (obj && obj['type'] === "name") {
+                            replaced = true;
+                            return newNameObject;
+                          }
+                          return obj;
+                        });
+                        setUnsavedChanges([...newArr]);
+
+                        if (!replaced) {
+                          setUnsavedChanges([
+                            ...unsavedChanges,
+                            {
+                              name: newName,
+                              description: null,
+                              type: "name",
+                              image: null,
+                              link: null,
+                            },
+                          ]);
+                        }
+                      } else {
+                        setUnsavedChanges([
+                          {
+                            name: newName,
+                            description: null,
+                            type: "name",
+                            image: null,
+                            link: null,
+                          },
+                        ]);
+                      }
+                      setConfirmedNewName(newName);
+                      setNewName(null);
+                    }}
+                  >
+                    Confirm
+                  </button>
+                  <button
+                    className="hover:text-slate-700"
+                    onClick={() => {
+                      setNewName(null);
+                    }}
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <button
+                disabled={user === null}
+                onClick={() => {
+                  setNewName("");
+                }}
+              >
+                {confirmedNewName ? (
+                  <button className="flex justify-center items-center">
+                    {confirmedNewName}
+                    <EditIcon sx={{ fontSize: "16px" }} />
+                  </button>
+                ) : (
+                  <>
+                    {data.name || (
+                      <button className="flex justify-center items-center">
+                        Name...
+                        <EditIcon sx={{ fontSize: "16px" }} />
+                      </button>
+                    )}
+                  </>
+                )}
+              </button>
+            )}
             <div>{data.description || "Description"}</div>
             <button onClick={saveChanges}></button>
             <div className="mt-2 mb-4 w-full">
@@ -237,6 +326,7 @@ export default function Geography() {
               <button
                 className="py-2 px-4 bg-[#0891b280] hover:bg-cyan-500 transition-colors duration-150 text-white rounded-lg"
                 disabled={!unsavedChanges}
+                onClick={saveChanges}
               >
                 Publish
               </button>
