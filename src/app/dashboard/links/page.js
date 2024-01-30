@@ -59,6 +59,7 @@ export default function Links() {
   const [selectedCollection, setSelectedCollection] = useState(null);
 
   const [loading, setLoading] = useState(true);
+  const [loadingModify, setLoadingModify] = useState(false);
   const [renameRes, setRenameRes] = useState(null);
 
   //Data States
@@ -161,8 +162,8 @@ export default function Links() {
   }
 
   async function createCollection() {
+    setLoadingModify(true);
     const assignedUser = await assignUser();
-    console.log("test collection");
     fetch("/api/dash/links/collections", {
       method: "POST",
       headers: {
@@ -295,8 +296,9 @@ export default function Links() {
                               onClick={() => {
                                 createCollection();
                               }}
+                              disabled={loadingModify}
                             >
-                              Create
+                              {loadingModify ? <CircularProgress /> : "Create"}
                             </button>
                           </div>
                         </TabPanel>
@@ -389,7 +391,7 @@ export default function Links() {
                           </div>
                           <div
                             href=""
-                            className="text-[.75em] font-medium opacity-75 italic" 
+                            className="text-[.75em] font-medium opacity-75 italic"
                           >
                             {link.originalURL}
                           </div>
@@ -430,14 +432,14 @@ export default function Links() {
                           </div>
                         )}
                         <Button
-                          disabled={loading}
+                          disabled={loadingModify}
                           variant="outlined"
                           sx={{ width: "50%" }}
                           onClick={() => {
                             handleModify("name");
                           }}
                         >
-                          Rename
+                          {loadingModify ? <CircularProgress /> : "Rename"}
                         </Button>
                       </ModalDialog>
                     </Modal>
@@ -500,12 +502,12 @@ export default function Links() {
                         <Button
                           variant="outlined"
                           sx={{ width: "50%" }}
-                          disabled={loading}
+                          disabled={loadingModify}
                           onClick={() => {
                             handleModify("alias");
                           }}
                         >
-                          {loading ? <CircularProgress /> : "Confirm"}
+                          {loadingModify ? <CircularProgress /> : "Confirm"}
                         </Button>
                       </ModalDialog>
                     </Modal>
@@ -550,14 +552,14 @@ export default function Links() {
                           </div>
                         )}
                         <Button
-                          disabled={loading}
+                          disabled={loadingModify}
                           variant="outlined"
                           sx={{ width: "50%" }}
                           onClick={() => {
                             handleModify("destination");
                           }}
                         >
-                          Rename
+                          {loadingModify ? <CircularProgress /> : "Modify"}
                         </Button>
                       </ModalDialog>
                     </Modal>
