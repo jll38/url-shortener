@@ -128,7 +128,7 @@ export function NewLink({ open, setOpen, unsavedChanges, setUnsavedChanges }) {
           <Input
             variant="soft"
             onChange={(e) => {
-              setLink(e.target.value);
+              setLink("https://" + e.target.value);
             }}
             startDecorator="https://"
             placeholder="example.com"

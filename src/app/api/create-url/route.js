@@ -65,7 +65,7 @@ export async function POST(request) {
           userId: body.userId,
         },
       });
-      return NextResponse.json({ short });
+      return NextResponse.json({ id: urlRecord.id, short });
     } else {
       // Handle other types of errors
       throw error;

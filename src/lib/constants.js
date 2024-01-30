@@ -14,3 +14,4 @@ export const AWS_SECRET_ACCESS_KEY = process.env.NEXT_PUBLIC_AWS_S3_SECRET_KEY
 //Routes
 export const TOP_LEVEL_ROUTES = ['dashboard', 'features', 'login', 'register', 'settings', '/user', '/profile', '/premium']
 export const cookiesPages = ['/', '/dashboard', '/features'];
+export const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL
