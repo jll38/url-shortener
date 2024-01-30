@@ -1,8 +1,17 @@
 "use client";
+
 import React from "react";
 import Router from "next/router";
 
-import { Table, Sheet, Typography, Skeleton, Input } from "@mui/joy";
+import {
+  Table,
+  Sheet,
+  Typography,
+  Skeleton,
+  Input,
+  RadioGroup,
+  Radio,
+} from "@mui/joy";
 
 import Link from "next/link";
 import { CircularProgress } from "@mui/joy";
@@ -33,9 +42,9 @@ export default function LinkPortal() {
   const [isEmptyData, setIsEmptyData] = useState(null);
   const [user, setUser] = useState(null);
   const [userLoading, setUserLoading] = useState(true);
-
+  const [isPublic, setIsPublic] = useState(null);
   const [unsavedChanges, setUnsavedChanges] = useState([]);
-
+  const [awaitSaveChanges, setAwaitSaveChanges] = useState(false);
   const [changes, setChanges] = useState([]);
 
   const [newName, setNewName] = useState(null);
@@ -53,6 +62,10 @@ export default function LinkPortal() {
   useEffect(() => {
     console.log(unsavedChanges);
   }, [unsavedChanges]);
+
+  useEffect(() => {
+    console.log(isPublic);
+  }, [isPublic]);
 
   useEffect(() => {
     /*
@@ -106,6 +119,7 @@ export default function LinkPortal() {
 
   async function saveChanges() {
     const assignedUser = await assignUser();
+    setAwaitSaveChanges(true);
     if (newProfilePicture)
       uploadImage(newProfilePicture, S3_PROFILE_PICTURE_DIRECTORY_PREFIX);
     fetch(`/api/dash/link-portal`, {
@@ -124,8 +138,14 @@ export default function LinkPortal() {
       })
       .then((data) => {
         console.log(data);
+      })
+      .catch((err) => {
+        console.log(err);
+      })
+      .finally(() => {
         setUnsavedChanges([]);
-      });
+        setAwaitSaveChanges(false);
+      })
   }
 
   async function assignUser() {
@@ -159,6 +179,7 @@ export default function LinkPortal() {
             setIsEmptyData(true);
           }
           setData(data);
+          setIsPublic(data.public);
         })
         .catch((error) => {
           console.error("Error:", error);
@@ -208,11 +229,16 @@ export default function LinkPortal() {
       {data && (
         <>
           <section className="h-full relative w-full flex flex-col items-center">
-          <UnsavedChanges hasUnsavedChanges={unsavedChanges.length > 0}/>
+            <UnsavedChanges hasUnsavedChanges={unsavedChanges.length > 0} />
             <ProfilePicture
               editable={user ? true : false}
               setNewProfilePicture={setNewProfilePicture}
-              picture={newProfilePictureLink || AWS_S3_PREFIX + S3_PROFILE_PICTURE_DIRECTORY_PREFIX + data.picture}
+              picture={
+                newProfilePictureLink ||
+                AWS_S3_PREFIX +
+                  S3_PROFILE_PICTURE_DIRECTORY_PREFIX +
+                  data.picture
+              }
             />
             {newName !== null ? (
               <div>
@@ -493,23 +519,18 @@ export default function LinkPortal() {
                 )}
               </div>
             </div>
-            {data.public ? (
-              <button
-                className="py-2 px-4 bg-[#0891b280] hover:bg-cyan-500 transition-colors duration-150 text-white rounded-lg"
-                disabled={!unsavedChanges}
-                onClick={saveChanges}
-              >
-                Save
-              </button>
-            ) : (
-              <button
-                className="py-2 px-4 bg-[#0891b280] hover:bg-cyan-500 transition-colors duration-150 text-white rounded-lg"
-                disabled={!unsavedChanges}
-                onClick={saveChanges}
-              >
-                Publish
-              </button>
-            )}
+
+            <button
+              className={`py-2 px-4  ${
+                unsavedChanges.length > 0
+                  ? `bg-[#0891b280] hover:bg-cyan-500`
+                  : `bg-gray-300`
+              } transition-colors duration-150 text-white rounded-lg`}
+              disabled={unsavedChanges.length === 0 || awaitSaveChanges}
+              onClick={saveChanges}
+            >
+              {awaitSaveChanges ? <CircularProgress size="sm"/> : "Save"}
+            </button>
           </section>
         </>
       )}
