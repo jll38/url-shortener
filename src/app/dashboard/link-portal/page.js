@@ -90,7 +90,7 @@ export default function LinkPortal() {
       } else {
         setUnsavedChanges([
           {
-            name: null,
+            name: newProfilePicture.name,
             description: null,
             type: "profile-image",
             image: new Blob([newProfilePicture], {
@@ -124,6 +124,7 @@ export default function LinkPortal() {
       })
       .then((data) => {
         console.log(data);
+        setUnsavedChanges([]);
       });
   }
 
@@ -211,7 +212,7 @@ export default function LinkPortal() {
             <ProfilePicture
               editable={user ? true : false}
               setNewProfilePicture={setNewProfilePicture}
-              picture={newProfilePictureLink || AWS_S3_PREFIX + data.picture}
+              picture={newProfilePictureLink || AWS_S3_PREFIX + S3_PROFILE_PICTURE_DIRECTORY_PREFIX + data.picture}
             />
             {newName !== null ? (
               <div>

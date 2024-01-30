@@ -57,13 +57,14 @@ export async function POST(request) {
     return new NextResponse(JSON.stringify(portalInfo));
   }
   if (operation === "save") {
+    console.log("Starting save operation...")
     if (!data || data.length === 0)
       return new NextResponse(
         JSON.stringify({ message: "Missing data" }, { status: 400 })
       );
     let formattedChanges = [];
     let name;
-    let pictureLink;
+    let picture;
     let links = [];
     console.log(data);
     data.map((change) => {
@@ -75,11 +76,11 @@ export async function POST(request) {
         name = change.name;
       }
       if (change.type === "profile-image") {
-        pictureLink = change.image.name;
+        picture = change.name;
 
       }
     });
-    
+    console.log(picture);
     await Prisma.LinkPortal.upsert({
       where: {
         userId: userId,
@@ -90,7 +91,7 @@ export async function POST(request) {
       },
       update: {
         name: name,
-        picture: pictureLink
+        picture
 
       },
     });
