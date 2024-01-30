@@ -64,11 +64,11 @@ export async function POST(request) {
     let formattedChanges = [];
     let name;
     let pictureLink;
+    let links = [];
     console.log(data);
     data.map((change) => {
       if (change.type === "link") {
-        //ShortenURL and add to existing link portal
-        formattedChanges.push("Link");
+        links.push(change.link)
       }
       if (change.type === "name") {
         formattedChanges.push("Name");
@@ -79,6 +79,7 @@ export async function POST(request) {
 
       }
     });
+    
     await Prisma.LinkPortal.upsert({
       where: {
         userId: userId,
@@ -90,6 +91,7 @@ export async function POST(request) {
       update: {
         name: name,
         picture: pictureLink
+
       },
     });
     return new NextResponse(

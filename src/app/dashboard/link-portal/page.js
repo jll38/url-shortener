@@ -13,6 +13,7 @@ import { useState, useEffect } from "react";
 
 import { NewLink } from "./../../../components/dashboard/linkportal/NewLink";
 
+import { UnsavedChanges } from "@/components/UnsavedChanges";
 import { ProfilePicture } from "./../../../components/ProfilePicture";
 import AddIcon from "@mui/icons-material/Add";
 import EditIcon from "@mui/icons-material/Edit";
@@ -27,7 +28,7 @@ import {
   AWS_S3_PREFIX,
 } from "@/lib/constants";
 
-export default function Geography() {
+export default function LinkPortal() {
   const [data, setData] = useState(null);
   const [isEmptyData, setIsEmptyData] = useState(null);
   const [user, setUser] = useState(null);
@@ -40,6 +41,9 @@ export default function Geography() {
   const [newName, setNewName] = useState(null);
   const [confirmedNewName, setConfirmedNewName] = useState(null);
 
+  const [newDescription, setNewDescription] = useState(null);
+  const [confirmedNewDescription, setConfirmedNewDescription] = useState(null);
+
   const [newLink, setNewLink] = useState(false);
   const [newLinkOpen, setNewLinkOpen] = useState(false);
 
@@ -51,7 +55,7 @@ export default function Geography() {
   }, [unsavedChanges]);
 
   useEffect(() => {
-     /*
+    /*
       Converts file to a readable format for <Image/> 
       component and either adds it to the "unsavedChanges"
       array or replaces the previous instance in the array
@@ -102,7 +106,8 @@ export default function Geography() {
 
   async function saveChanges() {
     const assignedUser = await assignUser();
-    uploadImage(newProfilePicture, S3_PROFILE_PICTURE_DIRECTORY_PREFIX);
+    if (newProfilePicture)
+      uploadImage(newProfilePicture, S3_PROFILE_PICTURE_DIRECTORY_PREFIX);
     fetch(`/api/dash/link-portal`, {
       method: "POST",
       headers: {
@@ -202,6 +207,7 @@ export default function Geography() {
       {data && (
         <>
           <section className="h-full relative w-full flex flex-col items-center">
+          <UnsavedChanges hasUnsavedChanges={unsavedChanges.length > 0}/>
             <ProfilePicture
               editable={user ? true : false}
               setNewProfilePicture={setNewProfilePicture}
@@ -287,23 +293,111 @@ export default function Geography() {
                 }}
               >
                 {confirmedNewName ? (
-                  <button className="flex justify-center items-center">
+                  <button className="flex justify-center items-center font-semibold">
                     {confirmedNewName}
                     <EditIcon sx={{ fontSize: "16px" }} />
                   </button>
                 ) : (
-                  <>
-                    {data.name || (
-                      <button className="flex justify-center items-center">
-                        Name...
-                        <EditIcon sx={{ fontSize: "16px" }} />
-                      </button>
-                    )}
-                  </>
+                  <button className="flex justify-center items-center font-semibold">
+                    {data.name || "Name..."}
+                    <EditIcon sx={{ fontSize: "16px" }} />
+                  </button>
                 )}
               </button>
             )}
-            <div>{data.description || "Description"}</div>
+            {newDescription !== null ? (
+              <div>
+                <Input
+                  variant="plain"
+                  placeholder="Description"
+                  onChange={(e) => {
+                    setNewDescription(e.target.value);
+                  }}
+                ></Input>
+                <div className="w-full flex justify-between text-slate-500">
+                  <button
+                    className="hover:text-slate-700"
+                    onClick={() => {
+                      if (unsavedChanges.length > 0) {
+                        const newDescriptionObject = {
+                          name: newDescription,
+                          description: null,
+                          type: "description",
+                          image: null,
+                          link: null,
+                        };
+                        let replaced = false;
+                        const newArr = unsavedChanges.map((obj) => {
+                          if (obj && obj["type"] === "description") {
+                            replaced = true;
+                            return newDescriptionObject;
+                          }
+                          return obj;
+                        });
+                        setUnsavedChanges([...newArr]);
+
+                        if (!replaced) {
+                          setUnsavedChanges([
+                            ...unsavedChanges,
+                            {
+                              name: newDescription,
+                              description: null,
+                              type: "description",
+                              image: null,
+                              link: null,
+                              action: "edit",
+                            },
+                          ]);
+                        }
+                      } else {
+                        setUnsavedChanges([
+                          {
+                            name: newDescription,
+                            description: null,
+                            type: "description",
+                            image: null,
+                            link: null,
+                            action: "edit",
+                          },
+                        ]);
+                      }
+                      setConfirmedNewDescription(newDescription);
+                      setNewDescription(null);
+                    }}
+                  >
+                    Confirm
+                  </button>
+                  <button
+                    className="hover:text-slate-700"
+                    onClick={() => {
+                      setNewDescription(null);
+                    }}
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <button
+                disabled={user === null}
+                onClick={() => {
+                  setNewDescription("");
+                }}
+                className="max-w-[300px] break-words overflow-hidden"
+              >
+                {confirmedNewDescription ? (
+                  <div className="flex justify-center items-center max-w-[300px] break-words">
+                    {confirmedNewDescription}
+                    <EditIcon sx={{ fontSize: "16px" }} />
+                  </div>
+                ) : (
+                  <div className="flex justify-center items-center w-full break-words">
+                    {data.description || "Description"}
+                    <EditIcon sx={{ fontSize: "16px" }} />
+                  </div>
+                )}
+              </button>
+            )}
             <button onClick={saveChanges}></button>
             <div className="mt-2 mb-4 w-full">
               <h3 className="text-center font-bold">Links</h3>
@@ -358,7 +452,7 @@ export default function Geography() {
                               </div>
                               <div className="text-slate-400">
                                 {link.description &&
-                                  TruncateText(description, 24)}
+                                  TruncateText(link.description, 24)}
                               </div>
                               <div></div>
                             </div>
@@ -399,7 +493,13 @@ export default function Geography() {
               </div>
             </div>
             {data.public ? (
-              "true"
+              <button
+                className="py-2 px-4 bg-[#0891b280] hover:bg-cyan-500 transition-colors duration-150 text-white rounded-lg"
+                disabled={!unsavedChanges}
+                onClick={saveChanges}
+              >
+                Save
+              </button>
             ) : (
               <button
                 className="py-2 px-4 bg-[#0891b280] hover:bg-cyan-500 transition-colors duration-150 text-white rounded-lg"
