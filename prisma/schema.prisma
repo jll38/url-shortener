@@ -14,6 +14,8 @@ model Link {
   id           String           @id @default(auto()) @map("_id") @db.ObjectId
   createdAt    DateTime         @default(now())
   name         String?
+  description  String?
+  picture      String?
   originalURL  String
   shortURL     String           @unique
   protected    Boolean          @default(false)

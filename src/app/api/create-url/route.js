@@ -7,18 +7,25 @@ export async function POST(request) {
   const devDomain = "http://localhost:3000/";
   const prodDomain = "http://tinyclicks.co/";
   let s = body.shortURL;
-  const name = body.name || null;
-  const alias = body.alias || null;
-  const rawAlias = body.rawAlias || null;
-  
+  const name = body.name || undefined;
+  const description = body.description || undefined;
+  const picture = body.picture || undefined;
+  const alias = body.alias || undefined;
+  const rawAlias = body.rawAlias || undefined;
+  console.log("name " + name);
   if (alias && rawAlias) {
-    if(!validAlias(rawAlias)) return NextResponse.json({message:"Invalid Alias"}, {status: 400});
+    if (!validAlias(rawAlias))
+      return NextResponse.json({ message: "Invalid Alias" }, { status: 400 });
     const existingAlias = await Prisma.Link.findFirst({
       where: {
         shortURL: alias,
       },
     });
-    if (existingAlias) return NextResponse.json({message:"Link with alias already exists"}, {status: 400});
+    if (existingAlias)
+      return NextResponse.json(
+        { message: "Link with alias already exists" },
+        { status: 400 }
+      );
     s = alias;
   }
 
@@ -29,6 +36,8 @@ export async function POST(request) {
         shortURL: s,
         userId: body.userId,
         name: name,
+        description,
+        picture,
       },
     });
     return NextResponse.json({ short: s }); // Return the urlRecord which should be a valid JSON
@@ -41,7 +50,7 @@ export async function POST(request) {
           originalURL: body.originalURL,
         },
         orderBy: {
-          createdAt: "desc", 
+          createdAt: "desc",
         },
         select: {
           shortURL: true,
@@ -63,6 +72,9 @@ export async function POST(request) {
           originalURL: body.originalURL,
           shortURL: short,
           userId: body.userId,
+          name: name,
+          description,
+          picture,
         },
       });
       return NextResponse.json({ id: urlRecord.id, short });

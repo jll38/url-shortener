@@ -65,13 +65,13 @@ export async function POST(request) {
 
     data.forEach(change => {
       if (change.type === "link") {
-        linkPromises.push(createAndFetchLink(change.link, userId, change.name));
+        linkPromises.push(createAndFetchLink(change.link, userId, change.name, change.description, change.picture));
       } else if (change.type === "name") {
         updates.name = change.name;
       } else if (change.type === "description") {
         updates.description = change.description;
       } else if (change.type === "profile-image") {
-        updates.picture = change.picture; // Ensure this is the correct field for the image URL
+        updates.picture = change.picture; 
       }
     });
     console.log(linkPromises);
@@ -79,11 +79,9 @@ export async function POST(request) {
     if (links.length > 0) {
       updates.links = { connect: links.map(id => ({ id })) };
     } else {
-      // Handle the case where no valid links are available
-      delete updates.links; // Remove the links field if it's empty
+      delete updates.links; 
     }
     console.log(links);
-    console.log("test")
     console.log(updates);
     console.log(updates.links);
     await Prisma.LinkPortal.upsert({
@@ -98,9 +96,9 @@ export async function POST(request) {
   }
 }
 
-async function createAndFetchLink(url, userId, name) {
-  const shortURL = BASE_URL + await shorten(url);
-  
+async function createAndFetchLink(url, userId, name, description, picture) {
+  const shortURL = await shorten(url);
+  console.log(name);
   try {
     const response = await fetch(`${BASE_URL}/api/create-url`, {
       method: "POST",
@@ -108,22 +106,27 @@ async function createAndFetchLink(url, userId, name) {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
+        name,
         userId: userId,
         originalURL: url,
         shortURL,
-        name: name,
+        description,
+        picture,
+        
       }),
     });
 
     const data = await response.json();
-
     if (!response.ok) {
       throw new Error(`API responded with status: ${response.status}`);
     }
-
-    return data.id; // Make sure 'id' is the correct field from your API response
+    if (!data.id) {
+      throw new Error("Missing link ID in the response");
+    }
+    return data.id;
   } catch (err) {
-    console.error("Error creating link:", err);
-    return null; // Return null if there's an error, to avoid undefined values
+    console.error("Error in createAndFetchLink:", err);
+    return new NextResponse({error: "Error in Link creation: " + err}, {status: 400})
+
   }
 }

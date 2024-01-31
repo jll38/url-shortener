@@ -145,7 +145,7 @@ export default function LinkPortal() {
       .finally(() => {
         setUnsavedChanges([]);
         setAwaitSaveChanges(false);
-      })
+      });
   }
 
   async function assignUser() {
@@ -433,24 +433,29 @@ export default function LinkPortal() {
                   data.links.map((link, i) => {
                     return (
                       <Sheet
-                        key={"link-" + i}
                         sx={{
                           width: "400px",
-                          height: "50px",
+                          height: "100px",
                           overflow: "hidden",
                           borderRadius: "20px",
                         }}
-                        className="hover:bg-gray-300 drop-shadow-md transition-colors duration-200"
+                        className="drop-shadow-md transition-colors duration-200"
                       >
-                        <Link
-                          href={link.originalURL}
-                          target="_blank"
-                          className=""
-                        >
-                          <div className="w-[400px] h-[50px] grid place-items-center">
-                            {link.name}
+                        <div target="_blank" className="relative">
+                          <div className="w-[400px] h-[100px] flex justify-start items-center px-10 gap-[40px]">
+                            <div className="bg-gray-300 h-[75px] w-[75px] rounded-md"></div>
+                            <div>
+                              <div className="font-semibold">
+                                {link.name || ""}
+                              </div>
+                              <div className="text-slate-400">
+                                {link.description &&
+                                  TruncateText(link.description, 24)}
+                              </div>
+                              <div></div>
+                            </div>
                           </div>
-                        </Link>
+                        </div>
                       </Sheet>
                     );
                   })}
@@ -529,7 +534,7 @@ export default function LinkPortal() {
               disabled={unsavedChanges.length === 0 || awaitSaveChanges}
               onClick={saveChanges}
             >
-              {awaitSaveChanges ? <CircularProgress size="sm"/> : "Save"}
+              {awaitSaveChanges ? <CircularProgress size="sm" /> : "Save"}
             </button>
           </section>
         </>
