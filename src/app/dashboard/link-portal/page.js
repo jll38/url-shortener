@@ -430,7 +430,14 @@ export default function LinkPortal() {
               <div className="flex flex-col gap-4 items-center w-full">
                 {data.links &&
                   data.links.map((link, i) => {
-                    return <LinkEdit link={link} key={"link-" + i} />;
+                    return (
+                      <LinkEdit
+                        link={link}
+                        setUnsavedChanges={setUnsavedChanges}
+                        unsavedChanges={unsavedChanges}
+                        key={"link-" + i}
+                      />
+                    );
                   })}
 
                 {unsavedChanges.map((link, i) => {

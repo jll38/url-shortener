@@ -13,25 +13,49 @@ import {
 
 import UndoIcon from "@mui/icons-material/Undo";
 
-export function LinkEdit({ link }) {
+export function LinkEdit({ link, setUnsavedChanges, unsavedChanges }) {
   const [showRemove, setShowRemove] = React.useState(false);
   const [modalOpen, setModalOpen] = React.useState(false);
   const [removed, setRemoved] = React.useState(false);
 
   const handleRemove = () => {
     setRemoved(true);
-    // Integrate with unsaved changes array
+    if (unsavedChanges.length >= 0) {
+      setUnsavedChanges([
+        ...unsavedChanges,
+        {
+          name: null,
+          description: null,
+          type: "link",
+          image: null,
+          link: link.shortURL,
+          action: "remove",
+        },
+      ]);
+    } else {
+      setUnsavedChanges([
+        {
+          name: null,
+          description: null,
+          type: "link",
+          image: null,
+          link: link.shortURL,
+          action: "remove",
+        },
+      ]);
+    }
   };
 
   const handleUndo = () => {
     setRemoved(false);
+    const newArr = unsavedChanges.filter(obj => !(obj && obj["link"] === link.shortURL && obj.action === "remove"));
+    setUnsavedChanges(newArr);
     // Integrate with unsaved changes array
   };
 
-  const handleEdit = () => {
+  const handleEdit = () => {};
 
-  }
-
+  const handleToastClose = () => {};
   return (
     <>
       <Modal open={modalOpen}>
@@ -75,8 +99,10 @@ export function LinkEdit({ link }) {
         >
           <div className="relative grid place-items-center">
             {removed ? (
-              <button className="absolute z-20 w-full h-full"
-              onClick={handleUndo}>
+              <button
+                className="absolute z-20 w-full h-full"
+                onClick={handleUndo}
+              >
                 <UndoIcon />
                 <Typography>Undo</Typography>
               </button>
