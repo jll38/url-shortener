@@ -16,18 +16,17 @@ import {
 import Link from "next/link";
 import { CircularProgress } from "@mui/joy";
 import Tooltip from "@mui/joy/Tooltip";
-
+import { TruncateText } from "@/lib/general-helpers";
 import { getUser } from "@/lib/authHandlers";
 import { useState, useEffect } from "react";
 
 import { NewLink } from "./../../../components/dashboard/linkportal/NewLink";
+import { LinkEdit } from "./../../../components/dashboard/linkportal/LinkEdit";
 
 import { UnsavedChanges } from "@/components/UnsavedChanges";
 import { ProfilePicture } from "./../../../components/ProfilePicture";
 import AddIcon from "@mui/icons-material/Add";
 import EditIcon from "@mui/icons-material/Edit";
-
-import { TruncateText } from "@/lib/general-helpers";
 
 //AWS
 import { uploadImage } from "@/lib/aws-helper";
@@ -431,33 +430,7 @@ export default function LinkPortal() {
               <div className="flex flex-col gap-4 items-center w-full">
                 {data.links &&
                   data.links.map((link, i) => {
-                    return (
-                      <Sheet
-                        sx={{
-                          width: "400px",
-                          height: "100px",
-                          overflow: "hidden",
-                          borderRadius: "20px",
-                        }}
-                        className="drop-shadow-md transition-colors duration-200"
-                      >
-                        <div target="_blank" className="relative">
-                          <div className="w-[400px] h-[100px] flex justify-start items-center px-10 gap-[40px]">
-                            <div className="bg-gray-300 h-[75px] w-[75px] rounded-md"></div>
-                            <div>
-                              <div className="font-semibold">
-                                {link.name || ""}
-                              </div>
-                              <div className="text-slate-400">
-                                {link.description &&
-                                  TruncateText(link.description, 24)}
-                              </div>
-                              <div></div>
-                            </div>
-                          </div>
-                        </div>
-                      </Sheet>
-                    );
+                    return <LinkEdit link={link} key={"link-" + i} />;
                   })}
 
                 {unsavedChanges.map((link, i) => {
