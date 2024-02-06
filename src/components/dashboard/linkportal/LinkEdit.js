@@ -48,7 +48,10 @@ export function LinkEdit({ link, setUnsavedChanges, unsavedChanges }) {
 
   const handleUndo = () => {
     setRemoved(false);
-    const newArr = unsavedChanges.filter(obj => !(obj && obj["link"] === link.shortURL && obj.action === "remove"));
+    const newArr = unsavedChanges.filter(
+      (obj) =>
+        !(obj && obj["link"] === link.shortURL && obj.action === "remove")
+    );
     setUnsavedChanges(newArr);
     // Integrate with unsaved changes array
   };
@@ -127,16 +130,18 @@ export function LinkEdit({ link, setUnsavedChanges, unsavedChanges }) {
             </button>
           </div>
         </Sheet>
-        <Button
-          onClick={handleRemove}
-          variant="soft"
-          color="danger"
-          className={`z-0 absolute ${
-            showRemove ? "-right-[100px]" : `right-0`
-          } top-[40%] transition-all duration-200`}
-        >
-          Remove
-        </Button>
+        {!removed && (
+          <Button
+            onClick={handleRemove}
+            variant="soft"
+            color="danger"
+            className={`z-0 absolute ${
+              showRemove ? "-right-[100px]" : `right-0`
+            } top-[40%] transition-all duration-200`}
+          >
+            Remove
+          </Button>
+        )}
       </div>
     </>
   );

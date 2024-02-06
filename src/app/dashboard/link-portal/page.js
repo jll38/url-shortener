@@ -144,6 +144,7 @@ export default function LinkPortal() {
       .finally(() => {
         setUnsavedChanges([]);
         setAwaitSaveChanges(false);
+        setTimeout(() => {window.location.reload()}, 100)
       });
   }
 

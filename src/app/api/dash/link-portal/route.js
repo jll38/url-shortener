@@ -62,24 +62,36 @@ export async function POST(request) {
 
     let updates = { userId: userId, public: true };
     let linkPromises = [];
-
-    data.forEach(change => {
+    let removeLinks = [];
+    data.forEach((change) => {
       if (change.type === "link") {
-        linkPromises.push(createAndFetchLink(change.link, userId, change.name, change.description, change.picture));
+        if (change.action === "remove") {
+          removeLinks.push(change.link);
+        } else {
+          linkPromises.push(
+            createAndFetchLink(
+              change.link,
+              userId,
+              change.name,
+              change.description,
+              change.picture
+            )
+          );
+        }
       } else if (change.type === "name") {
         updates.name = change.name;
       } else if (change.type === "description") {
         updates.description = change.description;
       } else if (change.type === "profile-image") {
-        updates.picture = change.picture; 
+        updates.picture = change.picture;
       }
     });
     console.log(linkPromises);
-    const links = (await Promise.all(linkPromises)).filter(id => id !== null);
+    const links = (await Promise.all(linkPromises)).filter((id) => id !== null);
     if (links.length > 0) {
-      updates.links = { connect: links.map(id => ({ id })) };
+      updates.links = { connect: links.map((id) => ({ id })) };
     } else {
-      delete updates.links; 
+      delete updates.links;
     }
     console.log(links);
     console.log(updates);
@@ -89,6 +101,7 @@ export async function POST(request) {
       create: updates,
       update: updates,
     });
+    disconnectLinks(userId, removeLinks);
 
     return new NextResponse(
       JSON.stringify({ message: "Published" }, { status: 200 })
@@ -112,7 +125,6 @@ async function createAndFetchLink(url, userId, name, description, picture) {
         shortURL,
         description,
         picture,
-        
       }),
     });
 
@@ -126,7 +138,35 @@ async function createAndFetchLink(url, userId, name, description, picture) {
     return data.id;
   } catch (err) {
     console.error("Error in createAndFetchLink:", err);
-    return new NextResponse({error: "Error in Link creation: " + err}, {status: 400})
-
+    return new NextResponse(
+      { error: "Error in Link creation: " + err },
+      { status: 400 }
+    );
   }
 }
+
+async function disconnectLinks(userId, linkIds) {
+  if (!linkIds || linkIds.length === 0) {
+    console.warn("No links specified for disconnection.");
+    return;
+  }
+
+  try {
+    const disconnectLinks = linkIds.map(shortURL => ({ shortURL }));
+
+    await Prisma.LinkPortal.update({
+      where: { userId },
+      data: {
+        links: {
+          disconnect: disconnectLinks,
+        },
+      },
+    });
+
+    console.log(`Links disconnected successfully for user ${userId}.`);
+  } catch (error) {
+    console.error("Error in disconnecting links:", error);
+    throw new Error("Error in disconnecting links: " + error.message);
+  }
+}
+
