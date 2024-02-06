@@ -9,44 +9,46 @@ name with be stored in the MongoDB database
 for the link-portal record of the user.
 */
 
-export const uploadImage = async (blob, directory) => {
+export const uploadImage = async (fileOrBuffer, fileName, directory, contentType) => {
   const S3_BUCKET = "tinyclicks";
   const REGION = "us-east-2";
-
-  console.log(blob)
-  console.log("Converting...")
-  const convertedFile = new File([blob], blob.name, { type: blob.type }); //"Test" Placeholder name
-
-  
-  console.log(convertedFile);
+  console.log("Directory: " + directory)
   AWS.config.update({
     accessKeyId: AWS_ACCESS_KEY,
     secretAccessKey: AWS_SECRET_ACCESS_KEY,
   });
+
   const s3 = new AWS.S3({
     params: { Bucket: S3_BUCKET },
     region: REGION,
   });
 
-  const params = {
-    Bucket: S3_BUCKET,
-    Key: directory ? directory + convertedFile.name : convertedFile.name,
-    Body: convertedFile,
-    ContentType: convertedFile.type
-  };
-  
+  let uploadParams;
 
-  var upload = s3
-    .putObject(params)
-    .on("httpUploadProgress", (evt) => {
-      console.log(
-        "Uploading " + parseInt((evt.loaded * 100) / evt.total) + "%"
-      );
-    })
-    .promise();
+  if (Buffer.isBuffer(fileOrBuffer)) {
+    // Handle the buffer case
+    uploadParams = {
+      Bucket: S3_BUCKET,
+      Key: directory ? `${directory}${fileName}` : fileName,
+      Body: fileOrBuffer,
+      ContentType: contentType || 'image/jpeg' // Default content type if not provided
+    };
+  } else {
+    // Handle the blob case
+    uploadParams = {
+      Bucket: S3_BUCKET,
+      Key: directory ? `${directory}${fileOrBuffer.name}` : fileOrBuffer.name,
+      Body: fileOrBuffer,
+      ContentType: fileOrBuffer.type
+    };
+  }
 
-  await upload.then((err, data) => {
-    console.log(err);
-    alert("File uploaded successfully.");
-  });
+  try {
+    const upload = await s3.putObject(uploadParams).promise();
+    console.log("Upload completed", upload);
+    return upload; // or return some specific data as needed
+  } catch (err) {
+    console.error("Error during upload:", err);
+    throw err;
+  }
 };

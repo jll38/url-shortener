@@ -4,6 +4,14 @@ import { shorten } from "@/lib/shorten";
 
 import { BASE_URL } from "@/lib/constants";
 
+import {
+  S3_PROFILE_PICTURE_DIRECTORY_PREFIX,
+  S3_LINK_PICTURE_DIRECTORY_PREFIX,
+  AWS_S3_PREFIX,
+} from "@/lib/constants";
+
+import { uploadImage } from "@/lib/aws-helper";
+
 export async function POST(request) {
   const { userId, operation, data = null } = await request.json();
 
@@ -68,13 +76,16 @@ export async function POST(request) {
         if (change.action === "remove") {
           removeLinks.push(change.link);
         } else {
+          if(change.image === null){
+            getScreenshot(change.link);
+          }
           linkPromises.push(
             createAndFetchLink(
               change.link,
               userId,
               change.name,
               change.description,
-              change.picture
+              change.image
             )
           );
         }
@@ -83,7 +94,9 @@ export async function POST(request) {
       } else if (change.type === "description") {
         updates.description = change.description;
       } else if (change.type === "profile-image") {
-        updates.picture = change.picture;
+        console.log("Picture: " + change.name);
+        updates.picture = change.name;
+        console.log("Picture: " + updates.picture);
       }
     });
     console.log(linkPromises);
@@ -101,7 +114,7 @@ export async function POST(request) {
       create: updates,
       update: updates,
     });
-    disconnectLinks(userId, removeLinks);
+    if(removeLinks.length > 0) disconnectLinks(userId, removeLinks);
 
     return new NextResponse(
       JSON.stringify({ message: "Published" }, { status: 200 })
@@ -170,3 +183,25 @@ async function disconnectLinks(userId, linkIds) {
   }
 }
 
+async function getScreenshot(link) {
+  console.log("Initiating screenshot");
+  const puppeteer = require('puppeteer');
+  const browser = await puppeteer.launch();
+  const page = await browser.newPage();
+
+  await page.setViewport({ width: 1920, height: 1080 });
+  await page.goto(link);
+
+  try {
+    const buffer = await page.screenshot();
+    console.log("Buffer captured, uploading...");
+
+    const fileName = `screenshot-${Date.now()}.jpg`;
+    await uploadImage(buffer, fileName, S3_LINK_PICTURE_DIRECTORY_PREFIX);
+    console.log("Upload completed");
+  } catch (err) {
+    console.error(`Error: ${err.message}`);
+  } finally {
+    await browser.close();
+  }
+}

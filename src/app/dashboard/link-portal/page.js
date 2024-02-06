@@ -77,7 +77,7 @@ export default function LinkPortal() {
       setNewProfilePictureLink(object);
       if (unsavedChanges.length > 0) {
         const newPictureObject = {
-          name: S3_PROFILE_PICTURE_DIRECTORY_PREFIX + newProfilePicture.name,
+          name: newProfilePicture.name,
           description: null,
           type: "profile-image",
           image: new Blob([newProfilePicture], {
@@ -120,7 +120,7 @@ export default function LinkPortal() {
     const assignedUser = await assignUser();
     setAwaitSaveChanges(true);
     if (newProfilePicture)
-      uploadImage(newProfilePicture, S3_PROFILE_PICTURE_DIRECTORY_PREFIX);
+      uploadImage(newProfilePicture, null, S3_PROFILE_PICTURE_DIRECTORY_PREFIX, newProfilePicture.type);
     fetch(`/api/dash/link-portal`, {
       method: "POST",
       headers: {
